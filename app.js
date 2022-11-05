@@ -17,6 +17,13 @@ app.use(express.static(path.join(__dirname, 'views')))
 app.use('/', indexRouter)
 // app.use('/users', usersRouter)
 
+app.use('/api/' + process.env.API_VERSION, [
+  require('./routes/records'),
+  require('./routes/breeds'),
+  require('./routes/vets')
+
+])
+
 // Error handling
 app.use(function (err, req, res, next) {
   console.log(err)
