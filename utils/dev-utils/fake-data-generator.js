@@ -173,7 +173,6 @@ for (let i = 1; i < 101; i++) {
     breed_id: Math.floor(Math.random() * 50) + 1,
     code: 'PET' + '22' + Math.floor(Math.random() * 100000),
     name: '寵物' + i,
-    species: species[Math.floor(Math.random() * 2)],
     sex: Math.floor(Math.random() * 2),
     is_neutered: Math.floor(Math.random() * 2),
     birthday: '2020-10-10',
