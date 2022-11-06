@@ -1,7 +1,7 @@
 const express = require('express')
 
 const { wrapAsync } = require('../utils/utils')
-const vetsController = require('../controllers/vets')
+const vetsController = require('../controllers/vetsController')
 
 const router = express.Router()
 

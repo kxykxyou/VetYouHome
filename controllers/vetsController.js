@@ -1,7 +1,7 @@
-const { db } = require('../models/mysql')
+const vetsModel = require('../models/vetsModel')
 
 async function getAllVets (req, res, next) {
-  const [data] = await db.query('SELECT id, fullname FROM user')
+  const [data] = await vetsModel.getAllVets()
   return res.status(200).json({ data })
 }
 
