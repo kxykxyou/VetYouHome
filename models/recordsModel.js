@@ -74,6 +74,7 @@ async function searchRecords (queryPairs) {
   if (sqlConditions.length > 0) {
     sql = sql + 'WHERE ' + sqlConditions.join(' AND ')
   }
+  sql += ' ORDER BY recordId DESC'
   console.log('sqlConditions', sqlConditions)
   console.log('queryValues: ', queryValues)
   const [data] = await db.execute(sql, queryValues)
