@@ -28,6 +28,7 @@ async function searchRecords (queryPairs) {
             r.code as recordCode, 
             r.created_at as recordCreatedAt, 
             r.is_archive as isArchive, 
+            p.id as petId,
             p.name as petName, 
             p.code as petCode,
             p.chip as petChip,
