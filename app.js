@@ -20,7 +20,8 @@ app.use('/', indexRouter)
 app.use('/api/' + process.env.API_VERSION, [
   require('./routes/records'),
   require('./routes/breeds'),
-  require('./routes/vets')
+  require('./routes/vets'),
+  require('./routes/pets')
 
 ])
 
