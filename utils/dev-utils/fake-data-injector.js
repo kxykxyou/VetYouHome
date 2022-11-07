@@ -90,6 +90,7 @@ async function injectFakeData (filePath) {
   await buildFakeDataByLevel(dbConnection, data, 2)
   await buildFakeDataByLevel(dbConnection, data, 3)
   await buildFakeDataByLevel(dbConnection, data, 4)
+  await buildFakeDataByLevel(dbConnection, data, 5)
   await dbConnection.release()
   console.log('inject data success')
 }

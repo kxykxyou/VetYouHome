@@ -1,9 +1,9 @@
 require('dotenv').config({ path: '../../.env' })
 const { db } = require('../../models/mysql')
 const fs = require('fs')
-const fsPromise = require('fs/promises')
+// const fsPromise = require('fs/promises')
 const path = require('path')
-const dataInjectLevel = ['1', '2', '3', '4']
+// const dataInjectLevel = ['1', '2', '3', '4', '5']
 const dropTableOrders = [
   'medical_order',
   'record_exam',
@@ -14,6 +14,7 @@ const dropTableOrders = [
   'exam',
   'medicine',
   'treatment',
+  'inpatient_order_detail',
   'inpatient_order',
   'inpatient',
   'pet',
@@ -83,22 +84,9 @@ async function buildFakeDataByLevel (data, level) {
   }
 }
 
-async function injectFakeData (filePath) {
-  let data = await fsPromise.readFile(filePath, 'utf-8')
-  data = JSON.parse(data)
-  await buildFakeDataByLevel(data, 1)
-  await buildFakeDataByLevel(data, 2)
-  await buildFakeDataByLevel(data, 3)
-  await buildFakeDataByLevel(data, 4)
-}
-
 async function main () {
   await dropAllTables(dropTableOrders)
   await buildAllTables(path.join(__dirname, 'sql.txt'))
-
-  // await injectFakeData(path.join(__dirname, 'fake-data.json'))
 }
-
-// injectFakeData(path.join(__dirname, 'fake-data.json'))
 
 main()
