@@ -105,6 +105,13 @@ const data = {
 /**
  * =================================================================
  * 1st class data
+ *user: users,
+  owner: owners,
+  cage: cageTypes,
+  breed: breeds,
+  exam: exams,
+  medicine: medicines,
+  treatment: treatments,
  * =================================================================
  */
 
@@ -128,12 +135,15 @@ for (let i = 1; i < 11; i++) {
   owners.push(owner)
 }
 
+let count = 1
 for (const type of cageTypes) {
   for (let i = 1; i < 10; i++) {
     const cage = {
-      name: type + i
+      name: type + i,
+      pet_id: count
     }
     cages.push(cage)
+    count += 1
   }
 }
 
@@ -181,14 +191,7 @@ for (let i = 1; i < 101; i++) {
  * =================================================================
  * 2nd class data
  * @pet
- * const firstTableMapData = {
-  user: users,
-  owner: owners,
-  cage: cageTypes,
-  breed: breeds,
-  exam: exams,
-  medicine: medicines,
-  treatment: treatments,
+ * const secondTableMapData = {
   pet: pets
 }
  * =================================================================
@@ -205,7 +208,7 @@ for (let i = 1; i < 101; i++) {
     birthday: '2020-10-10',
     chip: Math.floor(Math.random() * (10 ** 14)),
     comment: null,
-    status: Math.floor(Math.random() * 4),
+    status: i < 37 ? 3 : Math.floor(Math.random() * 3),
     status_comment: null
   }
   pets.push(pet)
@@ -233,16 +236,34 @@ for (let i = 1; i < 501; i++) {
   records.push(record)
 }
 
+let inpatient_count = 1
 for (let i = 1; i < 101; i++) {
   const dateSet = inpatientDates[Math.floor(Math.random() * inpatientDates.length)]
+  const pet_id = Math.floor(Math.random() * 100) + 1
+  const date_start = dateSet.inpatientDateStart
+  const date_end = dateSet.inpatientDateEnd
+  const cage = cages[Math.floor(Math.random() * cages.length)].name
+
   const inpatient = {
     code: 'INP' + '22' + Math.floor(Math.random() * 100000),
-    pet_id: Math.floor(Math.random() * 10) + 1,
-    date_start: dateSet.inpatientDateStart,
-    date_end: dateSet.inpatientDateEnd,
-    cage: cages[Math.floor(Math.random() * cages.length)].name,
+    pet_id,
+    date_start,
+    date_end,
+    cage,
     summary: null
   }
+
+  if (i > 64) {
+    inpatient.pet_id = inpatient_count
+    inpatient.cage = cages[inpatient_count - 1].name
+    // console.log(cages[inpatient_count - 1].name)
+    // cage = cages[inpatient_count].name
+
+    inpatient_count += 1
+    delete inpatient.date_start
+    delete inpatient.date_end
+  }
+
   inpatients.push(inpatient)
   // 4th 要綁定日期的 inpatient order摻在這裡做
   dateSet.inpatientOrderCreatedAt.forEach(date => {
