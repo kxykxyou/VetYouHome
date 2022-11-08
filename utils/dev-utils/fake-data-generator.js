@@ -240,16 +240,16 @@ let inpatient_count = 1
 for (let i = 1; i < 101; i++) {
   const dateSet = inpatientDates[Math.floor(Math.random() * inpatientDates.length)]
   const pet_id = Math.floor(Math.random() * 100) + 1
-  const date_start = dateSet.inpatientDateStart
-  const date_end = dateSet.inpatientDateEnd
+  const charge_start = dateSet.inpatientDateStart
+  const charge_end = dateSet.inpatientDateEnd
   const cage = cages[Math.floor(Math.random() * cages.length)].name
   const vet_id = Math.floor(Math.random() * 10) + 1
   const inpatient = {
     code: 'INP' + '22' + Math.floor(Math.random() * 100000),
     pet_id,
     vet_id,
-    date_start,
-    date_end,
+    charge_start,
+    charge_end,
     cage,
     summary: null
   }
@@ -261,8 +261,8 @@ for (let i = 1; i < 101; i++) {
     // cage = cages[inpatient_count].name
 
     inpatient_count += 1
-    delete inpatient.date_start
-    delete inpatient.date_end
+    delete inpatient.charge_start
+    delete inpatient.charge_end
   }
 
   inpatients.push(inpatient)

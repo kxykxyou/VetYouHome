@@ -125,8 +125,8 @@ CREATE TABLE `inpatient` (
   `code` char(10) UNIQUE NOT NULL,
   `vet_id` int NOT NULL,
   `pet_id` int NOT NULL,
-  `date_start` date NOT NULL DEFAULT (CURDATE()),
-  `date_end` date DEFAULT NULL,
+  `charge_start` date NOT NULL DEFAULT (CURDATE()),
+  `charge_end` date DEFAULT NULL,
   `cage` char(3) NOT NULL,
   `summary` varchar(100)
 );
