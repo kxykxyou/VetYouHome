@@ -1,8 +1,8 @@
-const vetsModel = require('../models/vetsModel')
+const inpatientsModel = require('../models/inpatientsModel')
 
-async function getAllVets (req, res, next) {
-  const data = await vetsModel.getAllVets()
+async function getChargedPets (req, res, next) {
+  const data = await inpatientsModel.getChargedPets()
   return res.status(200).json({ data })
 }
 
-module.exports = { getAllVets }
+module.exports = { getChargedPets }

@@ -1,11 +1,13 @@
 const express = require('express')
 
 const { wrapAsync } = require('../utils/utils')
-const vetsController = require('../controllers/vetsController')
+const inpatientsController = require('../controllers/inpatientsController')
 
 const router = express.Router()
 
 /* Routes. */
-router.get('/vets/all', wrapAsync(vetsController.getAllVets))
+router.get('/inpatients/charged', wrapAsync(inpatientsController.getChargedPets))
+// router.get('/inpatients/id/:id/orders/all')
+// router.get('/inpatients/orders/details/id/:id', wrapAsync(inpatientsController.getAllVets))
 
 module.exports = router

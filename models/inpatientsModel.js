@@ -1,8 +1,8 @@
 const { db } = require('./mysql')
 
-async function getAllVets () {
-  const [data] = await db.query('SELECT id, fullname FROM user')
+async function getChargedPets () {
+  const [data] = await db.query('SELECT * FROM cage')
   return data
 }
 
-module.exports = { getAllVets }
+module.exports = { getChargedPets }
