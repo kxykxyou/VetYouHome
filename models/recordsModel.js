@@ -36,6 +36,7 @@ async function searchRecords (queryPairs) {
             b.species as petSpecies,
             b.breed as petBreed,
             o.fullname as ownerFullname,
+            o.cellphone as ownerCellphone,
             u.id as vetId,
             u.fullname as vetFullname
             FROM record as r 
@@ -76,8 +77,8 @@ async function searchRecords (queryPairs) {
     sql = sql + 'WHERE ' + sqlConditions.join(' AND ')
   }
   sql += ' ORDER BY recordId DESC'
-  console.log('sqlConditions', sqlConditions)
-  console.log('queryValues: ', queryValues)
+  console.log('/records/search sqlConditions', sqlConditions)
+  console.log('/records/search queryValues: ', queryValues)
   const [data] = await db.execute(sql, queryValues)
   return data
 }
