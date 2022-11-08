@@ -22,44 +22,44 @@ const dropTableOrders = [
   'breed'
 ]
 
-function buildAllTables (filePath) {
-  fs.readFile(filePath, 'utf-8', async (error, data) => {
-    if (error) { console.log('error while reading sql.txt: ', error) }
-    const sqls = data.replaceAll('\n', '').split(';').filter(sql => sql !== '')
-    const dbConnection = await db.getConnection()
-    await dbConnection.query('START TRANSACTION')
-    try {
-      sqls.forEach(async (sql) => {
-        await dbConnection.query(sql)
-      })
-      await dbConnection.query('COMMIT')
-      console.log(`build tables success: ${process.env.DB_NAME}`)
-    } catch (err) {
-      await dbConnection.query('ROLLBACK')
-      console.log('error happened while build tables', err)
-    } finally {
-      await dbConnection.release()
-    }
-  })
-}
+// function buildAllTables (filePath) {
+//   fs.readFile(filePath, 'utf-8', async (error, data) => {
+//     if (error) { console.log('error while reading sql.txt: ', error) }
+//     const sqls = data.replaceAll('\n', '').split(';').filter(sql => sql !== '')
+//     const dbConnection = await db.getConnection()
+//     await dbConnection.query('START TRANSACTION')
+//     try {
+//       sqls.forEach(async (sql) => {
+//         await dbConnection.query(sql)
+//       })
+//       await dbConnection.query('COMMIT')
+//       console.log(`build tables success: ${process.env.DB_NAME}`)
+//     } catch (err) {
+//       await dbConnection.query('ROLLBACK')
+//       console.log('error happened while build tables', err)
+//     } finally {
+//       await dbConnection.release()
+//     }
+//   })
+// }
 
-async function dropAllTables (dropTableOrders) {
-  const dbConnection = await db.getConnection()
-  const sqlTemplate = 'DROP TABLE IF EXISTS '
-  await dbConnection.query('START TRANSACTION')
-  try {
-    dropTableOrders.forEach(async (table) => {
-      await dbConnection.query(sqlTemplate + table)
-    })
-    await dbConnection.query('COMMIT')
-    console.log(`drop tables success: ${process.env.DB_NAME}`)
-  } catch (err) {
-    await dbConnection.query('ROLLBACK')
-    console.log('error happened while drop all tables', err)
-  } finally {
-    await dbConnection.release()
-  }
-}
+// async function dropAllTables (dropTableOrders) {
+//   const dbConnection = await db.getConnection()
+//   const sqlTemplate = 'DROP TABLE IF EXISTS '
+//   await dbConnection.query('START TRANSACTION')
+//   try {
+//     dropTableOrders.forEach(async (table) => {
+//       await dbConnection.query(sqlTemplate + table)
+//     })
+//     await dbConnection.query('COMMIT')
+//     console.log(`drop tables success: ${process.env.DB_NAME}`)
+//   } catch (err) {
+//     await dbConnection.query('ROLLBACK')
+//     console.log('error happened while drop all tables', err)
+//   } finally {
+//     await dbConnection.release()
+//   }
+// }
 
 async function buildFakeDataByLevel (dbConnection, data, level) {
   await dbConnection.query('START TRANSACTION')
@@ -75,7 +75,7 @@ async function buildFakeDataByLevel (dbConnection, data, level) {
     })
     await dbConnection.query('COMMIT')
   } catch (err) {
-    console.log('fail to inject data', err)
+    console.log('fail to inject data at level:', level, err)
     await dbConnection.query('ROLLBACK')
   } finally {
     // await dbConnection.release()
@@ -90,6 +90,7 @@ async function injectFakeData (filePath) {
   await buildFakeDataByLevel(dbConnection, data, 2)
   await buildFakeDataByLevel(dbConnection, data, 3)
   await buildFakeDataByLevel(dbConnection, data, 4)
+  await buildFakeDataByLevel(dbConnection, data, 5)
   await dbConnection.release()
   console.log('inject data success')
 }

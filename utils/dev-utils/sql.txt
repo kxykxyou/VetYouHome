@@ -22,14 +22,13 @@ CREATE TABLE `pet` (
   `breed_id` int NOT NULL,
   `code` char(10) UNIQUE NOT NULL,
   `name` varchar(50) NOT NULL,
-  `species` char(1) NOT NULL,
   `sex` tinyint,
   `is_neutered` tinyint DEFAULT 0,
   `birthday` DATE DEFAULT NULL,
   `chip` bigint unsigned DEFAULT NULL,
   `comment` varchar(256),
   `status` tinyint NOT NULL DEFAULT 1,
-  `status_comment` varchar(30) DEFAULT NULL
+  `status_comment` varchar(60) DEFAULT NULL
 );
 
 CREATE TABLE `breed` (
@@ -124,19 +123,27 @@ CREATE TABLE `record_treatment` (
 CREATE TABLE `inpatient` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
-  `pet_id` int,
-  `date` date NOT NULL DEFAULT (CURDATE()),
+  `pet_id` int NOT NULL,
+  `date_start` date NOT NULL DEFAULT (CURDATE()),
+  `date_end` date DEFAULT NULL,
   `cage` char(3) NOT NULL,
-  `order_created_at` datetime DEFAULT NULL,
-  `order_updated_at` datetime DEFAULT NULL,
+  `summary` varchar(100)
+);
+
+CREATE TABLE `inpatient_order` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `code` char(10) UNIQUE NOT NULL,
+  `inpatient_id` int NOT NULL,
+  `created_at` datetime DEFAULT (CURRENT_TIMESTAMP),
+  `updated_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `is_paid` tinyint NOT NULL DEFAULT 0,
   `total` mediumint unsigned NOT NULL DEFAULT 0,
   `comment` varchar(100)
 );
 
-CREATE TABLE `inpatient_order` (
+CREATE TABLE `inpatient_order_detail` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `inpatient_id` int NOT NULL,
+  `inpatient_order_id` int NOT NULL,
   `priority` tinyint NOT NULL DEFAULT 0,
   `content` varchar(100) NOT NULL,
   `frequency` varchar(20),
@@ -146,6 +153,16 @@ CREATE TABLE `inpatient_order` (
   `subtotal` mediumint unsigned NOT NULL DEFAULT 0,
   `comment` varchar(100)
 );
+
+CREATE INDEX `user_index_0` ON `user` (`fullname`);
+
+CREATE INDEX `pet_index_1` ON `pet` (`code`);
+
+CREATE INDEX `record_index_2` ON `record` (`code`);
+
+CREATE INDEX `inpatient_index_3` ON `inpatient` (`code`);
+
+CREATE INDEX `inpatient_order_index_4` ON `inpatient_order` (`code`);
 
 ALTER TABLE `pet` ADD FOREIGN KEY (`breed_id`) REFERENCES `breed` (`id`);
 
@@ -170,3 +187,5 @@ ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `trea
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
 
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
+
+ALTER TABLE `inpatient_order_detail` ADD FOREIGN KEY (`inpatient_order_id`) REFERENCES `inpatient_order` (`id`);

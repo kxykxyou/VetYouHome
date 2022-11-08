@@ -22,9 +22,23 @@ const pets = []
 const records = []
 const inpatients = []
 const inpatientDates = [
-  '2022-10-31',
-  '2022-10-01',
-  '2022-11-04'
+  {
+    inpatientDateStart: '2022-11-01',
+    inpatientDateEnd: '2022-11-01',
+    inpatientOrderCreatedAt: ['2022-11-01']
+  }, {
+    inpatientDateStart: '2022-10-30',
+    inpatientDateEnd: '2022-10-31',
+    inpatientOrderCreatedAt: ['2022-10-30', '2022-10-31']
+  }, {
+    inpatientDateStart: '2022-09-01',
+    inpatientDateEnd: '2022-09-05',
+    inpatientOrderCreatedAt: ['2022-09-01', '2022-09-02', '2022-09-03', '2022-09-04', '2022-09-05']
+  }, {
+    inpatientDateStart: '2022-08-24',
+    inpatientDateEnd: '2022-08-26',
+    inpatientOrderCreatedAt: ['2022-08-24', '2022-08-25', '2022-08-26']
+  }
 ]
 
 // 4th class data
@@ -43,6 +57,14 @@ const medicationType = ['藥粉', '膠囊', '錠劑', '藥水']
 
 const recordTreatments = []
 
+// 5th class data
+const inpatientOrderDetails = []
+
+/**
+ * =================================================================
+ * level maps data
+ * =================================================================
+ */
 const firstTableMapData = {
   user: users,
   owner: owners,
@@ -68,11 +90,16 @@ const fourthTableMapData = {
   record_treatment: recordTreatments
 }
 
+const fifthTableMapData = {
+  inpatient_order_detail: inpatientOrderDetails
+}
+
 const data = {
   1: firstTableMapData,
   2: secondTableMapData,
   3: thirdTableMapData,
-  4: fourthTableMapData
+  4: fourthTableMapData,
+  5: fifthTableMapData
 }
 
 /**
@@ -173,7 +200,6 @@ for (let i = 1; i < 101; i++) {
     breed_id: Math.floor(Math.random() * 50) + 1,
     code: 'PET' + '22' + Math.floor(Math.random() * 100000),
     name: '寵物' + i,
-    species: species[Math.floor(Math.random() * 2)],
     sex: Math.floor(Math.random() * 2),
     is_neutered: Math.floor(Math.random() * 2),
     birthday: '2020-10-10',
@@ -208,14 +234,27 @@ for (let i = 1; i < 501; i++) {
 }
 
 for (let i = 1; i < 101; i++) {
+  const dateSet = inpatientDates[Math.floor(Math.random() * inpatientDates.length)]
   const inpatient = {
     code: 'INP' + '22' + Math.floor(Math.random() * 100000),
     pet_id: Math.floor(Math.random() * 10) + 1,
-    date: inpatientDates[Math.floor(Math.random() * inpatientDates.length)],
+    date_start: dateSet.inpatientDateStart,
+    date_end: dateSet.inpatientDateEnd,
     cage: cages[Math.floor(Math.random() * cages.length)].name,
-    comment: null
+    summary: null
   }
   inpatients.push(inpatient)
+  // 4th 要綁定日期的 inpatient order摻在這裡做
+  dateSet.inpatientOrderCreatedAt.forEach(date => {
+    const inpatientOrder = {
+      code: 'ORD' + '22' + Math.floor(Math.random() * 100000),
+      inpatient_id: i,
+      created_at: date,
+      updated_at: date,
+      is_paid: 1
+    }
+    inpatientOrders.push(inpatientOrder)
+  })
 }
 
 /**
@@ -227,18 +266,6 @@ for (let i = 1; i < 101; i++) {
  * @record_treatment: recordTreatments
  * =================================================================
  */
-for (let i = 1; i < 1001; i++) {
-  const frequency = frequencies[Math.floor(Math.random() * frequencies.length)]
-  const inpatientOrder = {
-    inpatient_id: Math.floor(Math.random() * 100) + 1,
-    priority: Math.floor(Math.random() * 100) + 1,
-    content: '醫囑內容: ' + i,
-    frequency,
-    schedule: frequencyMapSchedule[frequency],
-    comment: Math.floor(Math.random() * 2) ? '醫囑備註: ' + i : null
-  }
-  inpatientOrders.push(inpatientOrder)
-}
 
 for (let i = 1; i < 501; i++) {
   for (let j = 1; j < 3; j++) {
@@ -270,6 +297,27 @@ for (let i = 1; i < 501; i++) {
   }
 }
 
+/**
+ * =================================================================
+ * 5th class data
+ * @inpatient_order_detail: inpatientOrderDetails,
+ * =================================================================
+ */
+
+for (let i = 1; i < 1001; i++) {
+  const frequency = frequencies[Math.floor(Math.random() * frequencies.length)]
+  const inpatientOrderDetail = {
+    inpatient_order_id: Math.floor(Math.random() * inpatientOrders.length) + 1,
+    priority: Math.floor(Math.random() * 100) + 1,
+    content: '醫囑內容: ' + i,
+    frequency,
+    schedule: frequencyMapSchedule[frequency],
+    comment: Math.floor(Math.random() * 2) ? '醫囑備註: ' + i : null
+  }
+  inpatientOrderDetails.push(inpatientOrderDetail)
+}
+
+// write json file
 fs.writeFile(path.join(__dirname, 'fake-data.json'), JSON.stringify(data), (err) => {
   if (err) {
     console.log('failed to write fake data.')

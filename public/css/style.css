@@ -1,13 +1,13 @@
-body {
+/* body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+} */
 
 a {
   color: #00b7ff;
 }
 
-#logo {
-  width: 24px;
-  height: 24px;
+.icon {
+  width: 36px;
+  height: 36px;
 }
