@@ -5,4 +5,9 @@ async function getChargedPets (req, res, next) {
   return res.status(200).json({ data })
 }
 
-module.exports = { getChargedPets }
+async function searchInpatients (req, res, next) {
+  const data = await inpatientsModel.searchInpatients(req.query)
+  return res.status(200).json({ data })
+}
+
+module.exports = { getChargedPets, searchInpatients }
