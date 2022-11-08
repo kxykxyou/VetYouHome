@@ -10,7 +10,6 @@ const dropTableOrders = [
   'record_medication',
   'record_treatment',
   'record',
-  'user',
   'exam',
   'medicine',
   'treatment',
@@ -20,7 +19,8 @@ const dropTableOrders = [
   'pet',
   'owner',
   'cage',
-  'breed'
+  'breed',
+  'user'
 ]
 
 function buildAllTables (filePath) {

@@ -123,6 +123,7 @@ CREATE TABLE `record_treatment` (
 CREATE TABLE `inpatient` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
+  `vet_id` int NOT NULL,
   `pet_id` int NOT NULL,
   `date_start` date NOT NULL DEFAULT (CURDATE()),
   `date_end` date DEFAULT NULL,
@@ -133,6 +134,7 @@ CREATE TABLE `inpatient` (
 CREATE TABLE `inpatient_order` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
+  `vet_id` int NOT NULL,
   `inpatient_id` int NOT NULL,
   `created_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` datetime DEFAULT (CURRENT_TIMESTAMP),
@@ -185,6 +187,10 @@ ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record`
 ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `treatment` (`id`);
 
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
+
+ALTER TABLE `inpatient` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
 

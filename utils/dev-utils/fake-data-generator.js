@@ -243,10 +243,11 @@ for (let i = 1; i < 101; i++) {
   const date_start = dateSet.inpatientDateStart
   const date_end = dateSet.inpatientDateEnd
   const cage = cages[Math.floor(Math.random() * cages.length)].name
-
+  const vet_id = Math.floor(Math.random() * 10) + 1
   const inpatient = {
     code: 'INP' + '22' + Math.floor(Math.random() * 100000),
     pet_id,
+    vet_id,
     date_start,
     date_end,
     cage,
@@ -270,6 +271,7 @@ for (let i = 1; i < 101; i++) {
     const inpatientOrder = {
       code: 'ORD' + '22' + Math.floor(Math.random() * 100000),
       inpatient_id: i,
+      vet_id,
       created_at: date,
       updated_at: date,
       is_paid: 1
