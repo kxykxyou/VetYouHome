@@ -76,6 +76,7 @@ async function searchRecords () {
   const isArchive = $('#is-archive option:selected').attr('key')
   const petBreed = $('#pet-breed option:selected').attr('key')
   const recordCode = $('#record-code').val()
+  const ownerFullname = $('#owner-fullname').val()
   const petName = $('#pet-name').val()
 
   const petCode = $('#pet-code').val()
@@ -86,6 +87,7 @@ async function searchRecords () {
     petBreed,
     isArchive,
     recordCode,
+    ownerFullname,
     petName,
     petCode,
     petChip,
