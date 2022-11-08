@@ -7,6 +7,6 @@ const router = express.Router()
 
 /* Routes. */
 router.get('/breeds/all', wrapAsync(breedsController.getAllBreeds))
-router.get('/breeds/:species', wrapAsync(breedsController.getBreedsBySpecies))
+router.get('/breeds/species/:species', wrapAsync(breedsController.getBreedsBySpecies))
 
 module.exports = router
