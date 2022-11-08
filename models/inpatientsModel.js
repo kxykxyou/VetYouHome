@@ -16,31 +16,31 @@ async function getChargedPets () {
     FROM
     (
       SELECT 
-      i.id as inpatientId,
-      i.code as inpatientCode, 
-      i.charge_start as chargeStart,
-      i.charge_end as chargeEnd,
-      i.cage as cage,
-      i.summary as summary,
-      p.id as petId,
-      p.name as petName, 
-      p.code as petCode,
-      p.chip as petChip,
-      p.status as petStatus,
-      b.species as petSpecies,
-      b.breed as petBreed,
-      o.fullname as ownerFullname,
-      o.cellphone as ownerCellphone,
-      u.id as vetId,
-      u.fullname as vetFullname
-      FROM inpatient as i
-      JOIN user as u on i.vet_id = u.id
-      JOIN pet as p on i.pet_id = p.id 
-      JOIN breed as b on p.breed_id = b.id
-      JOIN owner as o on p.owner_id = o.id 
+      i.id AS inpatientId,
+      i.code AS inpatientCode, 
+      i.charge_start AS chargeStart,
+      i.charge_end AS chargeEnd,
+      i.cage AS inpatientCage,
+      i.summary AS inpatientSummary,
+      p.id AS petId,
+      p.name AS petName, 
+      p.code AS petCode,
+      p.chip AS petChip,
+      p.status AS petStatus,
+      b.species AS petSpecies,
+      b.breed AS petBreed,
+      o.fullname AS ownerFullname,
+      o.cellphone AS ownerCellphone,
+      u.id AS vetId,
+      u.fullname AS vetFullname
+      FROM inpatient AS i
+      JOIN user AS u ON i.vet_id = u.id
+      JOIN pet AS p ON i.pet_id = p.id 
+      JOIN breed AS b ON p.breed_id = b.id
+      JOIN owner AS o ON p.owner_id = o.id 
     ) AS new_table
     WHERE chargeEnd IS NULL
-    ORDER BY cage
+    ORDER BY inpatientCage
   `
   const [data] = await db.query(sql)
   return data
@@ -54,29 +54,30 @@ async function searchInpatients (queryPairs) {
         FROM
         (
             SELECT
-            i.id as inpatientId,
-            i.code as inpatientCode, 
-            i.charge_start as chargeStart,
-            i.charge_end as chargeEnd,
-            i.cage as cage,
-            i.summary as summary,
-            p.id as petId,
-            p.name as petName, 
-            p.code as petCode,
-            p.chip as petChip,
-            p.status as petStatus,
-            b.species as petSpecies,
-            b.breed as petBreed,
-            o.fullname as ownerFullname,
-            o.cellphone as ownerCellphone,
-            u.id as vetId,
-            u.fullname as vetFullname
-            FROM inpatient as i
-            JOIN user as u on i.vet_id = u.id
-            JOIN pet as p on i.pet_id = p.id 
-            JOIN breed as b on p.breed_id = b.id
-            JOIN owner as o on p.owner_id = o.id 
-            ) as new_table
+            i.id AS inpatientId,
+            i.code AS inpatientCode, 
+            i.charge_start AS chargeStart,
+            i.charge_end AS chargeEnd,
+            i.cage AS cage,
+            i.summary AS summary,
+            p.id AS petId,
+            p.name AS petName, 
+            p.code AS petCode,
+            p.chip AS petChip,
+            p.status AS petStatus,
+            b.species AS petSpecies,
+            b.breed AS petBreed,
+            o.fullname AS ownerFullname,
+            o.cellphone AS ownerCellphone,
+            u.id AS vetId,
+            u.fullname AS vetFullname
+            FROM inpatient AS i
+            JOIN user AS u ON i.vet_id = u.id
+            JOIN pet AS p ON i.pet_id = p.id 
+            JOIN breed AS b ON p.breed_id = b.id
+            JOIN owner AS o ON p.owner_id = o.id 
+        ) AS new_table
+            ORDER BY inpatientId DESC
             `
 
   let sqlConditions = []

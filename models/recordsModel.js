@@ -24,27 +24,27 @@ async function searchRecords (queryPairs) {
         FROM
         (
             SELECT
-            r.id as recordId,
-            r.code as recordCode, 
-            r.created_at as recordCreatedAt, 
-            r.is_archive as isArchive, 
-            p.id as petId,
-            p.name as petName, 
-            p.code as petCode,
-            p.chip as petChip,
-            p.status as petStatus,
-            b.species as petSpecies,
-            b.breed as petBreed,
-            o.fullname as ownerFullname,
-            o.cellphone as ownerCellphone,
-            u.id as vetId,
-            u.fullname as vetFullname
-            FROM record as r 
-            JOIN pet as p on r.pet_id = p.id 
-            JOIN breed as b on p.breed_id = b.id
-            JOIN owner as o on p.owner_id = o.id 
-            JOIN user as u on r.vet_id = u.id
-            ) as new_table
+            r.id AS recordId,
+            r.code AS recordCode, 
+            r.created_at AS recordCreatedAt, 
+            r.is_archive AS isArchive, 
+            p.id AS petId,
+            p.name AS petName, 
+            p.code AS petCode,
+            p.chip AS petChip,
+            p.status AS petStatus,
+            b.species AS petSpecies,
+            b.breed AS petBreed,
+            o.fullname AS ownerFullname,
+            o.cellphone AS ownerCellphone,
+            u.id AS vetId,
+            u.fullname AS vetFullname
+            FROM record AS r 
+            JOIN pet AS p ON r.pet_id = p.id 
+            JOIN breed AS b ON p.breed_id = b.id
+            JOIN owner AS o ON p.owner_id = o.id 
+            JOIN user AS u ON r.vet_id = u.id
+            ) AS new_table
             `
 
   let sqlConditions = []
