@@ -147,8 +147,8 @@ for (const type of cageTypes) {
   }
 }
 
-for (let i = 1; i < 51; i++) {
-  for (const animalSpecies of species) {
+for (const animalSpecies of species) {
+  for (let i = 1; i < 51; i++) {
     const breed = {
       species: animalSpecies,
       breed: animalSpecies === 'c' ? '貓咪品種' + i : '狗狗品種' + i
@@ -198,9 +198,17 @@ for (let i = 1; i < 101; i++) {
  */
 
 for (let i = 1; i < 101; i++) {
+  let breed_id
+  if (i > 18 && i <= 27) {
+    breed_id = Math.floor(Math.random() * 50) + 1
+  } else if (i > 27 && i <= 36) {
+    breed_id = Math.floor(Math.random() * 50) + 1 + 50
+  } else {
+    breed_id = Math.floor(Math.random() * 100) + 1
+  }
   const pet = {
     owner_id: Math.floor(Math.random() * 10) + 1,
-    breed_id: Math.floor(Math.random() * 50) + 1,
+    breed_id,
     code: 'PET' + '22' + Math.floor(Math.random() * 100000),
     name: '寵物' + i,
     sex: Math.floor(Math.random() * 2),
@@ -244,6 +252,7 @@ for (let i = 1; i < 101; i++) {
   const charge_end = dateSet.inpatientDateEnd
   const cage = cages[Math.floor(Math.random() * cages.length)].name
   const vet_id = Math.floor(Math.random() * 10) + 1
+
   const inpatient = {
     code: 'INP' + '22' + Math.floor(Math.random() * 100000),
     pet_id,
@@ -251,7 +260,7 @@ for (let i = 1; i < 101; i++) {
     charge_start,
     charge_end,
     cage,
-    summary: null
+    summary: 'summary for 住院動物' + i
   }
 
   if (i > 64) {
