@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '../../.env' })
 const { db } = require('../../models/mysql')
-const fs = require('fs')
-// const fsPromise = require('fs/promises')
+// const fs = require('fs')
+const fsPromise = require('fs/promises')
 const path = require('path')
 // const dataInjectLevel = ['1', '2', '3', '4', '5']
 const dropTableOrders = [
@@ -23,28 +23,27 @@ const dropTableOrders = [
   'user'
 ]
 
-function buildAllTables (filePath) {
-  fs.readFile(filePath, 'utf-8', async (error, data) => {
-    if (error) { console.log('error while reading sql.txt: ', error) }
-    const sqls = data.replaceAll('\n', '').split(';').filter(sql => sql !== '')
-    const dbConnection = await db.getConnection()
-    await dbConnection.query('START TRANSACTION')
-    try {
-      sqls.forEach(async (sql) => {
-        await dbConnection.query(sql)
-      })
-      await dbConnection.query('COMMIT')
-      console.log(`build tables success: ${process.env.DB_NAME}`)
-    } catch (err) {
-      await dbConnection.query('ROLLBACK')
-      console.log('error happened while build tables', err)
-    } finally {
-      await dbConnection.release()
-    }
-  })
+async function buildAllTables () {
+  const filePath = path.join(__dirname, 'sql.txt')
+  const data = await fsPromise.readFile(filePath, 'utf-8')
+  const sqls = data.replaceAll('\n', '').split(';').filter(sql => sql !== '')
+  const dbConnection = await db.getConnection()
+  await dbConnection.query('START TRANSACTION')
+  try {
+    sqls.forEach(async (sql) => {
+      await dbConnection.query(sql)
+    })
+    await dbConnection.query('COMMIT')
+    console.log(`build tables success: ${process.env.DB_NAME}`)
+  } catch (err) {
+    await dbConnection.query('ROLLBACK')
+    console.log('error happened while build tables', err)
+  } finally {
+    await dbConnection.release()
+  }
 }
 
-async function dropAllTables (dropTableOrders) {
+async function dropAllTables () {
   const dbConnection = await db.getConnection()
   const sqlTemplate = 'DROP TABLE IF EXISTS '
   await dbConnection.query('START TRANSACTION')
@@ -84,9 +83,15 @@ async function buildFakeDataByLevel (data, level) {
   }
 }
 
-async function main () {
-  await dropAllTables(dropTableOrders)
-  await buildAllTables(path.join(__dirname, 'sql.txt'))
+async function resetDB () {
+  await dropAllTables()
+  await buildAllTables()
 }
 
-main()
+// resetDB()
+
+module.exports = {
+  resetDB,
+  dropAllTables,
+  buildAllTables
+}
