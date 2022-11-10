@@ -42,7 +42,7 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
 
-    <!-- adminLTE -->
+    
     <!-- Google Font: Source Sans Pro -->
     <link
       rel="stylesheet"
@@ -144,8 +144,45 @@
         class="inpatients-charged container-fluid my-5"
       >
     </main>
+
+
+
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#swap-cage-modal">
+      Launch static backdrop modal
+    </button>
+
+    
+    <!-- Modal -->
+    <div class="modal fade" id="swap-cage-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-label">變換籠位</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div id="current-cage" class="modal-body">
+          </div>
+          <div id="swap-cage-modal-body" class="modal-body">
+            請選擇要與哪個籠位交換或變換到哪一個籠位：
+          </div>
+          <div id="swap-cage-selection" class="modal-body">
+            <select id="target-cage" class="form-control select2bs4" style="width: 100%">
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" onclick="swapCage()">確定</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
+
+  
   <link rel="stylesheet" href="/css/inpatient-charged.css" />
 
   <script src="/js/inpatient-charged.js"></script>
