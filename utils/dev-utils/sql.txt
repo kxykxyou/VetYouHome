@@ -97,16 +97,21 @@ CREATE TABLE `record_exam` (
 CREATE TABLE `record_medication` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `record_id` int NOT NULL,
-  `medicine_id` int NOT NULL,
   `name` varchar(30) NOT NULL,
+  `type` varchar(30) NOT NULL,
+  `comment` varchar(100)
+);
+
+CREATE TABLE `medication_detail` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `record_medication_id` int NOT NULL,
+  `medicine_id` int NOT NULL,
   `frequency` varchar(20) NOT NULL,
   `day` tinyint NOT NULL DEFAULT 1,
-  `type` varchar(30) NOT NULL,
   `price` mediumint NOT NULL DEFAULT 0,
   `quantity` smallint unsigned NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
-  `subtotal` mediumint unsigned NOT NULL DEFAULT 0,
-  `comment` varchar(100)
+  `subtotal` mediumint unsigned NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `record_treatment` (
@@ -180,7 +185,9 @@ ALTER TABLE `record_exam` ADD FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`);
 
 ALTER TABLE `record_medication` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
 
-ALTER TABLE `record_medication` ADD FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`);
+ALTER TABLE `medication_detail` ADD FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`);
+
+ALTER TABLE `medication_detail` ADD FOREIGN KEY (`record_medication_id`) REFERENCES `record_medication` (`id`);
 
 ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
 

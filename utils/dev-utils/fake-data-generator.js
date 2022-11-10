@@ -60,6 +60,7 @@ async function generateFakeData () {
 
   // 5th class data
   const inpatientOrderDetails = []
+  const medicationDetails = []
 
   /**
  * =================================================================
@@ -92,7 +93,8 @@ async function generateFakeData () {
   }
 
   const fifthTableMapData = {
-    inpatient_order_detail: inpatientOrderDetails
+    inpatient_order_detail: inpatientOrderDetails,
+    medication_detail: medicationDetails
   }
 
   const data = {
@@ -310,10 +312,7 @@ async function generateFakeData () {
       }
       const recordMedication = {
         record_id: i,
-        medicine_id: Math.floor(Math.random() * 100) + 1,
-        name: '處方藥名稱' + i,
-        frequency: Math.floor(Math.random() * 3) + 1,
-        day: Math.floor(Math.random() * 14) + 1,
+        name: '處方名稱' + i,
         type: medicationType[Math.floor(Math.random() * medicationType.length)],
         comment: Math.floor(Math.random() * 2) ? '用藥備註: ' + i : null
       }
@@ -348,6 +347,18 @@ async function generateFakeData () {
       comment: Math.floor(Math.random() * 2) ? '醫囑備註: ' + i : null
     }
     inpatientOrderDetails.push(inpatientOrderDetail)
+  }
+
+  for (let i = 1; i < 1001; i++) {
+    for (let j = 1; j <= (Math.floor(Math.random() * 3) + 1); j++) {
+      const medicationDetail = {
+        record_medication_id: i,
+        medicine_id: Math.floor(Math.random() * 100) + 1,
+        frequency: Math.floor(Math.random() * 3) + 1,
+        day: Math.floor(Math.random() * 14) + 1
+      }
+      medicationDetails.push(medicationDetail)
+    }
   }
 
   // write json file
