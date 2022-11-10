@@ -73,7 +73,7 @@ async function searchRecords () {
 
   const vetId = $('#vet option:selected').attr('key')
   const petSpecies = $('#pet-species option:selected').attr('key')
-  const isArchive = $('#is-archive option:selected').attr('key')
+  // const isArchive = $('#is-archive option:selected').attr('key')
   const petBreed = $('#pet-breed option:selected').attr('key')
   const recordCode = $('#record-code').val()
   const ownerFullname = $('#owner-fullname').val()
@@ -85,7 +85,7 @@ async function searchRecords () {
     vetId,
     petSpecies,
     petBreed,
-    isArchive,
+    // isArchive,
     recordCode,
     ownerFullname,
     petName,
@@ -101,7 +101,7 @@ async function searchRecords () {
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
   // // fetch api and get data
-  const response = await fetch('/api/1.0/records/search' + queryString)
+  const response = await fetch('/api/1.0/inpatients/search' + queryString)
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
   let html = ''
@@ -113,12 +113,19 @@ async function searchRecords () {
     <div class="row">
       <img src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png" class="pet-icon" alt="" />
       <div class="col">
-        <p class="card-subtitle">${row.recordCode}</p>
+        <p class="card-subtitle">${row.inpatientCode}</p>
         <p class="card-subtitle">${row.petName}</p>
         <p class="card-subtitle">${row.vetFullname}</p>
         <p class="card-subtitle">${row.ownerFullname}</p>
-        <p class="card-subtitle">${petStatusMap[row.petStatus]}</p>
+        <p class="card-subtitle">${row.ownerCellphone}</p>
+        <p class="card-subtitle">${row.inpatientSummary ? row.inpatientSummary : ''}</p>
       </div>
+      <div class="col">
+        <button class="btn">查看病歷</button>
+        <button class="btn">查看最新醫囑</button>
+        <button class="btn">辦理出院</button>
+      </div>
+      
     </div>
   </div>
     `

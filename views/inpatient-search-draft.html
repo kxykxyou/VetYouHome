@@ -94,12 +94,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <!-- adminlte -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script> -->
-    <!-- <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css"
-    /> -->
     <title>VetYouHome</title>
   </head>
   <body>
@@ -146,7 +140,7 @@
     <main>
       <div id="search-bar" class="container row d-flex">
         <div class="form-group date-range-group">
-          <label>Date range:</label>
+          <label>出院時間:</label>
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">
@@ -168,12 +162,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="record-code">病歷編號</label>
+          <label for="record-code">住院編號</label>
           <input
             type="text"
             class="form-control"
             id="record-code"
-            placeholder="請輸入病歷編號"
+            placeholder="請輸入住院編號"
           />
         </div>
         <div class="form-group">
@@ -194,7 +188,6 @@
             placeholder="請輸入寵物名字"
           />
         </div>
-
         <div class="form-group">
           <label for="pet-code">寵物編號</label>
           <input
@@ -235,18 +228,6 @@
             <option selected="selected" key="">所有品種</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>歸檔狀態</label>
-          <select
-            id="is-archive"
-            class="form-control select2bs4"
-            style="width: 100%"
-          >
-            <option selected="selected" key="">請選擇歸檔狀態</option>
-            <option key="1">已歸檔</option>
-            <option key="0">未歸檔</option>
-          </select>
-        </div>
         <button class="search" id="search-button">
           <img src="/images/search.png" id="search-icon" class="icon" alt="" />
         </button>
@@ -257,6 +238,6 @@
 
   <link rel="stylesheet" href="/css/record-search.css" />
 
-  <script src="/js/record-search.js"></script>
+  <script src="/js/inpatient-search.js"></script>
   <script src="/js/datepicker.js"></script>
 </html>

@@ -42,7 +42,7 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
 
-    <!-- adminLTE -->
+    
     <!-- Google Font: Source Sans Pro -->
     <link
       rel="stylesheet"
@@ -94,12 +94,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <!-- adminlte -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script> -->
-    <!-- <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css"
-    /> -->
     <title>VetYouHome</title>
   </head>
   <body>
@@ -143,120 +137,53 @@
         </div>
       </div>
     </nav>
-    <main>
-      <div id="search-bar" class="container row d-flex">
-        <div class="form-group date-range-group">
-          <label>Date range:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="far fa-calendar-alt"></i>
-              </span>
-            </div>
-            <input
-              type="text"
-              class="form-control float-right"
-              id="date-range"
-              value=""
-            />
+    <main class="mx-5">
+      <!-- 所有分區容器 -->
+      <div
+        id="inpatients-container"
+        class="inpatients-charged container-fluid my-5"
+      >
+    </main>
+
+
+
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#swap-cage-modal">
+      Launch static backdrop modal
+    </button>
+
+    
+    <!-- Modal -->
+    <div class="modal fade" id="swap-cage-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-label">變換籠位</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div id="current-cage" class="modal-body">
+          </div>
+          <div id="swap-cage-modal-body" class="modal-body">
+            請選擇要與哪個籠位交換或變換到哪一個籠位：
+          </div>
+          <div id="swap-cage-selection" class="modal-body">
+            <select id="target-cage" class="form-control select2bs4" style="width: 100%">
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" onclick="swapCage()">確定</button>
           </div>
         </div>
-        <div class="form-group">
-          <label>主治醫師</label>
-          <select id="vet" class="form-control select2bs4" style="width: 100%">
-            <option selected="selected" key="">所有醫師</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="record-code">病歷編號</label>
-          <input
-            type="text"
-            class="form-control"
-            id="record-code"
-            placeholder="請輸入病歷編號"
-          />
-        </div>
-        <div class="form-group">
-          <label for="owner-fullname">飼主名字</label>
-          <input
-            type="text"
-            class="form-control"
-            id="owner-fullname"
-            placeholder="請輸入飼主名字"
-          />
-        </div>
-        <div class="form-group">
-          <label for="pet-name">寵物名字</label>
-          <input
-            type="text"
-            class="form-control"
-            id="pet-name"
-            placeholder="請輸入寵物名字"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="pet-code">寵物編號</label>
-          <input
-            type="text"
-            class="form-control"
-            id="pet-code"
-            placeholder="請輸入寵物編號"
-          />
-        </div>
-        <div class="form-group">
-          <label for="pet-chip">寵物晶片編號</label>
-          <input
-            type="text"
-            class="form-control"
-            id="pet-chip"
-            placeholder="請輸入寵物晶片編號"
-          />
-        </div>
-        <div class="form-group">
-          <label>物種</label>
-          <select
-            id="pet-species"
-            class="form-control select2bs4"
-            style="width: 100%"
-          >
-            <option key="" selected="selected">所有物種</option>
-            <option key="d">犬</option>
-            <option key="c">貓</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>品種</label>
-          <select
-            id="pet-breed"
-            class="form-control select2bs4"
-            style="width: 100%"
-          >
-            <option selected="selected" key="">所有品種</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>歸檔狀態</label>
-          <select
-            id="is-archive"
-            class="form-control select2bs4"
-            style="width: 100%"
-          >
-            <option selected="selected" key="">請選擇歸檔狀態</option>
-            <option key="1">已歸檔</option>
-            <option key="0">未歸檔</option>
-          </select>
-        </div>
-        <button class="search" id="search-button">
-          <img src="/images/search.png" id="search-icon" class="icon" alt="" />
-        </button>
       </div>
-      <div id="search-result" class="container"></div>
-    </main>
+    </div>
   </body>
 
-  <link rel="stylesheet" href="/css/record-search.css" />
 
-  <script src="/js/record-search.js"></script>
-  <script src="/js/datepicker.js"></script>
+  
+  <link rel="stylesheet" href="/css/inpatient-charged.css" />
+
+  <script src="/js/inpatient-charged.js"></script>
 </html>

@@ -11,7 +11,7 @@ CREATE TABLE `user` (
 CREATE TABLE `owner` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `fullname` varchar(30) NOT NULL,
-  `cellphone` char(10) UNIQUE NOT NULL,
+  `cellphone` char(10) NOT NULL,
   `email` varchar(255),
   `address` varchar(255)
 );
@@ -39,7 +39,7 @@ CREATE TABLE `breed` (
 
 CREATE TABLE `cage` (
   `name` char(3) PRIMARY KEY NOT NULL,
-  `pet_id` int UNIQUE
+  `inpatient_id` int UNIQUE
 );
 
 CREATE TABLE `exam` (
@@ -123,9 +123,10 @@ CREATE TABLE `record_treatment` (
 CREATE TABLE `inpatient` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
+  `vet_id` int NOT NULL,
   `pet_id` int NOT NULL,
-  `date_start` date NOT NULL DEFAULT (CURDATE()),
-  `date_end` date DEFAULT NULL,
+  `charge_start` date NOT NULL DEFAULT (CURDATE()),
+  `charge_end` date DEFAULT NULL,
   `cage` char(3) NOT NULL,
   `summary` varchar(100)
 );
@@ -133,6 +134,7 @@ CREATE TABLE `inpatient` (
 CREATE TABLE `inpatient_order` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
+  `vet_id` int NOT NULL,
   `inpatient_id` int NOT NULL,
   `created_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` datetime DEFAULT (CURRENT_TIMESTAMP),
@@ -185,6 +187,10 @@ ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record`
 ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `treatment` (`id`);
 
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
+
+ALTER TABLE `inpatient` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
 
