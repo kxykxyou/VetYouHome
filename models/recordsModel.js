@@ -16,6 +16,29 @@ async function getRecordById (id) {
   return data[0]
 }
 
+async function getAllRecordsByPetId (id) {
+  const [data] = await db.execute(`
+  SELECT 
+      u.fullname as vetFullname,
+      r.id as recordId,
+      r.code as recordCode,
+      r.created_at as recordCreatedAt,
+      r.updated_at as recordUpdatedAt,
+      r.subjective as subjective,
+      r.objective as objective,
+      r.assessment as assessment,
+      r.plan as plan,
+      r.is_archive as isArchive,
+      r.total as total,
+      r.is_paid as isPaid
+  FROM pet as p 
+  JOIN record as r on r.pet_id = p.id
+  JOIN user as u on r.vet_id = u.id
+  WHERE p.id = ?
+    `, [id])
+  return data
+}
+
 async function searchRecords (queryPairs) {
   let queryValues = []
   //   console.log(queryValues)
@@ -83,4 +106,8 @@ async function searchRecords (queryPairs) {
   return data
 }
 
-module.exports = { getRecordById, searchRecords }
+module.exports = {
+  getRecordById,
+  searchRecords,
+  getAllRecordsByPetId
+}
