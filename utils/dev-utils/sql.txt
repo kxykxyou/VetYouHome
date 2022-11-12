@@ -106,6 +106,7 @@ CREATE TABLE `medication_detail` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `record_medication_id` int NOT NULL,
   `medicine_id` int NOT NULL,
+  `dose` int NOT NULL DEFAULT 0,
   `frequency` varchar(20) NOT NULL,
   `day` tinyint NOT NULL DEFAULT 1,
   `price` mediumint NOT NULL DEFAULT 0,
@@ -179,17 +180,17 @@ ALTER TABLE `record` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `record` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
 
-ALTER TABLE `record_exam` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
+ALTER TABLE `record_exam` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `record_exam` ADD FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`);
 
-ALTER TABLE `record_medication` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
+ALTER TABLE `record_medication` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `medication_detail` ADD FOREIGN KEY (`record_medication_id`) REFERENCES `record_medication` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `medication_detail` ADD FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`);
 
-ALTER TABLE `medication_detail` ADD FOREIGN KEY (`record_medication_id`) REFERENCES `record_medication` (`id`);
-
-ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
+ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `treatment` (`id`);
 
@@ -201,4 +202,4 @@ ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`
 
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
 
-ALTER TABLE `inpatient_order_detail` ADD FOREIGN KEY (`inpatient_order_id`) REFERENCES `inpatient_order` (`id`);
+ALTER TABLE `inpatient_order_detail` ADD FOREIGN KEY (`inpatient_order_id`) REFERENCES `inpatient_order` (`id`) ON DELETE CASCADE;

@@ -173,7 +173,7 @@ async function generateFakeData () {
     const medicine = {
       name: '藥品' + i,
       type: '藥品' + i + '的類別',
-      dose: Math.floor(Math.random() * 10) * 10,
+      dose: (Math.floor(Math.random() * 100) + 1) * 5,
       dose_unit: doseUnits[Math.floor(Math.random() * doseUnits.length)],
       statement: '藥品' + i + '的內建描述',
       price: (Math.floor(Math.random() * 10) + 1) * 10
@@ -239,7 +239,7 @@ async function generateFakeData () {
       vet_id: Math.floor(Math.random() * 10) + 1,
       pet_id: Math.floor(Math.random() * 100) + 1,
       subjective: '主觀症狀' + i,
-      objective: '客觀數據' + i,
+      objective: '客觀檢查' + i,
       assessment: '醫療診斷與評估' + i,
       plan: '治療計畫' + i,
       is_archive: Math.floor(Math.random() * 2)
@@ -303,25 +303,25 @@ async function generateFakeData () {
  */
 
   for (let i = 1; i < 501; i++) {
-    for (let j = 1; j < 3; j++) {
+    for (let j = 1; j < 4; j++) {
       const recordExam = {
         record_id: i,
         exam_id: Math.floor(Math.random() * 100) + 1,
         file_path: 'file_path',
-        comment: Math.floor(Math.random() * 2) ? '檢驗備註: ' + i : null
+        comment: Math.floor(Math.random() * 2) ? '檢驗備註: ' + i + ' - ' + j : ''
       }
       const recordMedication = {
         record_id: i,
-        name: '處方名稱' + i,
+        name: '處方名稱' + i + ' - ' + j,
         type: medicationType[Math.floor(Math.random() * medicationType.length)],
-        comment: Math.floor(Math.random() * 2) ? '用藥備註: ' + i : null
+        comment: Math.floor(Math.random() * 2) ? '用藥備註: ' + i + ' - ' + j : ''
       }
 
       const recordTreatment = {
         record_id: i,
         treatment_id: Math.floor(Math.random() * 100) + 1,
 
-        comment: Math.floor(Math.random() * 2) ? '治療備註: ' + i : null
+        comment: Math.floor(Math.random() * 2) ? '治療備註: ' + i + ' - ' + j : ''
       }
       recordExams.push(recordExam)
       recordMedications.push(recordMedication)
@@ -344,7 +344,7 @@ async function generateFakeData () {
       content: '醫囑內容: ' + i,
       frequency,
       schedule: frequencyMapSchedule[frequency],
-      comment: Math.floor(Math.random() * 2) ? '醫囑備註: ' + i : null
+      comment: Math.floor(Math.random() * 2) ? '醫囑備註: ' + i : ''
     }
     inpatientOrderDetails.push(inpatientOrderDetail)
   }
@@ -354,6 +354,7 @@ async function generateFakeData () {
       const medicationDetail = {
         record_medication_id: i,
         medicine_id: Math.floor(Math.random() * 100) + 1,
+        dose: (Math.floor(Math.random() * 20) + 1) * 5,
         frequency: Math.floor(Math.random() * 3) + 1,
         day: Math.floor(Math.random() * 14) + 1
       }
