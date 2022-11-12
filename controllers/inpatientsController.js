@@ -17,7 +17,7 @@ async function discharge (req, res, next) {
     return res.status(400).json({ message: 'not invalid id' })
   }
   const inpatient = await inpatientsModel.query(id)
-  if (inpatient.length === 0) { return res.status(400).json({ message: 'not invalid id' }) }
+  if (!inpatient.length) { return res.status(400).json({ message: 'not invalid id' }) }
 
   // discharge target inpatient
   const result = await inpatientsModel.discharge(id)

@@ -6,6 +6,9 @@ async function getPetById (req, res, next) {
     return res.status(400).json({ message: 'not invalid id' })
   }
   const data = await petsModel.getPetById(id)
+  if (!data) {
+    return res.status(400).json({ message: 'not invalid id' })
+  }
   return res.status(200).json({ data })
 }
 
