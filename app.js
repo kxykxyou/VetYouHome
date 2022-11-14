@@ -4,7 +4,6 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 
 const indexRouter = require('./routes/index')
-// const usersRouter = require('./routes/users')
 
 const app = express()
 
@@ -15,7 +14,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'views')))
 
 app.use('/', indexRouter)
-// app.use('/users', usersRouter)
 
 app.use('/api/' + process.env.API_VERSION, [
   require('./routes/records'),
@@ -24,7 +22,8 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/pets'),
   require('./routes/inpatients'),
   require('./routes/cages'),
-  require('./routes/clinic')
+  require('./routes/clinic'),
+  require('./routes/users')
 ])
 
 // Error handling
