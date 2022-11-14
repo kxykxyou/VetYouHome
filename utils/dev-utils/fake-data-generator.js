@@ -218,7 +218,7 @@ async function generateFakeData () {
       is_neutered: Math.floor(Math.random() * 2),
       birthday: '2020-10-10',
       chip: Math.floor(Math.random() * (10 ** 14)),
-      comment: null,
+      comment: '1. 藥物過敏: acetaminophen 2. 主人希望能自己餵藥',
       status: i < 37 ? 3 : Math.floor(Math.random() * 3),
       status_comment: null
     }
@@ -283,10 +283,12 @@ async function generateFakeData () {
       const inpatientOrder = {
         code: 'ORD' + '22' + Math.floor(Math.random() * 100000),
         inpatient_id: i,
-        vet_id,
+        // updater_id: vet_id,
         created_at: date,
         updated_at: date,
-        is_paid: 1
+        date,
+        is_paid: 1,
+        comment: '住院醫囑單張備註：' + date
       }
       inpatientOrders.push(inpatientOrder)
     })

@@ -102,3 +102,71 @@ FROM record_treatment as rt
 JOIN treatment as t on rt.treatment_id = t.id
 WHERE record_id = 1;
   
+SELECT * from pet;
+
+-- /clinic/pet/id/:id
+SELECT 
+	p.id as petId,
+    p.code as petCode,
+    p.name as petName,
+    p.sex,
+    b.species as petSpecies,
+    b.breed as petBreed,
+    p.is_neutered as isNeutered,
+    p.birthday,
+    p.chip,
+    p.status,
+    o.fullname as ownerFullname,
+    o.cellphone as ownerCellphone
+FROM pet as p
+JOIN breed as b on b.id = p.breed_id
+JOIN owner as o on o.id = p.owner_id
+WHERE p.id = 1;
+
+
+SELECT 
+	i.id as inpatientId,
+    i.code as inpatientCode,
+    i.cage as cage,
+    u.fullname as vetFullname,
+    io.id as inpatientOrderId,
+    io.code as inpatientOrderCode,
+    io.created_at as inpatientOderCreatedAt,
+    io.created_at as inpatientOderUpdatedAt,
+    io.is_paid as inpatientOrderIsPaid,
+    io.total as inpatientOrderTotal,
+    io.comment as inpatientOrderComment
+FROM inpatient as i
+JOIN user as u on i.vet_id = u.id
+JOIN inpatient_order as io on io.inpatient_id = i.id
+WHERE i.pet_id = 10;
+
+SELECT 
+	* 
+FROM inpatient_order_detail
+WHERE inpatient_order_id = 10;
+
+SELECT 
+      io.id as inpatientOrderId,
+      io.code as inpatientOrderCode,
+      io.date as targetData,
+      io.created_at as inpatientOderCreatedAt,
+      io.updated_at as inpatientOderUpdatedAt,
+      io.is_paid as isPaid,
+      io.total as total,
+      i.cage as cage,
+      i.summary as inpatientSummary,
+      u.id as vetId,
+      u.fullname as vetFullname,
+      p.id as petId,
+      p.name as petName,
+      p.code as petCode
+    FROM inpatient_order as io 
+    JOIN inpatient as i on io.inpatient_id = i.id
+    JOIN user as u on i.vet_id = u.id
+    JOIN pet as p on i.pet_id = p.id
+    WHERE io.id = 1;
+
+  
+SELECT * FROM user;
+SELECT * FROM inpatient_order_detail WHERE inpatient_order_id = 10;

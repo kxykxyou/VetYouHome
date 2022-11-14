@@ -1,6 +1,6 @@
 CREATE TABLE `user` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `hashed_password` char(96) NOT NULL,
+  `hashed_password` char(97) NOT NULL,
   `fullname` varchar(30) NOT NULL,
   `cellphone` char(10) NOT NULL,
   `email` varchar(255),
@@ -140,8 +140,8 @@ CREATE TABLE `inpatient` (
 CREATE TABLE `inpatient_order` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
-  `vet_id` int NOT NULL,
   `inpatient_id` int NOT NULL,
+  `date` date NOT NULL DEFAULT (CURDATE()),
   `created_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `is_paid` tinyint NOT NULL DEFAULT 0,
@@ -197,8 +197,6 @@ ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `trea
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
 
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
 
