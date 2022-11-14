@@ -129,9 +129,10 @@ async function discharge (id) {
   try {
     // update 3 tables: inpatient.charge_end, pet.status , cage.pet_id
     const [inpatient] = await dbConnection.execute('SELECT * FROM inpatient WHERE id = ?', [id])
+    console.log('inpatient query result: ', inpatient[0].pet_id)
     result = await dbConnection.execute('UPDATE inpatient SET charge_end = ? WHERE id = ?', [date, id])
-    dbConnection.execute('UPDATE pet SET status = 0 WHERE id = ? ', [inpatient[0].pet_id])
-    dbConnection.execute('UPDATE cage SET pet_id = NULL WHERE name = ? ', [inpatient[0].cage])
+    await dbConnection.execute('UPDATE pet SET status = 0 WHERE id = ? ', [inpatient[0].pet_id])
+    await dbConnection.execute('UPDATE cage SET inpatient_id = NULL WHERE name = ? ', [inpatient[0].cage])
     console.log('result: ', result[0])
     await dbConnection.commit()
   } catch (err) {
@@ -173,10 +174,81 @@ async function swapCage (cage1, cage2) {
   }
 }
 
+async function getAllInpatientOrdersByPetId (id) {
+  const [data] = await db.execute(`
+  SELECT 
+	  i.id as inpatientId,
+    i.code as inpatientCode,
+    i.cage as cage,
+    u.fullname as vetFullname,
+    io.id as inpatientOrderId,
+    io.code as inpatientOrderCode,
+    io.date as targetDate,
+    io.created_at as inpatientOderCreatedAt,
+    io.created_at as inpatientOderUpdatedAt,
+    io.is_paid as inpatientOrderIsPaid,
+    io.total as inpatientOrderTotal,
+    io.comment as inpatientOrderComment
+  FROM inpatient as i
+  JOIN user as u on i.vet_id = u.id
+  JOIN inpatient_order as io on io.inpatient_id = i.id
+  WHERE i.pet_id = ?
+  `, [id])
+  return data
+}
+
+async function getInpatientAndOrderByInpatientOrderId (id) {
+  const [data] = await db.execute(`
+  SELECT 
+    io.id as inpatientOrderId,
+    io.code as inpatientOrderCode,
+    io.date as targetDate,
+    io.created_at as inpatientOderCreatedAt,
+    io.updated_at as inpatientOderUpdatedAt,
+    io.comment as inpatientOrderComment,
+    io.is_paid as isPaid,
+    io.total as total,
+    i.cage as cage,
+    i.summary as inpatientSummary,
+    u.id as vetId,
+    u.fullname as vetFullname,
+    p.id as petId,
+    p.name as petName,
+    p.code as petCode
+  FROM inpatient_order as io 
+  JOIN inpatient as i on io.inpatient_id = i.id
+  JOIN user as u on i.vet_id = u.id
+  JOIN pet as p on i.pet_id = p.id
+  WHERE io.id = ?;
+    `, [id])
+  return data[0]
+}
+
+async function getInpatientOrderDetailsByInpatientOrderId (id) {
+  const [data] = await db.execute(`
+  SELECT 
+    id as inpatientOrderDetailId,
+    priority,
+    content,
+    frequency,
+    schedule,
+    price,
+    times,
+    subtotal,
+    comment
+  FROM inpatient_order_detail 
+  WHERE inpatient_order_id = ?`
+  , [id])
+  return data
+}
+
 module.exports = {
   query,
   getChargedPets,
   searchInpatients,
   discharge,
-  swapCage
+  swapCage,
+  getAllInpatientOrdersByPetId,
+  getInpatientAndOrderByInpatientOrderId,
+  getInpatientOrderDetailsByInpatientOrderId
 }
