@@ -1,25 +1,71 @@
 const url = location.href
-let cacheRecords // id: complex record objects
-const cacheRenderedRecordIds = {} // id: complex record objects；已經render過的完整record的id
-const displayBlockTags = [
-  $('#left-container'),
-  $('#right-container')
-]
+// let cacheRecords // id: complex record objects
+const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
+const petInfoTag = $('#pet-info')
+const sides = ['left', 'right']
+
+const petStatusMap = {
+  0: '',
+  1: '待看診',
+  2: '看診中',
+  3: '住院中'
+}
 
 const petId = url.split('#')[url.split('#').length - 1]
 
+renderPetInfo(petId)
 renderAllRecordHeaders(petId)
+
+async function renderPetInfo (petId) {
+  const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`)).json()
+  const dayDiff = (Date.now() - (new Date(data.birthday))) / (24 * 60 * 60 * 1000)
+  console.log(dayDiff)
+  const year = Math.floor(dayDiff / 365)
+  const month = Math.floor((dayDiff % 365) / 30)
+  const html = `
+  <div class="row">
+    <div id="pet-icon" class="col-1">
+      <img
+        src="/images/${data.petSpecies === 'c' ? 'cat' : 'dog'}.png"
+        alt=""
+        class="pet-icon"
+        style="width: 5vw; height: 'auto'"
+      />
+    </div>
+    <div class="col-2">
+      <div class="row">${data.petName} / ${data.petCode}</div>
+      <div class="row">${data.petSpecies === 'c' ? '貓' : '狗'} / ${data.petBreed}</div>
+      <div class="row">狀態: ${petStatusMap[data.status]}</div>
+    </div>
+    <div class="col-2">
+      <div class="row">生日: ${new Date(data.birthday).toISOString().split('T')[0]}</div>
+      <div class="row">年齡: ${year} y ${month} m</div>
+    </div>
+    <div class="col-2">
+      <div class="row">晶片號碼</div>
+      <div class="row">${data.chip}</div>
+    </div>
+    <div class="col-3">
+      <div class="row">備註:</div>
+      <div class="row border border-dark">
+        ${data.comment}
+      </div>
+    </div>
+  </div>
+  `
+  petInfoTag.html(html)
+}
 
 async function renderAllRecordHeaders (petId) {
   // get all records of target pet (not nested)
   const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`)).json()
-  cacheRecords = data
+  // cacheRecords = data
   let recordHeadersHtml = ''
   data.forEach(record => {
     recordHeadersHtml += makeSingleRecordHeaderHtml(record)
   })
-  displayBlockTags.forEach(tag => {
-    tag.html(recordHeadersHtml)
+  sides.forEach(side => {
+    $(`#${side}-records-container`).html(recordHeadersHtml)
   })
 }
 
@@ -27,13 +73,13 @@ async function renderBothSingleRecord (recordId) {
   console.log(recordId)
   const { data } = await (await fetch(`/api/1.0/clinic/records/complex/id/${recordId}`)).json()
   const complexRecord = data
-  cacheRenderedRecordIds[complexRecord.id] = complexRecord
+  cacheRenderedRecords[complexRecord.id] = complexRecord
 
-  //   console.log('cacheRenderedRecordIds: ', cacheRenderedRecordIds)
+  //   console.log('cacheRenderedRecords: ', cacheRenderedRecords)
   const recordContainerTags = $(`.record-container[key=${recordId}]`) //  is Object，除了target tags外還包含length; 往上找到tag帶有特定key的tag
-  Object.values(recordContainerTags).splice(0, displayBlockTags.length) // 只拿tag，不拿length或其他沒有用到的attributes
+  Object.values(recordContainerTags).splice(0, recordContainerTags.length) // 只拿tag，不拿length或其他沒有用到的attributes
     .map(recordContainerTag => $(recordContainerTag).children('.record-content'))
-    .forEach(recordContentTag => { // 視為
+    .forEach(recordContentTag => {
       $(recordContentTag).html(makeSOAPHtml(complexRecord))
       $(`.exam-result-${complexRecord.id}`).html(makeExamResultsHtml(complexRecord.exams))
 
@@ -53,29 +99,27 @@ async function renderBothSingleRecord (recordId) {
       // 加上payment medication table
       insertPaymentMedicationsTable(sortedMedications)
 
+      // 加上payment treatment table
       insertPaymentTreatmentsTable(complexRecord.id, complexRecord.treatments)
-      // 加上其他治療
     })
-
-  //   makePaymentExamTableHtml(data.exams)
-  //   makePaymentMedicationTableHtml(data.medications)
-  //   makePaymentTreatmentTableHtml(data.treatments)
 }
 
 async function singleRecordDisplayTurn (thisTag) {
   const recordId = $(thisTag).parent().parent().attr('key')
   const recordContentTag = $(thisTag).parent().siblings('.record-content')
-  if (!cacheRenderedRecordIds[recordId]) {
+  if (!cacheRenderedRecords[recordId]) {
     // 如果沒有render過該病歷
     await renderBothSingleRecord(recordId)
   }
-  recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
+  // recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
+  recordContentTag.css('display') === 'none' ? recordContentTag.show() : recordContentTag.hide()
 }
 
 function displayTurn (thisTag) {
   console.log($(thisTag).parent())
   const recordContentTag = $(thisTag).siblings('.display')
-  recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
+  // recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
+  recordContentTag.css('display') === 'none' ? recordContentTag.show() : recordContentTag.hide()
 }
 
 function makeSOAPHtml (data) {
@@ -219,8 +263,8 @@ function insertMedicationTable (sortedMedications) {
         data: medication.details,
 
         fields: [
-          { name: 'medicationDetailId', type: 'number', editing: false },
-          { name: 'medicineId', type: 'number', editing: false },
+          { name: 'medicationDetailId', type: 'number', visible: false, editing: false },
+          { name: 'medicineId', type: 'number', visible: false, editing: false },
           { name: 'medicineName', type: 'text', editing: true },
           { name: 'medicationDose', type: 'number', editing: true },
           { name: 'frequency', type: 'number', editing: true },
@@ -246,8 +290,8 @@ function insertTreatmentTable (recordId, treatments) {
       data: treatments,
 
       fields: [
-        { name: 'recordTreatmentId', type: 'number', editing: false },
-        { name: 'treatmentId', type: 'number', editing: false },
+        { name: 'recordTreatmentId', type: 'number', visible: false, editing: false },
+        { name: 'treatmentId', type: 'number', visible: false, editing: false },
         { name: 'treatmentName', type: 'text', editing: true },
         { name: 'comment', type: 'text', editing: true },
         { type: 'control' }
@@ -270,8 +314,8 @@ function insertPaymentExamsTable (recordId, exams) {
       data: exams,
 
       fields: [
-        { name: 'recordExamId', type: 'number', editing: false },
-        { name: 'examId', type: 'number', editing: false },
+        { name: 'recordExamId', type: 'number', visible: false, editing: false },
+        { name: 'examId', type: 'number', visible: false, editing: false },
         { name: 'name', type: 'text', editing: true },
         { name: 'comment', type: 'text', editing: true },
         { name: 'originalPrice', type: 'number', editing: false },
@@ -286,7 +330,7 @@ function insertPaymentExamsTable (recordId, exams) {
 }
 
 function makePaymentMedicationHeadersHtml (recordId, sortedMedications) {
-  // TODO: insert medication title and comment which will leave a blank <div> for inserting jsGrid table below
+  // insert medication title and comment which will leave a blank <div> for inserting jsGrid table below
   let paymentMedicationHeadersHtml = ''
   sortedMedications.forEach(medication => {
     paymentMedicationHeadersHtml += `
@@ -319,8 +363,8 @@ function insertPaymentMedicationsTable (sortedMedications) {
         data: medication.details,
 
         fields: [
-          { name: 'medicationDetailId', type: 'number', editing: false },
-          { name: 'medicineId', type: 'number', editing: false },
+          { name: 'medicationDetailId', type: 'number', visible: false, editing: false },
+          { name: 'medicineId', type: 'number', visible: false, editing: false },
           { name: 'medicineName', type: 'text', editing: true },
           { name: 'medicineUnitDose', type: 'number', editing: false },
           { name: 'medicineDoseUnit', type: 'text', editing: false },
@@ -352,8 +396,8 @@ function insertPaymentTreatmentsTable (recordId, treatments) {
       data: treatments,
 
       fields: [
-        { name: 'recordTreatmentId', type: 'number', editing: false },
-        { name: 'treatmentId', type: 'number', editing: false },
+        { name: 'recordTreatmentId', type: 'number', visible: false, editing: false },
+        { name: 'treatmentId', type: 'number', visible: false, editing: false },
         { name: 'treatmentName', type: 'text', editing: true },
         { name: 'comment', type: 'text', editing: true },
         { name: 'originalPrice', type: 'number', editing: false },
@@ -408,45 +452,7 @@ function makeSingleRecordHeaderHtml (record) {
     `
 }
 
-function makeSingleRecordContentHtml (data) {}
-
-async function jsGridTest () {
-  const clients = [
-    { Name: 'Otto Clay', Age: 25, Country: 1, Address: 'Ap #897-1459 Quam Avenue', Married: false },
-    { Name: 'Connor Johnston', Age: 45, Country: 2, Address: 'Ap #370-4647 Dis Av.', Married: true },
-    { Name: 'Lacey Hess', Age: 29, Country: 3, Address: 'Ap #365-8835 Integer St.', Married: false },
-    { Name: 'Timothy Henson', Age: 56, Country: 1, Address: '911-5143 Luctus Ave', Married: true },
-    { Name: 'Ramona Benton', Age: 32, Country: 3, Address: 'Ap #614-689 Vehicula Street', Married: false }
-  ]
-
-  const countries = [
-    { Name: '', Id: 0 },
-    { Name: 'United States', Id: 1 },
-    { Name: 'Canada', Id: 2 },
-    { Name: 'United Kingdom', Id: 3 }
-  ]
-
-  $('#jsGrid').jsGrid({
-    width: '100%',
-    height: '400px',
-
-    inserting: true,
-    editing: true,
-    sorting: true,
-    paging: true,
-
-    data: clients,
-
-    fields: [
-      { name: 'Name', type: 'text', width: 150, validate: 'required' },
-      { name: 'Age', type: 'number', width: 50 },
-      { name: 'Address', type: 'text', width: 200 },
-      { name: 'Country', type: 'select', items: countries, valueField: 'Id', textField: 'Name' },
-      { name: 'Married', type: 'checkbox', title: 'Is Married', sorting: false },
-      { type: 'control' }
-    ]
-  })
-}
+// function makeSingleRecordContentHtml (data) {}
 
 const backupHtml = `
 <!-- key: record.id -->

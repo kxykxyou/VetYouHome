@@ -11,7 +11,7 @@ const breedMap = {
   d: dogBreeds
 }
 
-const searchResultTag = $('#search-result')
+const searchResultTag = $('#history-search-result')
 const petStatusMap = {
   0: '',
   1: '待看診',
@@ -19,7 +19,7 @@ const petStatusMap = {
   3: '住院中'
 }
 
-initRender()
+initHistorySearchRender()
 
 async function initRenderVetSelection () {
   const { data } = await (await fetch('/api/1.0/vets/all')).json()
@@ -42,7 +42,7 @@ async function initRenderPetBreedSelection () {
   breedSelectionTag.html(breedSelections)
 }
 
-async function initRender () {
+async function initHistorySearchRender () {
   initRenderVetSelection()
   initRenderPetBreedSelection()
 }
@@ -110,23 +110,25 @@ async function searchRecords () {
     `
     <br>
     <div class="col">
-    <div class="row">
-      <img src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png" class="pet-icon" alt="" />
-      <div class="col">
-        <p class="card-subtitle">${row.inpatientCode}</p>
-        <p class="card-subtitle">${row.petName}</p>
-        <p class="card-subtitle">${row.vetFullname}</p>
-        <p class="card-subtitle">${row.ownerFullname}</p>
-        <p class="card-subtitle">${row.ownerCellphone}</p>
-        <p class="card-subtitle">${row.inpatientSummary ? row.inpatientSummary : ''}</p>
+      <div class="row">
+        <div class="col-2">
+          <a href="/clinic.html#${row.petId}">
+            <img
+              src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png"
+              class="pet-icon col align-self-center"
+              alt=""
+            />
+          </a>
+        </div>
+        <div class="col">
+          <p class="card-subtitle">${row.inpatientCode}</p>
+          <p class="card-subtitle">${row.petName}</p>
+          <p class="card-subtitle">${row.vetFullname}</p>
+          <p class="card-subtitle">${row.ownerFullname}</p>
+          <p class="card-subtitle">${row.ownerCellphone}</p>
+          <p class="card-subtitle">${row.summary ? row.summary : ''}</p>
+        </div>
       </div>
-      <div class="col">
-        <button class="btn">查看病歷</button>
-        <button class="btn">查看最新醫囑</button>
-        <button class="btn">辦理出院</button>
-      </div>
-      
-    </div>
   </div>
     `
   })

@@ -1,4 +1,4 @@
-const inpatientsContainerTag = $('#inpatients-container')
+const inpatientsContainerTag = $('#charged-inpatients-container')
 const token = ''
 let allChargedInpatients
 let allCageStatus
@@ -22,8 +22,8 @@ const inpatientsContainer = {
 }
 
 // $('window').ready(initRenderInpatients)
-initRender()
-async function initRender () {
+initInpatientsRender()
+async function initInpatientsRender () {
   await initRenderInpatients()
   console.log('allChargedInpatients', allChargedInpatients)
   initRenderSwapCageModal()
@@ -119,7 +119,7 @@ function cageCardHtml (inpatient) {
     <div class="row">
       <!-- 寵物圖片 -->
       <div class="col">
-        <a href="${'#'}">
+        <a href="/clinic.html#${inpatient.petId}">
           <img
             src="/images/${inpatient.petSpecies === 'd' ? 'dog' : 'cat'}.png"
             class="pet-icon col align-self-center"
@@ -137,11 +137,13 @@ function cageCardHtml (inpatient) {
       <!-- 病歷操作icon -->
       <div class="btn-group">
         <button type="button" class="btn btn-default">
-          <img
-          src="/images/medical-record.png"
-          class="operation-icon"
-          alt=""
-        />
+          <a href="/clinic.html#${inpatient.petId}">
+            <img
+            src="/images/medical-record.png"
+            class="operation-icon"
+            alt=""
+            />
+          </a>
         </button>
         <button type="button" class="btn btn-default">
           <img
