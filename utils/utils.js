@@ -6,4 +6,19 @@ function wrapAsync (fn) {
   }
 }
 
-module.exports = { wrapAsync }
+async function authAdmin (req, res, next) {
+  const adminToken = req.headers.authorization.split('Bearer ')[1]
+  console.log(process.env.ADMIN_SECRET)
+  if (adminToken === process.env.ADMIN_SECRET) {
+    return next()
+  }
+  return res.status(401).json({ message: 'Unauthorized' })
+}
+
+async function authentication () {}
+
+module.exports = {
+  wrapAsync,
+  authAdmin,
+  authentication
+}
