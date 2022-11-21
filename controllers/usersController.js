@@ -59,16 +59,17 @@ async function signup (req, res, next) {
 
 async function signin (req, res, next) {
   const { cellphone, password } = req.body
+  console.log(req.body)
   if (!cellphone || !password) {
-    return res.status(400).json({ message: 'cellphone or password is required' })
+    return res.status(400).json({ error: 'cellphone or password is required' })
   }
 
   const result = await usersModel.signin(cellphone, password)
   if (result.error) {
-    return res.status(result.status_code).json({ message: result.error })
+    return res.status(result.status_code).json({ error: result.error })
   }
 
-  const exp = Math.floor(Date.now() / 1000) + 3600 * 24 * 30 // 一小時後失效 ; in seconds
+  const exp = Math.floor(Date.now() / 1000) + 3600 * 24 * 30 // 30天後失效 ; in seconds
   const payload = {
     user: result.user,
     exp
