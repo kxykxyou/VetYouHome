@@ -167,6 +167,78 @@ SELECT
     JOIN pet as p on i.pet_id = p.id
     WHERE io.id = 1;
 
+
+
+SELECT 
+	u.fullname as vetFullname,
+    r.id as recordId,
+    r.code as recordCode,
+    r.created_at as recordCreatedAt,
+    r.updated_at as recordUpdatedAt,
+    r.subjective as subjective,
+    r.objective as objective,
+    r.assessment as assessment,
+    r.plan as plan,
+    r.is_archive as isArchive,
+    r.total as total,
+    r.is_paid as isPaid
+FROM pet as p 
+JOIN record as r on r.pet_id = p.id
+JOIN user as u on r.vet_id = u.id
+WHERE p.id = 2;
+
+SELECT
+   rm.id as medicationId,
+   rm.name as medicationName,
+   rm.type as medicationType,
+   rm.comment as medicationComment,
+   md.id as medicationDetailId,
+   md.medicine_id as medicineId,
+   m.name as medicineName,
+   m.dose as medicineUnitDose,
+   m.dose_unit as medicineDoseUnit,
+   m.price as originalPrice,
+   md.frequency as frequency, 
+   md.day as day, 
+   md.price as price, 
+   md.quantity as quantity, 
+   md.discount as discount,
+   md.subtotal as sbutotal   
+  FROM record_medication as rm 
+  JOIN medication_detail AS md on rm.id = md.record_medication_id
+  JOIN medicine as m on rm.medcicine_id  = m.id
+  WHERE record_id = 1;
   
-SELECT * FROM user;
-SELECT * FROM inpatient_order_detail WHERE inpatient_order_id = 10;
+SELECT 
+    re.id as recordExamId,
+    re.exam_id as examId,
+    e.name as name,
+    e.price as originalPrice,
+    re.file_path as file_path,
+    re.price as price,
+    re.quantity as quantity,
+    re.discount as discount,
+    re.subtotal as subtotal,
+    re.comment as comment
+FROM record_exam as re
+JOIN exam as e on re.exam_id = e.id
+WHERE re.record_id = 1;
+
+
+  SELECT
+    rm.id as medicationId,
+    rm.name as medicationName,
+    rm.type as medicationType,
+    rm.comment as medicationComment,
+    md.id as medicationDetailId,
+    md.name as medicineName,
+    md.dose as medicationDose,
+    md.frequency as frequency, 
+    md.day as day, 
+    md.price as price, 
+    md.quantity as quantity, 
+    md.discount as discount,
+    md.subtotal as subtotal   
+  FROM record_medication as rm 
+  JOIN medication_detail AS md on rm.id = md.record_medication_id
+  WHERE rm.record_id = 361;
