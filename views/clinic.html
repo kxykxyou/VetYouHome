@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <head>
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -148,11 +149,41 @@
               <a class="nav-link" href="/inpatients.html">住院部</a>
             </li>
           </ul>
+          <div class="nav-item dropdown align-self-end">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="user-dropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #6c757d"
+            >
+              <img
+                id="user-icon"
+                class="img-fluid"
+                src="/images/user.png"
+                style="width: 36px; height: 36px"
+                alt=""
+              />
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#" onclick="signout()"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
     <main class="my-2">
-      <div id="pet-info" class="pet-info mx-2 my-3 container"></div>
+      <div class="container">
+        <div class="row">
+          <div id="pet-info" class="pet-info mx-2 my-3 col align-self-center"></div>
+        </div>
+      </div>
       <div id="display-block" class="row row-col-2 mx-1">
         <div class="col-6">
           <div class="row left-display-selector">
@@ -589,11 +620,11 @@
     <div class="templates">
       <!-- pet info -->
       <div id="pet-info-template" class="row" hidden>
-        <div class="col-1">
+        <div class="col-2">
           <img
             src=""
             alt=""
-            class="pet-icon"
+            class="pet-icon align-self-center"
             style="width: 5vw; height: 'auto'"
           />
         </div>
@@ -849,4 +880,12 @@
   <script src="/js/clinic-create-record.js"></script>
   <script src="/js/clinic-create-inpatientorder.js"></script>
   <script src="/js/datepicker.js"></script>
+  <script type="text/javascript">
+    const user = JSON.parse(localStorage.user);
+    $("#user-dropdown").append(user.fullname);
+    async function signout() {
+      localStorage.clear();
+      location.href = "/signin.html";
+    }
+  </script>
 </html>

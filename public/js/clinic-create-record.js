@@ -132,7 +132,7 @@ function addNewMedication (addNewMedicationBtn) {
         // { name: 'id', type: 'number', visible: false, editing: false },
         // { name: 'medicineId', type: 'number', visible: false, editing: false },
         { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '劑量', name: 'dose', type: 'number', editing: true },
+        { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }

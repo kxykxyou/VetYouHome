@@ -3,7 +3,7 @@ const cacheRenderedInpatientOrders = {}
 
 renderAllInpatientOrderHeaders()
 async function renderAllInpatientOrderHeaders () {
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`, { headers })).json()
   console.log('inpatientorders: ', data)
   // let html = ''
 
@@ -57,7 +57,7 @@ async function singleInpatientOrderDisplayTurn (thisTag) {
 }
 
 async function renderBothSingleInpatientOrder (inpatientOrderId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/complex/id/${inpatientOrderId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/complex/id/${inpatientOrderId}`, { headers })).json()
   const complexInpatientOrder = data
   cacheRenderedInpatientOrders[inpatientOrderId] = complexInpatientOrder
   // 加入inpatient order的基本資料
@@ -138,7 +138,7 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
 }
 
 async function insertInpatientOrderTable (inpatientOrderId, details) {
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorderdetails/id/${inpatientOrderId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorderdetails/id/${inpatientOrderId}`, { headers })).json()
   console.log('data: ', data)
 
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-table').jsGrid()

@@ -207,7 +207,7 @@ async function getMostRecentInpatientByPetId (req, res, next) {
   }
   const data = await inpatientsModel.getMostRecentInpatientByPetId(id)
   if (!data) {
-    return res.status(200).json({ })
+    return res.status(200).json({ data: {} })
   }
 
   return res.status(200).json({ data })

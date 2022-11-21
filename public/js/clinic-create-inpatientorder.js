@@ -8,7 +8,7 @@ async function renderCreateInpatientOrder () {
 //     return
 //   }
 
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatients/mostrecent/pet/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatients/mostrecent/pet/id/${petId}`, { headers })).json()
   if (!Object.keys(data).length) {
     $('#create-new-inpatientorder').html('該寵物無住院紀錄')
     console.log('該寵物無住院紀錄')
@@ -64,4 +64,5 @@ async function createInpatientOrder () {
     return
   }
   alert('建立醫囑成功！')
+  return location.reload()
 }

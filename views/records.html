@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <!-- jquery -->
     <script
       src="https://code.jquery.com/jquery-3.6.1.js"
@@ -126,50 +127,79 @@
               <a class="nav-link" href="/inpatients.html">住院部</a>
             </li>
           </ul>
+          <div class="nav-item dropdown align-self-end">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="user-dropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #6c757d"
+            >
+              <img
+                id="user-icon"
+                class="img-fluid"
+                src="/images/user.png"
+                style="width: 36px; height: 36px"
+                alt=""
+              />
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#" onclick="signout()"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
-    <div id="subpage-changer" class="btn-group">
-      <input
-        type="radio"
-        class="btn-check"
-        name="options"
-        id="unarchive-records-btn"
-        autocomplete="off"
-        checked
-        onchange="showUnarchiveRecords()"
-      />
-      <label class="btn btn-outline-primary" for="unarchive-records-btn"
-        >未歸檔病歷</label
-      >
-
-      <!-- <input
-        type="radio"
-        class="btn-check"
-        name="options"
-        id="recent-archive-records-btn"
-        autocomplete="off"
-        onchange="showRecentArchiveRecords()"
-      />
-      <label class="btn btn-outline-primary" for="recent-archive-records-btn"
-        >近期歸檔病歷</label
-      > -->
-
-      <input
-        type="radio"
-        class="btn-check"
-        name="options"
-        id="history-records-btn"
-        autocomplete="off"
-        onchange="showHistoryRecordSearch()"
-      />
-      <label class="btn btn-outline-primary" for="history-records-btn"
-        >病歷搜尋</label
-      >
-    </div>
     <main>
-      <div id="unarchive-records-display" class="">
-        <div id="unarchive-search-bar" class="row d-flex">
+      <div id="subpage-changer" class="btn-group container-fluid">
+        <input
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="unarchive-records-btn"
+          autocomplete="off"
+          checked
+          onchange="showUnarchiveRecords()"
+        />
+        <label class="btn btn-outline-primary" for="unarchive-records-btn"
+          >未歸檔病歷</label
+        >
+
+        <!-- <input
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="recent-archive-records-btn"
+          autocomplete="off"
+          onchange="showRecentArchiveRecords()"
+        />
+        <label class="btn btn-outline-primary" for="recent-archive-records-btn"
+          >近期歸檔病歷</label
+        > -->
+
+        <input
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="history-records-btn"
+          autocomplete="off"
+          onchange="showHistoryRecordSearch()"
+        />
+        <label class="btn btn-outline-primary" for="history-records-btn"
+          >病歷搜尋</label
+        >
+      </div>
+      <div id="unarchive-records-display" class="container-fluid">
+        <div
+          id="unarchive-search-bar"
+          class="row justify-content-center d-flex"
+        >
           <!-- <div class="form-group date-range-group">
             <label>看診日期:</label>
             <div class="input-group">
@@ -186,141 +216,247 @@
               />
             </div>
           </div> -->
-          <div class="form-group">
-            <label>主治醫師</label>
-            <select
-              id="unarchive-vet-selector"
-              class="form-control select2bs4 vet-selector"
-              style="width: 100%"
-            ></select>
+          <div class="col-2">
+            <div class="form-group">
+              <label>主治醫師</label>
+              <select
+                id="unarchive-vet-selector"
+                class="form-control select2bs4 vet-selector"
+                style="width: 100%"
+              ></select>
+            </div>
           </div>
-          <button
-            class="search"
-            id="unarchive-search-button"
-            onclick="searchUnarchiveRecords()"
-          >
-            <img src="/images/search.png" class="icon search-icon" alt="" />
-          </button>
+          <div class="col-2 justify-content-center align-items-center">
+            <button
+              class="search align-self-center"
+              id="unarchive-search-button"
+              style="width: 50%"
+              onclick="searchUnarchiveRecords()"
+            >
+              <img src="/images/search.png" class="icon search-icon" alt="" />
+            </button>
+          </div>
         </div>
-        <div id="unarchive-search-result" class=""></div>
+        <div id="unarchive-search-result" class="row row-cols-4"></div>
       </div>
 
-      <div id="history-records-display" class="" style="display: none">
+      <div
+        id="history-records-display"
+        class="container-fluid"
+        style="display: none"
+      >
         <div id="history-search-bar" class="row d-flex">
-          <div class="form-group date-range-group">
-            <label>看診日期:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="far fa-calendar-alt"></i>
-                </span>
+          <div class="row">
+            <div class="form-group history-search-form-group date-range-group">
+              <label>看診日期:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="far fa-calendar-alt"></i>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control float-right"
+                  id="date-range"
+                  value=""
+                />
               </div>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>主治醫師</label>
+              <select
+                id="history-search-vet-selector"
+                class="form-control select2bs4 vet-selector"
+                style="width: 100%"
+              ></select>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="record-code">病歷編號</label>
               <input
                 type="text"
-                class="form-control float-right"
-                id="date-range"
-                value=""
+                class="form-control"
+                id="record-code"
+                placeholder="請輸入病歷編號"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="owner-fullname">飼主名字</label>
+              <input
+                type="text"
+                class="form-control"
+                id="owner-fullname"
+                placeholder="請輸入飼主名字"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-name">寵物名字</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-name"
+                placeholder="請輸入寵物名字"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-code">寵物編號</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-code"
+                placeholder="請輸入寵物編號"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-chip">寵物晶片編號</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-chip"
+                placeholder="請輸入寵物晶片編號"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>物種</label>
+              <select
+                id="pet-species"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option key="" selected="selected">所有物種</option>
+                <option key="d">犬</option>
+                <option key="c">貓</option>
+              </select>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>品種</label>
+              <select
+                id="pet-breed"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option selected="selected" key="">所有品種</option>
+              </select>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>歸檔狀態</label>
+              <select
+                id="is-archive"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option selected="selected" key="">請選擇歸檔狀態</option>
+                <option key="1">已歸檔</option>
+                <option key="0">未歸檔</option>
+              </select>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col align-self-center">
+                <button
+                  class="search"
+                  id="search-button"
+                  onclick="searchRecords()"
+                >
+                  <img
+                    src="/images/search.png"
+                    class="icon search-icon"
+                    alt=""
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="history-search-result" class="row row-cols-4"></div>
+      </div>
+    </main>
+    <div class="tepmlate" hidden>
+      <div id="record-card-template" class="col my-2">
+        <div class="row">
+          <!-- <div class="col" style="width: 8.8vw; height: auto"> -->
+          <div class="col" style="">
+            <a class="clinic-link" href="">
+              <img src="" class="pet-icon col align-self-center" alt="" />
+            </a>
+          </div>
+          <div class="col record-info">
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #20c997"
+                >病歷編號</span
+              >
+              <input
+                type="text"
+                class="form-control record-code"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-default"
+                readonly
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #20c997"
+                >看診日期</span
+              >
+              <input
+                type="text"
+                class="form-control record-date"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm"
+                readonly
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #20c997"
+                >寵物</span
+              >
+              <input
+                type="text"
+                class="form-control pet-name"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm"
+                readonly
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #20c997"
+                >主治醫師</span
+              >
+              <input
+                type="text"
+                class="form-control vet-fullname"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-default"
+                readonly
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #20c997"
+                >飼主</span
+              >
+              <input
+                type="text"
+                class="form-control owner-fullname"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm"
+                readonly
               />
             </div>
           </div>
-          <div class="form-group">
-            <label>主治醫師</label>
-            <select
-              id="history-search-vet-selector"
-              class="form-control select2bs4 vet-selector"
-              style="width: 100%"
-            ></select>
-          </div>
-          <div class="form-group">
-            <label for="record-code">病歷編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="record-code"
-              placeholder="請輸入病歷編號"
-            />
-          </div>
-          <div class="form-group">
-            <label for="owner-fullname">飼主名字</label>
-            <input
-              type="text"
-              class="form-control"
-              id="owner-fullname"
-              placeholder="請輸入飼主名字"
-            />
-          </div>
-          <div class="form-group">
-            <label for="pet-name">寵物名字</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-name"
-              placeholder="請輸入寵物名字"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="pet-code">寵物編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-code"
-              placeholder="請輸入寵物編號"
-            />
-          </div>
-          <div class="form-group">
-            <label for="pet-chip">寵物晶片編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-chip"
-              placeholder="請輸入寵物晶片編號"
-            />
-          </div>
-          <div class="form-group">
-            <label>物種</label>
-            <select
-              id="pet-species"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option key="" selected="selected">所有物種</option>
-              <option key="d">犬</option>
-              <option key="c">貓</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>品種</label>
-            <select
-              id="pet-breed"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option selected="selected" key="">所有品種</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>歸檔狀態</label>
-            <select
-              id="is-archive"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option selected="selected" key="">請選擇歸檔狀態</option>
-              <option key="1">已歸檔</option>
-              <option key="0">未歸檔</option>
-            </select>
-          </div>
-          <button class="search" id="search-button" onclick="searchRecords()">
-            <img src="/images/search.png" class="icon search-icon" alt="" />
-          </button>
         </div>
-        <div id="history-search-result" class=""></div>
       </div>
-    </main>
+    </div>
   </body>
   <link rel="stylesheet" href="/css/record-search.css" />
   <script src="/js/record-search.js"></script>
   <script src="/js/datepicker.js"></script>
   <script src="/js/record-subpage-control.js"></script>
+  <script type="text/javascript">
+    const user = JSON.parse(localStorage.user);
+    $("#user-dropdown").append(user.fullname);
+    async function signout() {
+      localStorage.clear();
+      location.href = "/signin.html";
+    }
+  </script>
 </html>
