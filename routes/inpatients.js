@@ -8,6 +8,7 @@ const router = express.Router()
 /* Routes. */
 router.get('/inpatients/charged', wrapAsync(inpatientsController.getChargedPets))
 router.get('/inpatients/search', wrapAsync(inpatientsController.searchInpatients))
+router.get('/inpatients/id/:id/inpatientorders/complex/today', wrapAsync(inpatientsController.getTodayInpatientOrderComplexByInpatientId))
 
 router.post('/inpatients/discharge', wrapAsync(inpatientsController.discharge))
 router.post('/inpatients/swapcage', wrapAsync(inpatientsController.swapCage))

@@ -2,11 +2,12 @@
   width: 20%;
 }
 
-.date-range-group {
-  width: 40%;
-}
-
 .pet-icon {
   width: 12%;
+  height: auto;
+}
+
+.search {
+  width: 5%;
   height: auto;
 }

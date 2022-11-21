@@ -6,6 +6,7 @@ const path = require('path')
 // const dataInjectLevel = ['1', '2', '3', '4', '5']
 const dropTableOrders = [
   'medical_order',
+  'medication_detail',
   'record_exam',
   'record_medication',
   'record_treatment',

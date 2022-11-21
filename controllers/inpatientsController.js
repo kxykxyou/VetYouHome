@@ -17,7 +17,7 @@ async function discharge (req, res, next) {
     return res.status(400).json({ message: 'not invalid id' })
   }
   const inpatient = await inpatientsModel.query(id)
-  if (inpatient.length === 0) { return res.status(400).json({ message: 'not invalid id' }) }
+  if (!inpatient.length) { return res.status(400).json({ message: 'not invalid id' }) }
 
   // discharge target inpatient
   const result = await inpatientsModel.discharge(id)
@@ -47,9 +47,23 @@ async function swapCage (req, res, next) {
   return res.status(200).json({ message: 'swap cages success' })
 }
 
+async function getTodayInpatientOrderComplexByInpatientId (req, res, next) {
+  const inpatientOrderId = Number(req.params.id)
+  if (!(Number.isSafeInteger(inpatientOrderId) && inpatientOrderId > 0)) {
+    return res.status(400).json({ message: 'not invalid id' })
+  }
+  const result = await inpatientsModel.getTodayInpatientOrderComplexByInpatientId(inpatientOrderId)
+  if (result.error) {
+    console.log(result.error)
+    return res.status(500).json({ error: result.error })
+  }
+  return res.status(200).json({ data: result.data })
+}
+
 module.exports = {
   getChargedPets,
   searchInpatients,
   discharge,
-  swapCage
+  swapCage,
+  getTodayInpatientOrderComplexByInpatientId
 }

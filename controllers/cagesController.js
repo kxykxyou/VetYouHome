@@ -5,4 +5,12 @@ async function getAllCages (req, res, next) {
   return res.status(200).json({ data })
 }
 
-module.exports = { getAllCages }
+async function getOpenCages (req, res, next) {
+  const data = await cagesModel.getOpenCages()
+  return res.status(200).json({ data })
+}
+
+module.exports = {
+  getAllCages,
+  getOpenCages
+}

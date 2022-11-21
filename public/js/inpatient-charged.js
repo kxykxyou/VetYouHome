@@ -1,5 +1,10 @@
-const inpatientsContainerTag = $('#inpatients-container')
-const token = ''
+const inpatientsContainerTag = $('#charged-inpatients-container')
+const headers = {
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+  Authorization: `Bearer ${localStorage.vyh_token}`
+}
+
 let allChargedInpatients
 let allCageStatus
 const inpatientsContainer = {
@@ -22,8 +27,8 @@ const inpatientsContainer = {
 }
 
 // $('window').ready(initRenderInpatients)
-initRender()
-async function initRender () {
+initInpatientsRender()
+async function initInpatientsRender () {
   await initRenderInpatients()
   console.log('allChargedInpatients', allChargedInpatients)
   initRenderSwapCageModal()
@@ -32,18 +37,19 @@ async function initRender () {
 async function initRenderSwapCageModal () {
   const { data } = await (await fetch('/api/1.0/cages/all')).json()
   allCageStatus = data
-  allCageStatus.sort((cage1, cage2) => cage1.name - cage2.name)
+  allCageStatus.sort((cage1, cage2) => cage1.cageName - cage2.cageName)
   // console.log('allCageStatus', allCageStatus)
   let html = '<option selected="selected" key="">請選擇籠位</option>'
   allCageStatus.forEach(cage => {
-    console.log(cage.name)
-    if (!cage.pet_id) {
-      html += `<option key="${cage.name}">${cage.name}</option>`
-      console.log(cage.name)
+    // console.log(cage.name)
+    if (!cage.petId) {
+      html += `<option key="${cage.cageName}">${cage.cageName}</option>`
+      // console.log(cage.cageName)
     } else {
-      const inpatient = allChargedInpatients.find(inpatient => inpatient.inpatientCage === cage.name)
-      console.log(inpatient)
-      html += `<option key="${cage.name}">${cage.name} / ${inpatient.petName}</option>`
+      // const inpatient = allChargedInpatients.find(inpatient => inpatient.inpatientCage === cage.name)
+      // console.log(inpatient)
+
+      html += `<option key="${cage.cageName}">${cage.cageName} / ${cage.petName}</option>`
     }
   })
   $('#target-cage').html(html)
@@ -119,7 +125,7 @@ function cageCardHtml (inpatient) {
     <div class="row">
       <!-- 寵物圖片 -->
       <div class="col">
-        <a href="${'#'}">
+        <a href="/clinic.html#${inpatient.petId}">
           <img
             src="/images/${inpatient.petSpecies === 'd' ? 'dog' : 'cat'}.png"
             class="pet-icon col align-self-center"
@@ -137,13 +143,15 @@ function cageCardHtml (inpatient) {
       <!-- 病歷操作icon -->
       <div class="btn-group">
         <button type="button" class="btn btn-default">
-          <img
-          src="/images/medical-record.png"
-          class="operation-icon"
-          alt=""
-        />
+          <a href="/clinic.html#${inpatient.petId}">
+            <img
+            src="/images/medical-record.png"
+            class="operation-icon"
+            alt=""
+            />
+          </a>
         </button>
-        <button type="button" class="btn btn-default">
+        <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#inpatientorder-modal" onclick="modalUpdateCurrentInpatientOrder(${inpatient.inpatientId})">
           <img
           src="/images/medical-order.png"
           class="operation-icon"
@@ -170,10 +178,8 @@ function cageCardHtml (inpatient) {
 }
 
 async function discharge (inpatientId) {
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${token}`
+  if (confirm('確定要讓此病患出院嗎？') !== true) {
+    return
   }
   const body = {
     inpatientId
@@ -211,11 +217,6 @@ async function swapCage () {
   console.log('targetCage: ', targetCage)
 
   // TODO: POST to swap cage API
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${token}`
-  }
   const body = {
     currentCage,
     targetCage
@@ -232,6 +233,42 @@ async function swapCage () {
     location.reload()
   }
 }
+
+async function modalUpdateCurrentInpatientOrder (inpatientId) {
+  const { data } = await (await fetch(`/api/1.0/inpatients/id/${inpatientId}/inpatientorders/complex/today`)).json()
+  const complexInpatientOrder = data
+  console.log('complexInpatientOrder: ', complexInpatientOrder)
+
+  if (!Object.keys(complexInpatientOrder).length) {
+    return $('#inpatientorder-table').html('尚未建立今日醫囑！')
+  }
+  // console.log(complexInpatientOrder)
+  $('#inpatientorder-table').jsGrid({
+    width: '100%',
+    height: 'auto',
+
+    inserting: false,
+    editing: false,
+    sorting: true,
+    paging: true,
+
+    data: complexInpatientOrder.details,
+
+    fields: [
+      // { name: 'inpatientOrderDetailId', type: 'number', visible: false, editing: false },
+      { title: '優先級', name: 'priority', type: 'number', editing: false },
+      { title: '內容', name: 'content', type: 'text', editing: false },
+      { title: '頻率', name: 'frequency', type: 'text', editing: false },
+      { title: '預定時間', name: 'schedule', type: 'text', editing: false },
+      { title: '備註', name: 'comment', type: 'text', editing: false }
+      // { type: 'control' }
+    ]
+  })
+}
+
+// function insertInpatientOrderTable (inpatientOrderId, details) {
+//   $(`.inpatientorder-table-${inpatientOrderId}`).jsGrid()
+// }
 
 function compareCage (cage1, cage2) {
   if (cage1 > cage2) { return 1 }

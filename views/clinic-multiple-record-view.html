@@ -17,6 +17,7 @@
       crossorigin="anonymous"
     ></script>
 
+
     <!-- Select2 -->
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css" />
     <link
@@ -42,7 +43,6 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
 
-    
     <!-- Google Font: Source Sans Pro -->
     <link
       rel="stylesheet"
@@ -94,96 +94,49 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- jsGrid -->
+    <link
+    type="text/css"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"
+    />
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"
+    ></script>
+
     <title>VetYouHome</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img id="logo" class="img-fluid icon" src="/images/logo.png" alt="" />
-        </a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
-            </li>
-          </ul>
+    <main>
+      <div id="display-block">
+        
+          <div class="row row-col-2 mx-1">
+            <div
+              id="left-container"
+              class="records-container col container my-5 overflow-scroll border border-dark mx-1"
+              style="height: 70vh"
+            >
+            </div>
+            <div
+              id="right-container"
+              class="records-container col container my-5 overflow-scroll border border-dark mx-1"
+              style="height: 70vh"
+            >
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
-    <main class="mx-5">
-      <!-- 所有分區容器 -->
-      <div
-        id="inpatients-container"
-        class="inpatients-charged container-fluid my-5"
-      >
     </main>
-
-
-
-
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#swap-cage-modal">
-      Launch static backdrop modal
-    </button>
-
     
-    <!-- Modal -->
-    <div class="modal fade" id="swap-cage-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modal-label">變換籠位</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div id="current-cage" class="modal-body">
-          </div>
-          <div id="swap-cage-modal-body" class="modal-body">
-            請選擇要與哪個籠位交換或變換到哪一個籠位：
-          </div>
-          <div id="swap-cage-selection" class="modal-body">
-            <select id="target-cage" class="form-control select2bs4" style="width: 100%">
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-primary" onclick="swapCage()">確定</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </body>
 
-
-  
-  <link rel="stylesheet" href="/css/inpatient-charged.css" />
-
-  <script src="/js/inpatient-charged.js"></script>
+  <link rel="stylesheet" href="/css/clinic-drafts/clinic-record-view.css" />
+  <script src="/js/clinic-record-view.js"></script>
 </html>

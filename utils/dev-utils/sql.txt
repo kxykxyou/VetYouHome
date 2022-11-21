@@ -1,6 +1,6 @@
 CREATE TABLE `user` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `hashed_password` char(96) NOT NULL,
+  `hashed_password` char(97) NOT NULL,
   `fullname` varchar(30) NOT NULL,
   `cellphone` char(10) NOT NULL,
   `email` varchar(255),
@@ -85,8 +85,8 @@ CREATE TABLE `record` (
 CREATE TABLE `record_exam` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `record_id` int NOT NULL,
-  `exam_id` int NOT NULL,
-  `file_path` varchar(100) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `file_path` varchar(100) DEFAULT "",
   `price` mediumint unsigned NOT NULL DEFAULT 0,
   `quantity` tinyint NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
@@ -96,23 +96,29 @@ CREATE TABLE `record_exam` (
 
 CREATE TABLE `record_medication` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `record_id` int NOT NULL,
-  `medicine_id` int NOT NULL,
+  `record_id` int,
   `name` varchar(30) NOT NULL,
+  `type` varchar(30) NOT NULL,
+  `comment` varchar(100)
+);
+
+CREATE TABLE `medication_detail` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `record_medication_id` int NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `dose` int NOT NULL DEFAULT 0,
   `frequency` varchar(20) NOT NULL,
   `day` tinyint NOT NULL DEFAULT 1,
-  `type` varchar(30) NOT NULL,
   `price` mediumint NOT NULL DEFAULT 0,
   `quantity` smallint unsigned NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
-  `subtotal` mediumint unsigned NOT NULL DEFAULT 0,
-  `comment` varchar(100)
+  `subtotal` mediumint unsigned NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `record_treatment` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `record_id` int NOT NULL,
-  `treatment_id` int NOT NULL,
+  `name` varchar(30) NOT NULL,
   `price` mediumint unsigned NOT NULL DEFAULT 0,
   `quantity` tinyint NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
@@ -134,8 +140,8 @@ CREATE TABLE `inpatient` (
 CREATE TABLE `inpatient_order` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `code` char(10) UNIQUE NOT NULL,
-  `vet_id` int NOT NULL,
   `inpatient_id` int NOT NULL,
+  `date` date NOT NULL DEFAULT (CURDATE()),
   `created_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` datetime DEFAULT (CURRENT_TIMESTAMP),
   `is_paid` tinyint NOT NULL DEFAULT 0,
@@ -174,24 +180,18 @@ ALTER TABLE `record` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `record` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
 
-ALTER TABLE `record_exam` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
+ALTER TABLE `record_exam` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `record_exam` ADD FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`);
+ALTER TABLE `record_medication` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `record_medication` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
+ALTER TABLE `medication_detail` ADD FOREIGN KEY (`record_medication_id`) REFERENCES `record_medication` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `record_medication` ADD FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`);
-
-ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`);
-
-ALTER TABLE `record_treatment` ADD FOREIGN KEY (`treatment_id`) REFERENCES `treatment` (`id`);
+ALTER TABLE `record_treatment` ADD FOREIGN KEY (`record_id`) REFERENCES `record` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
 
 ALTER TABLE `inpatient` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
-
 ALTER TABLE `inpatient_order` ADD FOREIGN KEY (`inpatient_id`) REFERENCES `inpatient` (`id`);
 
-ALTER TABLE `inpatient_order_detail` ADD FOREIGN KEY (`inpatient_order_id`) REFERENCES `inpatient_order` (`id`);
+ALTER TABLE `inpatient_order_detail` ADD FOREIGN KEY (`inpatient_order_id`) REFERENCES `inpatient_order` (`id`) ON DELETE CASCADE;

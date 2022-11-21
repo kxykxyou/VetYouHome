@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href="/css/style.css" />
+      <!-- jquery -->
+      <script
+        src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c="
+        crossorigin="anonymous"
+      ></script>
+      <!-- <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script> -->
+
+      <!-- Select2 -->
+      <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css" />
+      <link
+        rel="stylesheet"
+        href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css"
+      />
+
+      <!-- <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+      ></script> -->
+      <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+      ></script>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+      />
+
+      <!-- Google Font: Source Sans Pro -->
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+      />
+      <!-- Font Awesome -->
+      <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css" />
+      <!-- Ionicons -->
+      <link
+        rel="stylesheet"
+        href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+      />
+      <!-- Tempusdominus Bootstrap 4 -->
+      <link
+        rel="stylesheet"
+        href="/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css"
+      />
+      <!-- iCheck -->
+      <link
+        rel="stylesheet"
+        href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css"
+      />
+      <!-- JQVMap -->
+      <link rel="stylesheet" href="/plugins/jqvmap/jqvmap.min.css" />
+      <!-- Theme style -->
+      <link rel="stylesheet" href="/dist/css/adminlte.min.css" />
+      <!-- overlayScrollbars -->
+      <link
+        rel="stylesheet"
+        href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css"
+      />
+      <!-- Daterange picker -->
+      <link
+        rel="stylesheet"
+        href="/plugins/daterangepicker/daterangepicker.css"
+      />
+      <!-- summernote -->
+      <link
+        rel="stylesheet"
+        href="/plugins/summernote/summernote-bs4.min.css"
+      />
+      <!-- bootstrap -->
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+        crossorigin="anonymous"
+      />
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"
+      ></script>
+
+      <!-- jsGrid -->
+      <link
+        type="text/css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"
+      />
+      <link
+        type="text/css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"
+      />
+
+      <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"
+      ></script>
+
+      <title>VetYouHome</title>
+    </head>
+    <title>VetYouHome</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/index.html">
+          <img
+            id="logo"
+            class="img-fluid"
+            src="/images/logo.png"
+            style="width: 36px; height: 36px"
+            alt=""
+          />
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/registers.html">今日掛號</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/records.html">病歷系統</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/inpatients.html">住院部</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <main class="my-2">
+      <div id="pet-info" class="pet-info mx-2 my-3 container"></div>
+      <div id="display-block" class="row row-col-2 mx-1">
+        <div class="col-6">
+          <div class="row left-display-selector">
+            <div class="form-group">
+              <select
+                id="left-display-selector"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option key="left-records-container" selected="selected">
+                  所有病歷
+                </option>
+                <option key="left-inpatientorders-container">所有醫囑</option>
+              </select>
+            </div>
+          </div>
+          <div
+            id="left-display-container"
+            class="records-container col container my-1 overflow-scroll border border-dark mx-1 display-container"
+            style="height: 70vh"
+          >
+            <div id="left-records-container" class="left-container"></div>
+            <div
+              id="left-inpatientorders-container"
+              class="left-container"
+              style="display: none"
+            ></div>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="row right-display-selector">
+            <div class="form-group">
+              <select
+                id="right-display-selector"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option key="right-records-container" selected="selected">
+                  所有病歷
+                </option>
+                <option key="right-inpatientorders-container">所有醫囑</option>
+                <option key="right-create-record-container">建立病歷</option>
+                <option key="right-create-inpatientorder-container">
+                  建立醫囑
+                </option>
+              </select>
+            </div>
+          </div>
+          <div
+            id="right-display-container"
+            class="records-container col container my-1 overflow-scroll border border-dark mx-1 display-container"
+            style="height: 70vh"
+          >
+            <div id="right-records-container" class="right-container"></div>
+            <div
+              id="right-inpatientorders-container"
+              class="right-container"
+              style="display: none"
+            ></div>
+            <div
+              id="right-create-record-container"
+              class="right-container"
+              style="display: none"
+            >
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">新增病歷</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="create-record-subjective"
+                      >Subjective 主觀症狀</label
+                    >
+                    <br />
+                    <textarea
+                      id="create-record-subjective"
+                      class="form-control"
+                      name="subjective"
+                      rows="5"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="create-record-objective"
+                      >Objective 客觀檢查</label
+                    >
+                    <br />
+                    <textarea
+                      id="create-record-objective"
+                      class="form-control"
+                      name="objective"
+                      rows="5"
+                    ></textarea>
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="exam-file-input">檢驗檔案上傳</label>
+                    <div class="input-group">
+                      <div class="custom-file">
+                        <input
+                          type="file"
+                          class="custom-file-input"
+                          id="exam-file-input"
+                        />
+                        <label class="custom-file-label" for="exam-file-input"
+                          >選擇檔案</label
+                        >
+                      </div>
+                      <div class="input-group-append">
+                        <span class="input-group-text">上傳</span>
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="form-group">
+                    <label for="create-record-assessment"
+                      >Assessment 評估</label
+                    >
+                    <br />
+                    <textarea
+                      id="create-record-assessment"
+                      class="form-control"
+                      name="assessment"
+                      rows="4"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="create-record-plan">Plan 計畫</label>
+                    <br />
+                    <textarea
+                      id="create-record-plan"
+                      class="form-control"
+                      name="plan"
+                      rows="4"
+                    ></textarea>
+                  </div>
+                  <!-- <div class="new-treatments-container">
+                    <h3>Treatment治療</h3>
+                    <div class="new-treatment medication-container">
+                      <button
+                        type="button"
+                        class="btn btn-primary my-1"
+                        data-bs-toggle="button"
+                        autocomplete="off"
+                        aria-pressed="true"
+                        onclick="displayTurn(this)"
+                      >
+                        Medication用藥
+                      </button>
+                      <div class="display create-record-medications">
+                        <button
+                          type="button"
+                          class="btn btn-primary my-1"
+                          onclick="addNewMedication()"
+                        >
+                          新增處方
+                        </button>
+                        <div id="new-medications-container"></div>
+                      </div>
+                    </div>
+                    <div class="new-treatment new-other-treatments-container">
+                      <button
+                        type="button"
+                        class="btn btn-primary my-1"
+                        data-bs-toggle="button"
+                        autocomplete="off"
+                        aria-pressed="true"
+                        onclick="displayTurn(this)"
+                      >
+                        Other treatments其他治療
+                      </button>
+                      <div class="display new-treatment-table"></div>
+                    </div>
+                  </div> -->
+                  <div id="new-emt-container">
+                    <h3>檢查與治療</h3>
+                    <div class="new-exams-container">
+                      <button
+                        type="button"
+                        class="btn btn-primary my-1"
+                        data-bs-toggle="button"
+                        autocomplete="off"
+                        aria-pressed="true"
+                        onclick="displayTurn(this)"
+                      >
+                        Exams 檢驗
+                      </button>
+                      <div
+                        id="new-exams-table"
+                        class="display new-exams-table"
+                      ></div>
+                    </div>
+                    <div class="new-medications-container">
+                      <button
+                        type="button"
+                        class="btn btn-primary my-1"
+                        data-bs-toggle="button"
+                        autocomplete="off"
+                        aria-pressed="true"
+                        onclick="displayTurn(this)"
+                      >
+                        Medications 用藥
+                      </button>
+                      <div class="all-medications-container display" style="display: none">
+                        <button
+                          type="button"
+                          class="btn btn-secondary my-1 add-medication"
+                          onclick="addNewMedication(this)"
+                        >
+                          新增處方
+                        </button>
+                      </div>
+                      <!-- <div class="new-medications-container"> -->
+                      <!-- </div> -->
+                    </div>
+                    <div
+                      class="new-treatments-container"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-primary my-1"
+                        data-bs-toggle="button"
+                        autocomplete="off"
+                        aria-pressed="true"
+                        onclick="displayTurn(this)"
+                      >
+                        Other treatments 其他治療
+                      </button>
+                      <div
+                        id="new-treatments-table"
+                        class="display new-treatments-table"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button class="btn btn-primary" onclick="createRecord()">
+                    儲存病歷
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              id="right-create-inpatientorder-container"
+              class="right-container"
+              style="display: none"
+            >
+              <!-- <div id="not-inpatient-alert">該寵物目前非住院動物</div> -->
+
+              <div id="create-new-inpatientorder" class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">新增醫囑</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                  <div class="row">
+                    <div
+                      id="create-new-inpatientorder-cage"
+                      class="col fs-4"
+                    ></div>
+                    <div class="col-3">
+                      <button class="btn btn-primary" hidden>匯入醫囑</button>
+                    </div>
+
+                    <!-- </div> -->
+
+                    <!-- </div> -->
+                  </div>
+                  <div class="row">
+                    <div
+                      id="create-new-inpatientorder-summary"
+                      class="fs-4"
+                    ></div>
+                  </div>
+                  <div class="form-group">
+                    <div class="fs-5">醫囑日期: </div>
+                    <div class="input-group date" data-target-input="nearest">
+                      <div
+                        class="input-group-append"
+                        data-target="#inpatientorder-date"
+                        data-toggle="datepicker"
+                      >
+                        <div class="input-group-text">
+                          <i class="fa fa-calendar"></i>
+                        </div>
+                      </div>
+                      <input
+                        type="text"
+                        name="inpatientorder-date"
+                        class="form-control datetimepicker-input"
+                        data-target="#inpatientorder-date"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="new-inpatientorder-comment">
+                    <div class="fs-5"
+                      >醫囑備註</label
+                    >
+                    <textarea
+                      id="new-inpatientorder-comment"
+                      class="form-control"
+                      name="inpatientorder-comment"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <div class="new-inpatientorder-table">
+                      <div class="title order fs-4">醫囑: </div>
+                      <div class="title order fs-6">(優先級請填寫1~99正整數)</div>
+                      <div
+                        id="new-inpatientorder-table"
+                        class="new-inpatientorder-table"
+                      ></div>
+                    </div>
+
+                  </div>
+                  <!-- /.card-body -->
+
+                  <div class="card-footer">
+                    <button
+                      class="btn btn-primary"
+                      onclick="createInpatientOrder()"
+                    >
+                      儲存醫囑
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- 收住院Modal -->
+    <div
+      class="modal fade"
+      id="create-inpatient-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="create-inpatient-modal-label">
+              收住院
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div id="modal-pet-name" class="modal-body"></div>
+          <div class="modal-body">請選擇要住到哪一個籠位：</div>
+          <div class="modal-body cage-selection">
+            <select
+              id="inpatient-target-cage"
+              name="target-cage"
+              class="form-control select2bs4 target-cage"
+              style="width: 100%"
+            >
+              <option key="" selected>請選擇籠位</option>
+            </select>
+          </div>
+          <div class="modal-body">請輸入住院摘要</div>
+          <textarea id="inpatient-summary" class="form-control" rows="2"></textarea>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              取消
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="createInpatient()"
+            >
+              確定
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 刪除醫囑Modal -->
+    <!-- <div
+      class="modal fade"
+      id="remove-inpatientorder-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="remove-inpatientorder-modal-label">
+              刪除病歷
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">真的要刪除這份醫囑嗎？</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              取消
+            </button>
+            <button
+              type="button"
+              id="remove-inpatientorder-btn"
+              class="btn btn-primary"
+              onclick="removeInpatientOrder(this)"
+            >
+              確定
+            </button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="templates">
+      <!-- pet info -->
+      <div id="pet-info-template" class="row" hidden>
+        <div class="col-1">
+          <img
+            src=""
+            alt=""
+            class="pet-icon"
+            style="width: 5vw; height: 'auto'"
+          />
+        </div>
+        <div class="col-2">
+          <div class="row pet-name">${data.petName} / ${data.petCode}</div>
+          <div class="row pet-species">${data.petSpecies === 'c' ? '貓' : '狗'} / ${data.petBreed}</div>
+          <div class="row pet-status">狀態: ${petStatusMap[data.status]}</div>
+        </div>
+        <div class="col-2">
+          <div class="row pet-birthday">生日: ${new Date(data.birthday).toISOString().split('T')[0]}</div>
+          <div class="row pet-age">年齡: ${year} y ${month} m</div>
+          <button type="button" class="btn btn-warning inpatient-btn" data-bs-toggle="modal" data-bs-target="#create-inpatient-modal">收住院</button>
+        </div>
+        <div class="col-2">
+          <div class="row">晶片號碼</div>
+          <div class="row pet-chip">${data.chip}</div>
+        </div>
+        <div class="col-3">
+          <div class="row">備註:</div>
+          <div class="row border border-dark pet-comment">
+            ${data.comment}
+          </div>
+        </div>
+      </div>
+      <!-- record header; key: record.id -->
+      <div id="record-header-template"
+        key=""
+        class="record-container record-container-${record.recordId}"
+        hidden
+        >
+        <div class="row record-header mx-1">
+            <button
+              type="button"
+              class="btn btn-primary my-1 toggle-btn"
+              data-bs-toggle="button"
+              autocomplete="off"
+              aria-pressed="true"
+              onclick="singleRecordDisplayTurn(this)"
+              >
+              <div class="fs-3 title"></div>
+            </button>
+        </div>
+        <div class="record-content display"></div>
+      </div>
+      <!-- record template -->
+      <div id="record-template" hidden>
+        <div class="soap-container">
+          <button key="${data.id}" type="button" class="btn btn-danger" onclick="deleteRecord(this)">刪除病歷</button>
+          <button key="${data.id}" type="button" class="btn btn-warning edit-record" onclick="editRecord(this)">編輯病歷</button>
+          <button key="${data.id}" type="button" style="display: none" class="btn btn-success update-record" onclick="updateRecord(this)">儲存病歷</button>
+          <div class="soap soap-s">
+              <p class="fs-3 header">Subjective主觀描述</p>
+              <textarea readonly class="form-control  soap-textarea s-textarea">${data.subjective}</textarea>
+          </div>
+          <div class="soap soap-o">
+              <p class="fs-3 header">Objective客觀檢查</p>
+              <textarea readonly class="form-control soap-textarea o-textarea">${data.objective}</textarea>
+          </div>
+          <div class="soap soap-a">
+            <p class="fs-3 header">Assessment評估</p>
+            <textarea readonly class="form-control soap-textarea a-textarea"></textarea>
+          </div>
+          <div class="soap soap-p">
+            <p class="fs-3 header">Plan計畫</p>
+            <textarea readonly class="form-control soap-textarea p-textarea"></textarea>
+          </div>
+        </div>
+        <div class="emt-container">
+          <h3>檢驗與治療</h3>  
+          <div class="exams-container">
+            <button
+              type="button"
+              class="btn btn-primary my-1"
+              data-bs-toggle="button"
+              autocomplete="off"
+              aria-pressed="true"
+              onclick="displayTurn(this)"
+            >
+              Exams檢驗
+            </button>
+              <div class="display exam-table">
+              </div>
+            </div>
+          
+          <div class="treatment medications-container">
+            <button
+              type="button"
+              class="btn btn-primary my-1"
+              data-bs-toggle="button"
+              autocomplete="off"
+              aria-pressed="true"
+              onclick="displayTurn(this)"
+            >
+              Medications用藥
+            </button>
+            
+            <div class="display all-medications-container">
+              <button
+                type="button"
+                class="btn btn-secondary my-1 add-medication"
+                onclick="addMedication(this)"
+              >
+                新增處方
+              </button>
+            </div>
+
+              
+          </div>
+          <div class="treatment other-treatments-container">
+            <button
+              type="button"
+              class="btn btn-primary my-1"
+              data-bs-toggle="button"
+              autocomplete="off"
+              aria-pressed="true"
+              onclick="displayTurn(this)"
+            >
+              Other treatments其他治療
+            </button>
+            <div class="display treatment-table"></div>
+          </div>
+        </div>
+      </div>
+      <!-- single medication container; key: record_medication.id -->
+      <div id="single-medication-container-template" key="" class="medication-container my-2" hidden>
+        <div class="input-group">
+          <span class="input-group-text" style="background-color: #20c997">處方名稱</span>
+          <input type="text" class="form-control medication-name medication-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly>
+        </div>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text" style="background-color: #20c997">供應方式</span>
+          <input type="text" class="form-control medication-type medication-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+        </div>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text" style="background-color: #20c997">用藥備註</span>
+          <input type="text" class="form-control medication-comment medication-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+        </div>
+        <button
+          type="button"
+          class="btn btn-danger my-1 delete-medication"
+          data-bs-toggle="button"
+          autocomplete="off"
+          aria-pressed="true"
+          onclick="deleteMedication(this)"
+        >
+          刪除處方
+        </button>
+        <button
+          type="button"
+          class="btn btn-warning my-1 edit-medication"
+          data-bs-toggle="button"
+          autocomplete="off"
+          aria-pressed="true"
+          onclick="editMedication(this)"
+        >
+          編輯處方名稱/形式/備註
+        </button>
+        <button
+          type="button"
+          class="btn btn-success my-1 update-medication"
+          data-bs-toggle="button"
+          autocomplete="off"
+          aria-pressed="true"
+          onclick="updateMedication(this)"
+          style="display: none"
+        >
+          儲存處方名稱/形式/備註
+        </button>
+        <div class="medication-table"></div>
+      </div>
+      <!-- inpatient header; key: inpatient_order.id -->
+      <div
+        id="inpatient-order-header-template"
+        key=""
+        class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
+        hidden
+        >
+        <div class="row inpatientorder-header mx-1">
+            <button
+            type="button"
+            class="btn btn-primary my-1 toggle-btn"
+            data-bs-toggle="button"
+            autocomplete="off"
+            aria-pressed="true"
+            onclick="singleInpatientOrderDisplayTurn(this)"
+            >
+            <div class="fs-3 title"></div>
+            </button>
+        </div>
+        <div
+          key=""
+          class="inpatientorder-content display">
+        </div>
+      </div>
+      <!-- inpatient order content -->
+      <div 
+        id="inpatient-order-content-template" 
+        hidden>
+        <button 
+          key="" 
+          type="button" 
+          class="btn btn-danger delete-inpatientorder-btn" 
+          onclick="deleteInpatientOrder(this)"
+          >
+          刪除醫囑
+        </button>
+        <button 
+          key="" 
+          type="button" 
+          class="btn btn-warning edit-inpatientorder-btn" 
+          onclick="editInpatientOrder(this)">
+          編輯醫囑
+        </button>
+        <button 
+          key="" 
+          type="button" 
+          style="display: none" 
+          class="btn btn-success update-inpatientorder-btn" 
+          onclick="updateInpatientOrder(this)">
+          儲存醫囑
+        </button>
+
+        <div class="inpatient cage my-1">
+          <div class="title cage fs-4">籠位: </div>
+          <textarea class="inpatient-cage form-control" rows="1" readonly></textarea>
+        <div class="inpatient summary my-1">
+          <div class="title summary fs-4">住院摘要: </div>
+          <textarea class="inpatient-summary form-control" readonly></textarea>
+        </div>          
+        </div>
+        <div class="inpatient comment my-1">
+          <div class="title comment fs-4">備註: </div>
+          <textarea class="inpatientorder-comment form-control" readonly></textarea>
+        </div>
+        <div class="inpatientorder my-1">
+          <div class="row">
+            <div class="title order fs-4">醫囑: </div>
+            <div class="title order fs-6">(優先級請填寫1~99正整數)</div>
+          </div>
+          <div class="inpatientorder-table"></div>
+        </div>
+        
+      </div>
+    </div>
+    
+
+    </div>
+  </body>
+  <link rel="stylesheet" href="/css/clinic-drafts/clinic-record-view.css" />
+  <script src="/js/clinic-record-view.js"></script>
+  <script src="/js/clinic-inpatientorder-view.js"></script>
+  <script src="/js/clinic-display-controller.js"></script>
+  <script src="/js/clinic-create-record.js"></script>
+  <script src="/js/clinic-create-inpatientorder.js"></script>
+  <script src="/js/datepicker.js"></script>
+</html>
