@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
-const cookieParser = require('cookie-parser')
+const utils = require('./utils/utils')
+// const cookieParser = require('cookie-parser')
 
 const indexRouter = require('./routes/index')
 
@@ -9,11 +10,13 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
+// app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'views')))
 
-app.use('/', indexRouter)
+app.use('/api/' + process.env.API_VERSION, require('./routes/users'))
+
+app.use(utils.wrapAsync(utils.authUser))
 
 app.use('/api/' + process.env.API_VERSION, [
   require('./routes/records'),
@@ -22,8 +25,7 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/pets'),
   require('./routes/inpatients'),
   require('./routes/cages'),
-  require('./routes/clinic'),
-  require('./routes/users')
+  require('./routes/clinic')
 ])
 
 // Error handling
