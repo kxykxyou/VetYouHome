@@ -1,3 +1,6 @@
+if (!localStorage.vyh_token) {
+  location.href = '/signin.html'
+}
 const url = location.href
 // let cacheRecords // id: complex record objects
 const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
@@ -26,7 +29,7 @@ renderPetInfo(petId).then(() => {
 renderAllRecordHeaders(petId)
 
 async function renderPetInfo (petId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`, { headers })).json()
   petInfo = data
   const dayDiff = (Date.now() - (new Date(data.birthday))) / (24 * 60 * 60 * 1000)
   // console.log(dayDiff)
@@ -40,15 +43,15 @@ async function renderPetInfo (petId) {
   petInfoTemplate.find('.pet-birthday').html(`生日: ${new Date(data.birthday).toISOString().split('T')[0]}`)
   petInfoTemplate.find('.pet-age').html(`年齡: ${year} y ${month} m`)
   if (petInfo.status === 3) { petInfoTemplate.find('.inpatient-btn').remove() }
-  petInfoTemplate.find('.pet-chip').html(`${data.chip}`)
-  petInfoTemplate.find('.pet-comment').html(`${data.comment}`)
+  petInfoTemplate.find('.pet-chip').html(`${data.chip ? data.chip : '無'}`)
+  petInfoTemplate.find('.pet-comment').html(`${data.comment ? data.comment : ''}`)
   $('#pet-info').html(petInfoTemplate)
 }
 
 async function renderCreateInpatientModal () {
   // cage selection for creating inpatient
   $('#modal-pet-name').html(`寵物: ${petInfo.petName}`)
-  const { data } = await (await fetch('/api/1.0/cages/open')).json()
+  const { data } = await (await fetch('/api/1.0/cages/open', { headers })).json()
   // 籠位選擇html
   const cageSelection = $('#inpatient-target-cage')
   data.forEach(cage => {
@@ -79,7 +82,7 @@ async function createInpatient () {
 
 async function renderAllRecordHeaders (petId) {
   // get all records of target pet (not nested)
-  const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`, { headers })).json()
   // cacheRecords = data
   // const recordHeadersHtml = ''
 
@@ -92,7 +95,7 @@ async function renderAllRecordHeaders (petId) {
 
 async function renderBothSingleRecord (recordId) {
   // fetch 單一病歷 record & render
-  const { data } = await (await fetch(`/api/1.0/records/id/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/records/id/${recordId}`, { headers })).json()
   const record = data
   console.log('rendered record: ', record)
   cacheRenderedRecords[record.id] = record
@@ -175,7 +178,7 @@ async function deleteRecord (thisTag) {
 }
 
 async function renderExamTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`, { headers })).json()
   console.log('data: ', data)
   // const sourceData = ['auto1', 'auto2', 'auto3']
 
@@ -259,7 +262,7 @@ async function renderExamTable (recordId) {
 }
 
 async function renderMedicationAndTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/medicationcomplex/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/medicationcomplex/recordid/${recordId}`, { headers })).json()
   const medicationComplex = data
   const medicationContainer = $('#single-medication-container-template')
     .clone().removeAttr('id').removeAttr('hidden')
@@ -288,7 +291,7 @@ async function renderMedicationAndTable (recordId) {
           { name: 'id', type: 'number', visible: false, editing: false },
           // { name: 'medicineId', type: 'number', visible: false, editing: false },
           { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-          { title: '劑量', name: 'dose', type: 'number', editing: true },
+          { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
           { title: '頻率', name: 'frequency', type: 'number', editing: true },
           { title: '天數', name: 'day', type: 'number', editing: true },
           { type: 'control' }
@@ -357,7 +360,7 @@ function addMedication (addMedicationBtn) {
         // { name: 'id', type: 'number', visible: false, editing: false },
         // { name: 'medicineId', type: 'number', visible: false, editing: false },
         { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '劑量', name: 'dose', type: 'number', editing: true },
+        { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
@@ -471,7 +474,7 @@ function insertMedicationTable (sortedMedications) {
           { name: 'medicationDetailId', type: 'number', visible: false, editing: false },
           // { name: 'medicineId', type: 'number', visible: false, editing: false },
           { title: '藥品', name: 'medicineName', type: 'text', editing: true, validate: 'required' },
-          { title: '劑量', name: 'medicationDose', type: 'number', editing: true },
+          { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
           { title: '頻率', name: 'frequency', type: 'number', editing: true },
           { title: '天數', name: 'day', type: 'number', editing: true },
           { type: 'control' }
@@ -515,7 +518,7 @@ function insertMedicationTable (sortedMedications) {
 }
 
 async function renderTreatmentTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/recordtreatments/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/recordtreatments/recordid/${recordId}`, { headers })).json()
 
   $(`.record-container-${recordId}`).find('.treatment-table').jsGrid(
     {

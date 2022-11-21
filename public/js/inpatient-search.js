@@ -22,7 +22,7 @@ const petStatusMap = {
 initHistorySearchRender()
 
 async function initRenderVetSelection () {
-  const { data } = await (await fetch('/api/1.0/vets/all')).json()
+  const { data } = await (await fetch('/api/1.0/vets/all', { headers })).json()
   vets = [...data]
   let vetSelections = '<option selected="selected" key="">所有醫師</option>'
   vets.forEach(vet => {
@@ -32,7 +32,7 @@ async function initRenderVetSelection () {
 }
 
 async function initRenderPetBreedSelection () {
-  const { data } = await (await fetch('/api/1.0/breeds/all')).json()
+  const { data } = await (await fetch('/api/1.0/breeds/all', { headers })).json()
   allBreeds = [...data]
   let breedSelections = '<option selected="selected" key="">所有品種</option>'
   allBreeds.forEach(breed => {
@@ -101,7 +101,7 @@ async function searchRecords () {
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
   // // fetch api and get data
-  const response = await fetch('/api/1.0/inpatients/search' + queryString)
+  const response = await fetch('/api/1.0/inpatients/search' + queryString, { headers })
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
   let html = ''

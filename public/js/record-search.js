@@ -1,5 +1,13 @@
+if (!localStorage.vyh_token) {
+  location.href = '/signin.html'
+}
 const speciesSelectionTag = $('#pet-species')
 const breedSelectionTag = $('#pet-breed')
+const headers = {
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${localStorage.vyh_token}`,
+  Accept: 'application/json'
+}
 
 let vets
 let allBreeds
@@ -19,17 +27,22 @@ const petStatusMap = {
 initRender()
 
 async function initRenderVetSelection () {
-  const { data } = await (await fetch('/api/1.0/vets/all')).json()
+  const { data } = await (await fetch('/api/1.0/vets/all', { headers })).json()
   vets = data
-  let vetSelections = '<option selected="selected" key="">所有醫師</option>'
+  const user = JSON.parse(localStorage.user)
+  // let vetSelections = '<option key="">所有醫師</option>'
+  $('.vet-selector').append($('<option>').text('所有醫師'))
   vets.forEach(vet => {
-    vetSelections += `<option key="${vet.id}">${vet.fullname}</option>`
+    if (user.id === vet.id) {
+      $('.vet-selector').append(`<option key=${vet.id} selected>${vet.fullname}</option>`)
+    } else {
+      $('.vet-selector').append($('<option>').attr('key', vet.id).text(vet.fullname))
+    }
   })
-  $('.vet-selector').html(vetSelections)
 }
 
 async function initRenderPetBreedSelection () {
-  const { data } = await (await fetch('/api/1.0/breeds/all')).json()
+  const { data } = await (await fetch('/api/1.0/breeds/all', { headers })).json()
   allBreeds = [...data]
   let breedSelections = '<option selected="selected" key="">所有品種</option>'
   allBreeds.forEach(breed => {
@@ -96,35 +109,21 @@ async function searchRecords () {
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
   // // fetch api and get data
-  const response = await fetch('/api/1.0/records/search' + queryString)
+  const response = await fetch('/api/1.0/records/search' + queryString, { headers })
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
-  let html = ''
+  const recordCardTemplate = $('#record-card-template').clone().show().removeAttr('id')
   data.forEach(row => {
-    html +=
-    `
-    <br>
-    <div class="col">
-    <div class="row">
-      <a href="/clinic.html#${row.petId}">
-        <img
-          src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png"
-          class="pet-icon col align-self-center"
-          alt=""
-        />
-      </a>
-      <div class="col">
-        <p class="card-subtitle">${row.recordCode}</p>
-        <p class="card-subtitle">${row.petName}</p>
-        <p class="card-subtitle">${row.vetFullname}</p>
-        <p class="card-subtitle">${row.ownerFullname}</p>
-        <p class="card-subtitle">${petStatusMap[row.petStatus]}</p>
-      </div>
-    </div>
-  </div>
-    `
+    const card = recordCardTemplate.clone()
+    card.find('.clinic-link').attr('href', `/clinic.html#${row.petId}`)
+    card.find('.pet-icon').attr('src', `/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png`)
+    card.find('.record-code').val(row.recordCode)
+    card.find('.record-date').val(row.recordCreatedAt.split('T')[0])
+    card.find('.pet-name').val(row.petName)
+    card.find('.vet-fullname').val(row.vetFullname)
+    card.find('.owner-fullname').val(row.ownerFullname)
+    $('#history-search-result').append(card)
   })
-  $('#history-search-result').html(html)
   // console.log('search results: ', data)
 }
 
@@ -141,34 +140,23 @@ async function searchUnarchiveRecords () {
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
   // // fetch api and get data
-  const response = await fetch('/api/1.0/records/search' + queryString)
-  if (response.status !== 200) { return alert('Server error!') }
+  let response = await fetch('/api/1.0/records/search' + queryString, { headers })
+  if (response.status !== 200) {
+    response = await response.json()
+    console.log(response)
+    return alert(response.error)
+  }
   const { data } = await response.json()
-  let html = ''
+  const recordCardTemplate = $('#record-card-template').clone().show().removeAttr('id')
   data.forEach(row => {
-    html +=
-    `
-    <br>
-    <div class="col">
-    <div class="row">
-      <a href="/clinic.html#${row.petId}">
-        <img
-          src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png"
-          class="pet-icon col align-self-center"
-          alt=""
-        />
-      </a>
-      <div class="col">
-        <p class="card-subtitle">${row.recordCode}</p>
-        <p class="card-subtitle">${row.petName}</p>
-        <p class="card-subtitle">${row.vetFullname}</p>
-        <p class="card-subtitle">${row.ownerFullname}</p>
-        <p class="card-subtitle">${petStatusMap[row.petStatus]}</p>
-      </div>
-    </div>
-  </div>
-    `
+    const card = recordCardTemplate.clone()
+    card.find('.clinic-link').attr('href', `/clinic.html#${row.petId}`)
+    card.find('.pet-icon').attr('src', `/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png`)
+    card.find('.record-code').val(row.recordCode)
+    card.find('.record-date').val(row.recordCreatedAt.split('T')[0])
+    card.find('.pet-name').val(row.petName)
+    card.find('.vet-fullname').val(row.vetFullname)
+    card.find('.owner-fullname').val(row.ownerFullname)
+    $('#unarchive-search-result').append(card)
   })
-  $('#unarchive-search-result').html(html)
-  console.log('search results: ', data)
 }

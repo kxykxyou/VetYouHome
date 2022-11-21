@@ -1,3 +1,7 @@
+if (!localStorage.vyh_token) {
+  location.href = '/signin.html'
+}
+
 const inpatientsContainerTag = $('#charged-inpatients-container')
 const headers = {
   'Content-Type': 'application/json',
@@ -35,7 +39,7 @@ async function initInpatientsRender () {
 }
 
 async function initRenderSwapCageModal () {
-  const { data } = await (await fetch('/api/1.0/cages/all')).json()
+  const { data } = await (await fetch('/api/1.0/cages/all', { headers })).json()
   allCageStatus = data
   allCageStatus.sort((cage1, cage2) => cage1.cageName - cage2.cageName)
   // console.log('allCageStatus', allCageStatus)
@@ -56,7 +60,7 @@ async function initRenderSwapCageModal () {
 }
 
 async function initRenderInpatients () {
-  const { data } = await (await fetch('/api/1.0/inpatients/charged')).json()
+  const { data } = await (await fetch('/api/1.0/inpatients/charged', { headers })).json()
   allChargedInpatients = data
   console.log('charged inpatients: ', data)
   // 把 fetch的結果丟到inpatientsContainer中
@@ -235,7 +239,7 @@ async function swapCage () {
 }
 
 async function modalUpdateCurrentInpatientOrder (inpatientId) {
-  const { data } = await (await fetch(`/api/1.0/inpatients/id/${inpatientId}/inpatientorders/complex/today`)).json()
+  const { data } = await (await fetch(`/api/1.0/inpatients/id/${inpatientId}/inpatientorders/complex/today`, { headers })).json()
   const complexInpatientOrder = data
   console.log('complexInpatientOrder: ', complexInpatientOrder)
 

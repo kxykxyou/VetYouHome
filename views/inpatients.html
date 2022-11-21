@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <script
       src="https://code.jquery.com/jquery-3.6.1.js"
       integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
@@ -136,36 +137,62 @@
               <a class="nav-link" href="/inpatients.html">住院部</a>
             </li>
           </ul>
+          <div class="nav-item dropdown align-self-end">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="user-dropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #6c757d"
+            >
+              <img
+                id="user-icon"
+                class="img-fluid"
+                src="/images/user.png"
+                style="width: 36px; height: 36px"
+                alt=""
+              />
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#" onclick="signout()"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
-    <div id="subpage-changer" class="btn-group">
-      <input
-        type="radio"
-        class="btn-check"
-        name="options"
-        id="charged-inpatient-btn"
-        autocomplete="off"
-        checked
-        onchange="showChargedInpatients()"
-      />
-      <label class="btn btn-outline-primary" for="charged-inpatient-btn"
-        >住院動物</label
-      >
+    <main>
+      <div id="subpage-changer" class="btn-group container-fluid">
+        <input
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="charged-inpatient-btn"
+          autocomplete="off"
+          checked
+          onchange="showChargedInpatients()"
+        />
+        <label class="btn btn-outline-primary" for="charged-inpatient-btn"
+          >住院動物</label
+        >
 
-      <input
-        type="radio"
-        class="btn-check"
-        name="options"
-        id="history-search-btn"
-        autocomplete="off"
-        onchange="showHistoryInpatientSearch()"
-      />
-      <label class="btn btn-outline-primary" for="history-search-btn"
-        >歷史住院搜尋</label
-      >
-    </div>
-    <main class="mx-5">
+        <input
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="history-search-btn"
+          autocomplete="off"
+          onchange="showHistoryInpatientSearch()"
+        />
+        <label class="btn btn-outline-primary" for="history-search-btn"
+          >歷史住院搜尋</label
+        >
+      </div>
       <!-- 所有分區容器 -->
       <div
         id="charged-inpatients-container"
@@ -177,7 +204,7 @@
         class="charged-inpatients container-fluid my-5"
         style="display: none"
       >
-        <div id="history-search-bar" class="container row d-flex">
+        <div id="history-search-bar" class="container d-flex">
           <div class="form-group date-range-group">
             <label>出院時間:</label>
             <div class="input-group">
@@ -382,4 +409,12 @@
   <script src="/js/inpatient-search.js"></script>
   <script src="/js/inpatient-subpage-control.js"></script>
   <script src="/js/datepicker.js"></script>
+  <script type="text/javascript">
+    const user = JSON.parse(localStorage.user);
+    $("#user-dropdown").append(user.fullname);
+    async function signout() {
+      localStorage.clear();
+      location.href = "/signin.html";
+    }
+  </script>
 </html>
