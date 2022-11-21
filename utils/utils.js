@@ -41,7 +41,7 @@ async function authUser (req, res, next) {
       return res.status(401).json({ error: 'Unauthorized' })
     }
     req.user = result.user
-    next()
+    next() // 有正確的token就往下個middleware去
   } catch (err) {
     console.log('Auth user error: ', err)
     return res.status(401).json({ error: 'Unauthorized' })
