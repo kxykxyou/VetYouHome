@@ -308,7 +308,8 @@ async function generateFakeData () {
     for (let j = 1; j < 4; j++) {
       const recordExam = {
         record_id: i,
-        exam_id: Math.floor(Math.random() * 100) + 1,
+        // exam_id: Math.floor(Math.random() * 100) + 1,
+        name: '檢查名稱' + i + j,
         file_path: 'file_path',
         comment: Math.floor(Math.random() * 2) ? '檢驗備註: ' + i + ' - ' + j : ''
       }
@@ -321,8 +322,8 @@ async function generateFakeData () {
 
       const recordTreatment = {
         record_id: i,
-        treatment_id: Math.floor(Math.random() * 100) + 1,
-
+        // treatment_id: Math.floor(Math.random() * 100) + 1,
+        name: '治療名稱' + i + j,
         comment: Math.floor(Math.random() * 2) ? '治療備註: ' + i + ' - ' + j : ''
       }
       recordExams.push(recordExam)
@@ -351,11 +352,12 @@ async function generateFakeData () {
     inpatientOrderDetails.push(inpatientOrderDetail)
   }
 
-  for (let i = 1; i < 1001; i++) {
+  for (let i = 1; i < 1501; i++) {
     for (let j = 1; j <= (Math.floor(Math.random() * 3) + 1); j++) {
       const medicationDetail = {
         record_medication_id: i,
-        medicine_id: Math.floor(Math.random() * 100) + 1,
+        // medicine_id: Math.floor(Math.random() * 100) + 1,
+        name: '藥品名稱' + i + j,
         dose: (Math.floor(Math.random() * 20) + 1) * 5,
         frequency: Math.floor(Math.random() * 3) + 1,
         day: Math.floor(Math.random() * 14) + 1
