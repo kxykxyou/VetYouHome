@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <!-- jquery -->
     <script
       src="https://code.jquery.com/jquery-3.6.1.js"
@@ -62,17 +63,45 @@
               <a class="nav-link" href="/inpatients.html">住院部</a>
             </li>
           </ul>
+          <div class="nav-item dropdown align-self-end">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="user-dropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #6c757d"
+            >
+              <img
+                id="user-icon"
+                class="img-fluid"
+                src="/images/user.png"
+                style="width: 36px; height: 36px"
+                alt=""
+              />
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#" onclick="signout()"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
-        <a class="navbar-brand" class="align-self-end" href="/index.html">
-          <img
-            id="user-icon"
-            class="img-fluid"
-            src="/images/user.png"
-            style="width: 36px; height: 36px"
-            alt=""
-          />
-        </a>
       </div>
     </nav>
+    <main>
+      <div class="container-fluid"></div>
+    </main>
   </body>
+  <script type="text/javascript">
+    const user = JSON.parse(localStorage.user);
+    $("#user-dropdown").append(user.fullname);
+    async function signout() {
+      localStorage.clear();
+      location.href = "/signin.html";
+    }
+  </script>
 </html>
