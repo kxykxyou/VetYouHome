@@ -92,6 +92,24 @@
       integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
       crossorigin="anonymous"
     ></script>
+
+    <!-- jsGrid -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"
+    />
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"
+    ></script>
+
     <title>VetYouHome</title>
   </head>
   <body>
@@ -329,10 +347,33 @@
               aria-label="Close"
             ></button>
           </div>
-          <div id="inpatientorder-current-cage" class="modal-body"></div>
-          <div id="inpatientorder-table" class="modal-body"></div>
+          <!-- <div id="inpatientorder-current-cage" class="modal-body"></div> -->
+          <div id="inpatientorder-table"></div>
           <div class="modal-footer"></div>
         </div>
+      </div>
+    </div>
+    <div class="tepmlates" hidden>
+      <!-- inpatient header; key: inpatient_order.id -->
+      <div
+        id="inpatient-order-header-template"
+        key=""
+        class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
+        hidden
+      >
+        <div class="row inpatientorder-header mx-1">
+          <button
+            type="button"
+            class="btn btn-primary my-1 toggle-btn"
+            data-bs-toggle="button"
+            autocomplete="off"
+            aria-pressed="true"
+            onclick="singleInpatientOrderDisplayTurn(this)"
+          >
+            <div class="fs-3 title"></div>
+          </button>
+        </div>
+        <div key="" class="inpatientorder-content display"></div>
       </div>
     </div>
   </body>
