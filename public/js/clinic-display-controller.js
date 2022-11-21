@@ -2,9 +2,9 @@
 const sideContainerTagsMap = {
   left: [
     $('#left-records-container'),
-    $('#left-inpatientorders-container'),
-    $('#left-create-record-container'),
-    $('#left-create-inpatientorder-container')
+    $('#left-inpatientorders-container')
+    // $('#left-create-record-container'),
+    // $('#left-create-inpatientorder-container')
   ],
   right: [
     $('#right-records-container'),
