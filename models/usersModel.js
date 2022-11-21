@@ -1,7 +1,7 @@
 const { db } = require('./mysql')
 const argon2 = require('argon2')
 const jwt = require('jsonwebtoken')
-const { TOKEN_EXPIRE, TOKEN_SECRET, ARGON2_SALT } = process.env
+const { TOKEN_EXPIRE, JWT_SECRET, ARGON2_SALT } = process.env
 
 async function queryUserCellphone (cellphone) {
   const [dbCellphone] = await db.execute('SELECT cellphone FROM user WHERE cellphone = ?', [cellphone])
@@ -29,7 +29,7 @@ async function signup (fullname, email, password, cellphone) {
         email,
         cellphone
       },
-      TOKEN_SECRET
+      JWT_SECRET
     )
     user.access_token = accessToken
     const [result] = await dbConnection.execute('INSERT INTO user (hashed_password, fullname, cellphone, email) VALUES (?, ?, ?, ?)', [
@@ -39,7 +39,7 @@ async function signup (fullname, email, password, cellphone) {
       email
     ])
     user.id = result.insertId
-    dbConnection.commit()
+    await dbConnection.commit()
     return user
   } catch (err) {
     console.log(err)
@@ -49,8 +49,18 @@ async function signup (fullname, email, password, cellphone) {
   }
 }
 
+async function signin (cellphone, password) {
+  const [user] = await db.execute('SELECT * FROM user WHERE cellphone = ?', [cellphone])
+  if (!user[0] || !(await argon2.verify(user[0].hashed_password, password))) {
+    return { error: 'Incorrect cellphone or password', status_code: 401 }
+  }
+  delete user[0].hashed_password
+  return { user: user[0] }
+}
+
 module.exports = {
   queryUserCellphone,
   queryUserEmail,
-  signup
+  signup,
+  signin
 }

@@ -1,5 +1,6 @@
 const usersModel = require('../models/usersModel')
 const validator = require('validator')
+const jwt = require('jsonwebtoken')
 
 async function signup (req, res, next) {
   let { fullname } = req.body
@@ -57,11 +58,32 @@ async function signup (req, res, next) {
 };
 
 async function signin (req, res, next) {
+  const { cellphone, password } = req.body
+  if (!cellphone || !password) {
+    return res.status(400).json({ message: 'cellphone or password is required' })
+  }
 
+  const result = await usersModel.signin(cellphone, password)
+  if (result.error) {
+    return res.status(result.status_code).json({ message: result.error })
+  }
+
+  const exp = Math.floor(Date.now() / 1000) + 3600 * 24 * 30 // 一小時後失效 ; in seconds
+  const payload = {
+    user: result.user,
+    exp
+  }
+
+  const accessToken = await jwt.sign(payload, process.env.JWT_SECRET)
+
+  return res.status(200).json({
+    user: result.user,
+    accessToken,
+    tokenExpirationIn: exp
+  })
 }
 
 async function getUserProfile (req, res, next) {
-
 }
 
 module.exports = {
