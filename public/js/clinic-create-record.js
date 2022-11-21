@@ -207,5 +207,11 @@ async function createRecord () {
     headers,
     body: JSON.stringify(record)
   })
-  console.log(response)
+  if (response.status !== 200) {
+    console.log(response)
+    return alert('建立病歷失敗！')
+  }
+
+  alert('建立病歷成功')
+  return location.reload()
 }

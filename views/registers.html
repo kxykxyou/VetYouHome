@@ -94,6 +94,9 @@
     </nav>
   </body>
   <script type="text/javascript">
+    if (!localStorage.user) {
+      location.href = "/signin.html";
+    }
     const user = JSON.parse(localStorage.user);
     $("#user-dropdown").append(user.fullname);
     async function signout() {
