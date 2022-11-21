@@ -75,6 +75,8 @@ speciesSelectionTag.on('change', () => {
 })
 
 async function searchRecords () {
+  // empty previous search results
+  $('#history-search-result').empty()
   // Get query condition and make it to query string
   const dates = $('#date-range').val()
   const [dateStart, dateEnd] = dates ? dates.replaceAll('/', '-').split(' - ') : ['', '']
@@ -128,6 +130,9 @@ async function searchRecords () {
 }
 
 async function searchUnarchiveRecords () {
+  // clear previous search results
+  $('#unarchive-search-result').empty()
+
   const vetId = $('#unarchive-vet-selector option:selected').attr('key')
   const queryPairs = {
     vetId,
