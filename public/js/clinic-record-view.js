@@ -1,7 +1,6 @@
 if (!localStorage.vyh_token) {
   location.href = '/signin.html'
 }
-const url = location.href
 // let cacheRecords // id: complex record objects
 const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
 let petInfo
