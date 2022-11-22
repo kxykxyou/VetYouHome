@@ -448,18 +448,8 @@
     </div>
   </body>
   <link rel="stylesheet" href="/css/record-search.css" />
+  <script src="/js/general-control.js"></script>
   <script src="/js/record-search.js"></script>
   <script src="/js/datepicker.js"></script>
   <script src="/js/record-subpage-control.js"></script>
-  <script type="text/javascript">
-    if (!localStorage.user) {
-      location.href = "/signin.html";
-    }
-    const user = JSON.parse(localStorage.user);
-    $("#user-dropdown").append(user.fullname);
-    async function signout() {
-      localStorage.clear();
-      location.href = "/signin.html";
-    }
-  </script>
 </html>

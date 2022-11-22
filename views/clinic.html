@@ -874,19 +874,11 @@
     </div>
   </body>
   <link rel="stylesheet" href="/css/clinic-drafts/clinic-record-view.css" />
+  <script src="/js/general-control.js"></script>
   <script src="/js/clinic-record-view.js"></script>
   <script src="/js/clinic-inpatientorder-view.js"></script>
   <script src="/js/clinic-display-controller.js"></script>
   <script src="/js/clinic-create-record.js"></script>
   <script src="/js/clinic-create-inpatientorder.js"></script>
   <script src="/js/datepicker.js"></script>
-  <script type="text/javascript">
-    if (!localStorage.user) {location.href = "/signin.html";}
-    const user = JSON.parse(localStorage.user);
-    $("#user-dropdown").append(user.fullname);
-    async function signout() {
-      localStorage.clear();
-      location.href = "/signin.html";
-    }
-  </script>
 </html>

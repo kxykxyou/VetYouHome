@@ -96,15 +96,5 @@
       <div class="container-fluid"></div>
     </main>
   </body>
-  <script type="text/javascript">
-    if (!localStorage.user) {
-      location.href = "/signin.html";
-    }
-    const user = JSON.parse(localStorage.user);
-    $("#user-dropdown").append(user.fullname);
-    async function signout() {
-      localStorage.clear();
-      location.href = "/signin.html";
-    }
-  </script>
+  <script src="/js/general-control.js"></script>
 </html>
