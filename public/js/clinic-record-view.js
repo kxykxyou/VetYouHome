@@ -172,7 +172,8 @@ async function deleteRecord (thisTag) {
     console.log(response)
     return alert('刪除病歷失敗!')
   }
-  $(thisTag).parents('.record-container').remove()
+  const recordId = $(thisTag).parents('.record-container').attr('key')
+  $(`.record-container[key=${recordId}]`).remove()
   return alert('刪除病歷成功!')
 }
 
@@ -189,7 +190,7 @@ async function renderExamTable (recordId) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data,
 
@@ -282,7 +283,7 @@ async function renderMedicationAndTable (recordId) {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: true,
+        paging: false,
 
         data: medication.details,
 
@@ -351,7 +352,7 @@ function addMedication (addMedicationBtn) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newMedicationsMap[newMedicationKey].details,
 
@@ -465,7 +466,7 @@ function insertMedicationTable (sortedMedications) {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: true,
+        paging: false,
 
         data: medication.details,
 
@@ -527,7 +528,7 @@ async function renderTreatmentTable (recordId) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data,
 

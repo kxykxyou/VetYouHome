@@ -80,7 +80,7 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: complexInpatientOrder.details,
 
@@ -150,7 +150,7 @@ async function insertInpatientOrderTable (inpatientOrderId, details) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: details,
 
@@ -185,7 +185,8 @@ async function deleteInpatientOrder (thisTag) {
     return alert('刪除醫囑失敗!')
   }
   alert('刪除醫囑成功!')
-  return $(thisTag).parents('.inpatientorder-container').remove()
+  const inpatientOrderId = $(thisTag).parents('.inpatientorder-container').attr('key')
+  return $(`.inpatientorder-container[key=${inpatientOrderId}]`).remove()
 }
 
 function editInpatientOrder (thisTag) {

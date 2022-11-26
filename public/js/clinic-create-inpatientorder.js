@@ -29,7 +29,7 @@ async function renderCreateInpatientOrder () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newInpatientOrder.details,
 

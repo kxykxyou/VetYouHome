@@ -254,7 +254,7 @@ async function modalUpdateCurrentInpatientOrder (inpatientId) {
     inserting: false,
     editing: false,
     sorting: true,
-    paging: true,
+    paging: false,
 
     data: complexInpatientOrder.details,
 

@@ -44,7 +44,7 @@ async function initRenderCreateRecord () {
 //       inserting: true,
 //       editing: true,
 //       sorting: true,
-//       paging: true,
+//       paging: false,
 
 //       data: newMedications[medicationCount].details,
 
@@ -83,7 +83,7 @@ async function renderNewExamTable () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newExams,
 
@@ -124,7 +124,7 @@ function addNewMedication (addNewMedicationBtn) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newCreateMedicationsMap[newMedicationKey].details,
 
@@ -151,7 +151,7 @@ async function renderNewTreatmentTable () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newTreatments,
 
