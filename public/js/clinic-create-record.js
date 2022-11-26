@@ -89,7 +89,7 @@ async function renderNewExamTable () {
 
       fields: [
         // { name: 'examId', type: 'number', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
+        { title: '名稱', name: 'examName', type: 'autocompleteExam', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
         // { title: '原價', name: 'originalPrice', type: 'number', editing: false },
         // { name: 'price', type: 'number', editing: true },
@@ -129,14 +129,29 @@ function addNewMedication (addNewMedicationBtn) {
       data: newCreateMedicationsMap[newMedicationKey].details,
 
       fields: [
+<<<<<<< Updated upstream
         // { name: 'id', type: 'number', visible: false, editing: false },
         // { name: 'medicineId', type: 'number', visible: false, editing: false },
         { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
         { title: '劑量', name: 'dose', type: 'number', editing: true },
+=======
+        { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
+        { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
+>>>>>>> Stashed changes
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (!EMTContainer.allMedicineNames.includes(item.medicineName)) {
+            alert('不存在的藥品！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        }
+      }
     }
   )
   $(addNewMedicationBtn).before(container)
@@ -156,14 +171,10 @@ async function renderNewTreatmentTable () {
       data: newTreatments,
 
       fields: [
-        // { name: 'treatmentId', type: 'number', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '說明', name: 'comment', type: 'text', editing: true },
-        // { title: '原價', name: 'originalPrice', type: 'number', editing: false },
-        // { name: 'price', type: 'number', editing: true },
-        // { title: '數量', name: 'quantity', type: 'number', editing: true },
-        // { title: '折扣', name: 'discount', type: 'number', editing: true },
-        // { title: '小計', name: 'subtotal', type: 'number', editing: false },
+        { title: '藥品', name: 'name', type: 'autocompleteMedicine', editing: true, validate: 'required' },
+        { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
+        { title: '頻率', name: 'frequency', type: 'number', editing: true },
+        { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
       ]
     }

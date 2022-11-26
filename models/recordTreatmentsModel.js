@@ -1,13 +1,35 @@
 const { db } = require('./mysql')
 
 async function getRecordTreatmentsByRecordId (id) {
-  const [data] = await db.execute('SELECT * FROM record_treatment WHERE record_id = ?', [id])
+  const [data] = await db.execute(`
+  SELECT 
+    rt.id as recordTreatmentId,
+    t.name as treatmentName,
+    t.price as price,
+    rt.quantity as quantity,
+    rt.discount as discount,
+    rt.subtotal as subtotal,
+    rt.comment as comment
+  FROM record_treatment as rt
+  JOIN treatment as t on rt.treatment_id = t.id
+  WHERE record_id = ?`
+  , [id])
   return { data }
 }
 
-async function createRecordTreatment (recordId, body) {
+async function createRecordTreatment (body) {
   try {
-    const [result] = await db.execute('INSERT INTO record_treatment (record_id, name, comment) VALUES (?, ?, ?)', [recordId, body.name, body.comment])
+    const [treatment] = await db.execute('SELECT id FROM treatment WHERE name = ?', [body.treatmentName])
+    if (!treatment.length) {
+      return { error: 'invalid treatment name', status_code: 400 }
+    }
+    const treatmentId = treatment[0].id
+    const [result] = await db.execute(`
+    INSERT INTO record_treatment 
+    (record_id, treatment_id, comment) 
+    VALUES 
+    (?, ?, ?)`
+    , [body.recordId, treatmentId, body.comment])
     return { id: result.insertId }
   } catch (err) {
     console.log(err)
@@ -17,23 +39,29 @@ async function createRecordTreatment (recordId, body) {
 
 async function deleteRecordTreatment (body) {
   try {
-    await db.execute('DELETE FROM record_treatment WHERE id = ?', [body.id])
+    await db.execute('DELETE FROM record_treatment WHERE id = ?', [body.recordTreatmentId])
   } catch (err) {
     console.log(err)
-    return { error: err.message }
+    return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}
 }
 
 async function updateRecordTreatment (body) {
   try {
+    const [treatment] = await db.execute('SELECT id FROM treatment WHERE name = ?', [body.treatmentName])
+    if (!treatment.length) {
+      return { error: 'invalid treatment name', status_code: 400 }
+    }
+    const treatmentId = treatment[0].id
     await db.execute(`
     UPDATE record_treatment SET 
-    name = ?, comment = ?
-    WHERE id = ?`, [body.name, body.comment, body.id])
+    treatment_id = ?, quantity = ?, discount = ?, subtotal = ?, comment = ?
+    WHERE id = ?`,
+    [treatmentId, body.quantity, body.discount, body.subtotal, body.comment, body.recordTreatmentId])
   } catch (err) {
     console.log(err)
-    return { error: err.message }
+    return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}
 }
