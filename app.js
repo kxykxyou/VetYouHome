@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, 'views')))
 app.use('/api/' + process.env.API_VERSION, require('./routes/users'))
 
 app.use(utils.wrapAsync(utils.authUser))
+app.use('/emt-data/', express.static(path.join(__dirname, 'emt-data')))
 
 app.use('/api/' + process.env.API_VERSION, [
   require('./routes/records'),

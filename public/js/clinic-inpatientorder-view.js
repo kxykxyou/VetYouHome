@@ -21,29 +21,6 @@ function makeSingleInpatientOrderHeaderHtml (inpatientOrder) {
     `${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}`
   )
   return headerTemplate
-  // return `
-  //         <!-- key: inpatient_order.id -->
-  //         <div
-  //             key="${inpatientOrder.inpatientOrderId}"
-  //             class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
-  //             style="display: block"
-  //             >
-  //             <div class="row inpatientorder-header mx-1">
-  //                 <button
-  //                 type="button"
-  //                 class="btn btn-primary my-1 toggle-btn"
-  //                 data-bs-toggle="button"
-  //                 autocomplete="off"
-  //                 aria-pressed="true"
-  //                 onclick="singleInpatientOrderDisplayTurn(this)"
-  //                 >
-  //                 <div class="title">${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}</h3>
-  //                 </button>
-  //             </div>
-  //             <div class="inpatientorder-content display">
-  //             </div>
-  //         </div>
-  //        `
 }
 
 async function singleInpatientOrderDisplayTurn (thisTag) {

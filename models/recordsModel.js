@@ -113,54 +113,80 @@ async function searchRecords (queryPairs) {
 async function createRecord (vetId, body) {
   const { subjective, objective, assessment, plan, exams, medications, treatments, petId } = body
   const dbConnection = await db.getConnection()
-  // let result
+  await dbConnection.beginTransaction()
   try {
-    await dbConnection.beginTransaction()
-    const [recordInsertResult] = await dbConnection.execute(`
+    const [record] = await dbConnection.execute(`
       INSERT INTO record (code, vet_id, pet_id, subjective, objective, assessment, plan)
       VALUES (?, ?, ?, ?, ?, ?, ?)
       `, ['REC' + '22' + randomCodeGenerator(5), vetId, petId, subjective, objective, assessment, plan])
-    // console.log('recordInsertResult: ', recordInsertResult)
-    console.log('recordInsertResult: ', recordInsertResult)
-    const recordId = recordInsertResult.insertId
+    console.log('record: ', record)
+    const recordId = record.insertId
     const examInsertPromises = exams.map(async (exam) => {
-      return dbConnection.execute('INSERT INTO record_exam (record_id, name, comment) VALUES (?, ?, ?)', [recordId, exam.name, exam.comment])
+      const [examQuery] = await dbConnection.execute('SELECT id FROM exam WHERE name = ?', [exam.examName])
+      const examId = examQuery[0].id
+      await dbConnection.execute(`
+      INSERT INTO record_exam 
+      (record_id, exam_id, comment, file_path) 
+      VALUES 
+      (?, ?, ?, ?)`
+      , [recordId, examId, exam.comment, ''])
     })
     console.log('after exam')
     const treatmentInsertPromises = treatments.map(async (treatment) => {
-      return dbConnection.execute('INSERT INTO record_treatment (record_id, name, comment) VALUES (?, ?, ?)', [recordId, treatment.name, treatment.comment])
+      const [treatmentQuery] = await dbConnection.execute('SELECT id FROM treatment WHERE name = ?', [treatment.treatmentName])
+      const treatmentId = treatmentQuery[0].id
+      await dbConnection.execute(`
+      INSERT INTO record_treatment 
+      (record_id, treatment_id, comment) 
+      VALUES 
+      (?, ?, ?)`
+      , [recordId, treatmentId, treatment.comment])
     })
     console.log('after treatment')
-    const medicationDetailInsertPromises = []
 
+    const medicationDetailInsertPromises = []
     Object.values(medications).forEach(async (medication) => {
-      const [result] = await dbConnection.execute(`
+      const [medicationResult] = await dbConnection.execute(`
         INSERT INTO record_medication
         (record_id, name, type, comment)
         VALUES
-        (?, ?, ?, ?)`, [recordId, medication.name, medication.type, medication.comment])
-      const medicationId = result.insertId
-      const insertMedicationDetailPromises = medication.details.map(detail => {
-        return dbConnection.execute(`
+        (?, ?, ?, ?)`,
+      [recordId, medication.name, medication.type, medication.comment])
+      const medicationId = medicationResult.insertId
+      const insertMedicationDetailPromises = medication.details.map(async (detail) => {
+        const [medicineQuery] = await dbConnection.execute('SELECT id FROM medicine WHERE name = ?', [detail.medicineName])
+        const medicineId = medicineQuery[0].id
+        console.log(detail)
+        await dbConnection.execute(`
           INSERT INTO medication_detail
-          (record_medication_id, name, dose, frequency, day)
+          (record_medication_id, medicine_id, dose, frequency, day)
           VALUES
           (?, ?, ?, ?, ?)
-          `, [medicationId, detail.name, detail.dose, detail.frequency, detail.day])
+          `, [medicationId, medicineId, detail.medicationDose, detail.frequency, detail.day])
       })
       medicationDetailInsertPromises.push(...insertMedicationDetailPromises)
     })
 
     console.log('prepared to promise.all')
-
+    let insertionSuccess = true
     await Promise.all(examInsertPromises)
+      .then(res => console.log('examInsertPromises result', res))
+      .catch((res) => { insertionSuccess = false })
     await Promise.all(treatmentInsertPromises)
+      .then(res => console.log('treatmentInsertPromises result', res))
+      .catch((res) => { insertionSuccess = false })
     await Promise.all(medicationDetailInsertPromises)
-    await dbConnection.commit()
+      .then(res => console.log('medicationDetailInsertPromises', res))
+      .catch((res) => { insertionSuccess = false })
+    if (insertionSuccess) {
+      await dbConnection.commit()
+    } else {
+      throw new Error('insertion failed')
+    }
   } catch (err) {
     console.log('error happened while creating records', err)
     await dbConnection.rollback()
-    return { error: err }
+    return { error: err, status_code: 500 }
   } finally {
     await dbConnection.release()
   }

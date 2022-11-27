@@ -49,19 +49,13 @@ async function createInpatientOrder () {
   newInpatientOrder.date = $('input[name="inpatientorder-date"]').val().replaceAll('/', '-')
   newInpatientOrder.comment = $('#new-inpatientorder-comment').val()
   console.log('newInpatientOrder: ', newInpatientOrder)
-  // const headers = {
-  //   'Content-Type': 'application/json',
-  //   Accept: 'application/json',
-  //   Authorization: `Bearer ${localStorage.vyh_token}`
-  // }
   const response = await fetch('/api/1.0/clinic/inpatientorders', {
     method: 'POST',
     headers,
     body: JSON.stringify(newInpatientOrder)
   })
   if (response.status !== 200) {
-    alert('建立醫囑失敗: ', response.message)
-    return
+    return alert('建立醫囑失敗: ', response.message)
   }
   alert('建立醫囑成功！')
   return location.reload()

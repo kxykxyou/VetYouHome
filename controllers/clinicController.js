@@ -4,28 +4,27 @@ const recordMedicationsModel = require('../models/recordMedicationsModel')
 const recordTreatmentsModel = require('../models/recordTreatmentsModel')
 const petsModel = require('../models/petsModel')
 const inpatientsModel = require('../models/inpatientsModel')
-const methodTargetFunctionMap = {
-  post: {
-    records: recordsModel.createRecord,
-    inpatientorders: inpatientsModel.createInpatient,
-    inpatients: inpatientsModel.createInpatient
-  },
-  delete: {
-    records: recordsModel.deleteRecord,
-    inpatientorders: inpatientsModel.deleteInpatientOrder,
-    recordexams: recordExamsModel.deleteRecordExam,
-    recordmedications: recordMedicationsModel.deleteRecordMedication,
-    medicationdetails: recordMedicationsModel.deleteMedicationDetail,
-    recordtreatments: recordTreatmentsModel.deleteRecordTreatment
-  },
-  patch: {
-    records: recordsModel.updateRecord,
-    recordexams: recordsModel.updateRecordExam,
-    medicationdetails: recordMedicationsModel.updateMedicationDetail,
-    recordtreatments: recordTreatmentsModel.updateRecordTreatment
-  }
-
-}
+// const methodTargetFunctionMap = {
+//   post: {
+//     records: recordsModel.createRecord,
+//     inpatientorders: inpatientsModel.createInpatient,
+//     inpatients: inpatientsModel.createInpatient
+//   },
+//   delete: {
+//     records: recordsModel.deleteRecord,
+//     inpatientorders: inpatientsModel.deleteInpatientOrder,
+//     recordexams: recordExamsModel.deleteRecordExam,
+//     recordmedications: recordMedicationsModel.deleteRecordMedication,
+//     medicationdetails: recordMedicationsModel.deleteMedicationDetail,
+//     recordtreatments: recordTreatmentsModel.deleteRecordTreatment
+//   },
+//   patch: {
+//     records: recordsModel.updateRecord,
+//     recordexams: recordsModel.updateRecordExam,
+//     medicationdetails: recordMedicationsModel.updateMedicationDetail,
+//     recordtreatments: recordTreatmentsModel.updateRecordTreatment
+//   }
+// }
 
 // createRecord,
 // createInpatientOrder,
@@ -220,9 +219,32 @@ async function createRecord (req, res, next) {
   // const { subjective, objective, assessment, plan, exams, medications, treatments, petId } = req.body
   if (!req.body.petId) { return res.status(400).json({ error: 'no petId provided' }) }
   try {
+    // check exam, medication, treatment format and set default value if undefined
+    // TODO: 可以載入emt data 由後端檢查是否存在已登陸的資料當中
+    // TODO: check exam
+
+    // TODO: check treatment
+
+    // check medication
+    Object.values(req.body.medications).forEach(medication => {
+      if (!medication.name || medication.name === '') {
+        return res.status(400).json({ error: `invalid medication name provided: ${medication.name}` })
+      }
+      medication.details.forEach(detail => {
+        if (!detail.medicineName) {
+          return res.status(400).json({ error: `invalid medicine name provided: ${detail.medicineName}` })
+        }
+        detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
+        detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
+        detail.day = detail.day !== undefined ? detail.day : 0
+        detail.quantity = detail.quantity !== undefined ? detail.quantity : 1
+        detail.discount = detail.discount !== undefined ? detail.discount : 1
+        detail.subtotal = detail.subtotal !== undefined ? detail.subtotal : 0
+      })
+    })
     const result = await recordsModel.createRecord(req.user.id, req.body)
-    if (result.error) {
-      return res.status(500).json({ error: result.error })
+    if (result.status_code) {
+      return res.status(result.status_code).json({ error: result.error })
     }
   } catch (err) {
     console.log(err)
@@ -232,51 +254,65 @@ async function createRecord (req, res, next) {
 }
 
 async function createRecordExam (req, res, next) {
-  const { recordId } = req.body
+  const { recordId, examName } = req.body
   console.log(req.body)
-  if (!recordId) { return res.status(400).json({ error: 'no record id provided' }) }
-  const result = await recordExamsModel.createRecordExam(recordId, req.body)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+  if (!recordId || !examName) { return res.status(400).json({ error: 'invalid record id or exam name provided' }) }
+
+  const result = await recordExamsModel.createRecordExam(req.body)
+
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
-  return res.status(200).json({ ...req.body, id: result.id })
+  return res.status(200).json({ ...req.body, recordExamId: result.id })
 }
 
 async function createRecordMedication (req, res, next) {
   const { recordId } = req.body
   console.log(req.body)
-  if (!recordId) { return res.status(400).json({ error: 'no record id provided' }) }
-  const result = await recordMedicationsModel.createRecordMedication(recordId, req.body)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+  if (!recordId) { return res.status(400).json({ error: 'invalid record id provided' }) }
+  req.body.details.forEach(detail => {
+    detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
+    detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
+    detail.day = detail.day !== undefined ? detail.day : 0
+    detail.quantity = detail.quantity !== undefined ? detail.quantity : 1
+    detail.discount = detail.discount !== undefined ? detail.discount : 1
+    detail.subtotal = detail.subtotal !== undefined ? detail.subtotal : 0
+  })
+  const result = await recordMedicationsModel.createRecordMedication(req.body)
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
   return res.status(200).json({ ...req.body, id: result.id })
 }
 
 async function createMedicationDetail (req, res, next) {
-  const { medicationId } = req.body
+  const { medicationId, medicineName } = req.body
   console.log(req.body)
-  if (!medicationId) { return res.status(400).json({ error: 'no medication id provided' }) }
-  const result = await recordMedicationsModel.createMedicationDetail(medicationId, req.body)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+  if (!medicationId || !medicineName) { return res.status(400).json({ error: 'invalid medication id or medicine name provided' }) }
+  const body = req.body
+  body.medicationDose = body.medicationDose !== undefined ? body.medicationDose : 0
+  body.frequency = body.frequency !== undefined ? body.frequency : 0
+  body.day = body.day !== undefined ? body.day : 0
+  body.quantity = body.quantity !== undefined ? body.quantity : 1
+  body.discount = body.discount !== undefined ? body.discount : 1
+  body.subtotal = body.subtotal !== undefined ? body.subtotal : 0
+
+  const result = await recordMedicationsModel.createMedicationDetail(req.body)
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
-  return res.status(200).json({ ...req.body, id: result.id })
+  return res.status(200).json({ ...req.body, medicationDetailId: result.id })
 }
 
 async function createRecordTreatment (req, res, next) {
-  const { recordId } = req.body
+  const { recordId, treatmentName } = req.body
   console.log(req.body)
-  if (!recordId) { return res.status(400).json({ error: 'no record id provided' }) }
-  const result = await recordTreatmentsModel.createRecordTreatment(recordId, req.body)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+  if (!recordId || !treatmentName) { return res.status(400).json({ error: 'invalid record id or treatment name provided' }) }
+  const result = await recordTreatmentsModel.createRecordTreatment(req.body)
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
-  return res.status(200).json({ ...req.body, id: result.id })
+  return res.status(200).json({ ...req.body, recordTreatmentId: result.id })
 }
 
 async function createInpatientOrder (req, res, next) {
@@ -340,7 +376,7 @@ async function deleteInpatientOrder (req, res, next) {
 }
 
 async function deleteRecordExam (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.recordExamId)
   console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
@@ -365,7 +401,8 @@ async function deleteRecordMedication (req, res, next) {
 }
 
 async function deleteMedicationDetail (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.medicationDetailId)
+  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -377,7 +414,8 @@ async function deleteMedicationDetail (req, res, next) {
 }
 
 async function deleteRecordTreatment (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.recordTreatmentId)
+  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -414,12 +452,18 @@ async function updateRecord (req, res, next) {
 }
 
 async function updateRecordExam (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.recordExamId)
   console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
-  const result = await recordExamsModel.updateRecordExam(req.body)
+  const body = req.body
+  body.filePath = body.filePath !== undefined ? body.filePath : ''
+  body.quantity = body.quantity !== undefined ? body.quantity : 1
+  body.discount = body.discount !== undefined ? body.discount : 1
+  body.subtotal = body.subtotal !== undefined ? body.subtotal : 0
+  body.comment = body.comment !== undefined ? body.comment : ''
+  const result = await recordExamsModel.updateRecordExam(body)
   if (result.error) {
     return res.status(500).json({ error: 'Internal server error' })
   }
@@ -440,10 +484,18 @@ async function updateRecordMedication (req, res, next) {
 }
 
 async function updateMedicationDetail (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.medicationDetailId)
+  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
+  const body = req.body
+  body.medicationDose = body.medicationDose !== undefined ? body.medicationDose : 0
+  body.frequency = body.frequency !== undefined ? body.frequency : 0
+  body.day = body.day !== undefined ? body.day : 0
+  body.quantity = body.quantity !== undefined ? body.quantity : 1
+  body.discount = body.discount !== undefined ? body.discount : 1
+  body.subtotal = body.subtotal !== undefined ? body.subtotal : 0
   const result = await recordMedicationsModel.updateMedicationDetail(req.body)
   if (result.error) {
     return res.status(500).json({ error: 'Internal server error' })
@@ -452,14 +504,19 @@ async function updateMedicationDetail (req, res, next) {
 }
 
 async function updateRecordTreatment (req, res, next) {
-  const id = Number(req.body.id)
+  const id = Number(req.body.recordTreatmentId)
   console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
+  const body = req.body
+  body.quantity = body.quantity !== undefined ? body.quantity : 1
+  body.discount = body.discount !== undefined ? body.discount : 1
+  body.subtotal = body.subtotal !== undefined ? body.subtotal : 0
+  body.comment = body.comment !== undefined ? body.comment : ''
   const result = await recordTreatmentsModel.updateRecordTreatment(req.body)
-  if (result.error) {
-    return res.status(500).json({ error: 'Internal server error' })
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
   return res.status(200).json(req.body)
 }
