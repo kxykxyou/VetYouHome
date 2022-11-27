@@ -71,7 +71,7 @@ renderPetInfo(petId).then(() => {
 renderAllRecordHeaders(petId)
 
 async function renderPetInfo (petId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`, { headers })).json()
   petInfo = data
   const dayDiff = (Date.now() - (new Date(data.birthday))) / (24 * 60 * 60 * 1000)
   // console.log(dayDiff)
@@ -93,7 +93,7 @@ async function renderPetInfo (petId) {
 async function renderCreateInpatientModal () {
   // cage selection for creating inpatient
   $('#modal-pet-name').html(`寵物: ${petInfo.petName}`)
-  const { data } = await (await fetch('/api/1.0/cages/open')).json()
+  const { data } = await (await fetch('/api/1.0/cages/open', { headers })).json()
   // 籠位選擇html
   const cageSelection = $('#inpatient-target-cage')
   data.forEach(cage => {
@@ -124,7 +124,7 @@ async function createInpatient () {
 
 async function renderAllRecordHeaders (petId) {
   // get all records of target pet (not nested)
-  const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`, { headers })).json()
   // cacheRecords = data
   // const recordHeadersHtml = ''
 
@@ -137,7 +137,7 @@ async function renderAllRecordHeaders (petId) {
 
 async function renderBothSingleRecord (recordId) {
   // fetch 單一病歷 record & render
-  const { data } = await (await fetch(`/api/1.0/records/id/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/records/id/${recordId}`, { headers })).json()
   const record = data
   console.log('rendered record: ', record)
   cacheRenderedRecords[record.id] = record
@@ -220,7 +220,7 @@ async function deleteRecord (thisTag) {
 }
 
 async function renderExamTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`, { headers })).json()
   console.log('data: ', data)
   // const sourceData = ['auto1', 'auto2', 'auto3']
 
@@ -237,7 +237,7 @@ async function renderExamTable (recordId) {
       data,
 
       fields: [
-        { name: 'id', type: 'text', visible: false, editing: false },
+        { name: 'id', type: 'number', visible: false, editing: false },
         { title: '名稱', name: 'examName', type: 'autocompleteExam', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
         { type: 'control' }
@@ -286,35 +286,12 @@ async function renderExamTable (recordId) {
           })
         }
       }
-
-      // onItemInserting: async function (data) {
-      //   const body = {
-      //     recordId,
-      //     name: data.item.name,
-      //     comment: data.item.comment
-      //   }
-      //   console.log(body)
-      //   const headers = {
-      //     'Content-Type': 'application/json',
-      //     Accept: 'application/json',
-      //     Authorization: `Bearer ${localStorage.vyh_token}`
-      //   }
-      //   const response = await fetch('/api/1.0/clinic/recordexams', {
-      //     headers,
-      //     method: 'POST',
-      //     body: JSON.stringify(body)
-      //   })
-      //   if (response.status !== 200) {
-      //     console.log((await response.json()))
-      //     return alert('新增檢驗項目失敗！')
-      //   }
-      // }
     }
   )
 }
 
 async function renderMedicationAndTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/medicationcomplex/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/medicationcomplex/recordid/${recordId}`, { headers })).json()
   const medicationComplex = data
   const medicationContainer = $('#single-medication-container-template')
     .clone().removeAttr('id').removeAttr('hidden')
@@ -342,13 +319,8 @@ async function renderMedicationAndTable (recordId) {
         fields: [
           { name: 'id', type: 'number', visible: false, editing: false },
           // { name: 'medicineId', type: 'number', visible: false, editing: false },
-<<<<<<< Updated upstream
-          { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-          { title: '劑量', name: 'dose', type: 'number', editing: true },
-=======
           { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
           { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
->>>>>>> Stashed changes
           { title: '頻率', name: 'frequency', type: 'number', editing: true },
           { title: '天數', name: 'day', type: 'number', editing: true },
           { type: 'control' }
@@ -426,13 +398,8 @@ function addMedication (addMedicationBtn) {
       fields: [
         // { name: 'id', type: 'number', visible: false, editing: false },
         // { name: 'medicineId', type: 'number', visible: false, editing: false },
-<<<<<<< Updated upstream
-        { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '劑量', name: 'dose', type: 'number', editing: true },
-=======
         { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
         { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
->>>>>>> Stashed changes
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
@@ -541,7 +508,6 @@ async function updateMedication (thisTag) {
   $(thisTag).siblings('.edit-medication').show()
 }
 
-<<<<<<< Updated upstream
 function insertMedicationTable (sortedMedications) {
   sortedMedications.forEach(medication => {
     $(`.medication-table-${medication.medicationId}`).jsGrid(
@@ -602,71 +568,9 @@ function insertMedicationTable (sortedMedications) {
     )
   })
 }
-=======
-// function insertMedicationTable (sortedMedications) {
-//   sortedMedications.forEach(medication => {
-//     $(`.medication-table-${medication.medicationId}`).jsGrid(
-//       {
-//         width: '100%',
-//         height: 'auto',
-
-//         inserting: true,
-//         editing: true,
-//         sorting: true,
-//         paging: false,
-
-//         data: medication.details,
-
-//         fields: [
-//           { name: 'medicationDetailId', type: 'number', visible: false, editing: false },
-//           // { name: 'medicineId', type: 'number', visible: false, editing: false },
-//           { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
-//           { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
-//           { title: '頻率', name: 'frequency', type: 'number', editing: true },
-//           { title: '天數', name: 'day', type: 'number', editing: true },
-//           { type: 'control' }
-//         ],
-
-//         controller: {
-//           insertItem: function (item) {
-//             const body = {
-//               ...item,
-//               medicationId: medication.id
-//             }
-//             return $.ajax({
-//               headers,
-//               type: 'POST',
-//               url: '/api/1.0/clinic/medicationdetails',
-//               data: JSON.stringify(body)
-//             })
-//           },
-//           updateItem: function (item) {
-//             console.log('update item: ', item)
-//             return $.ajax({
-//               headers,
-//               type: 'PUT',
-//               url: '/api/1.0/clinic/medicationdetails',
-//               data: JSON.stringify(item)
-//             })
-//           },
-//           deleteItem: function (item) {
-//             console.log('delete item: ', item)
-//             return $.ajax({
-//               headers,
-//               type: 'DELETE',
-//               url: '/api/1.0/clinic/medicationdetails',
-//               data: JSON.stringify(item)
-//             })
-//           }
-//         }
-//       }
-//     )
-//   })
-// }
->>>>>>> Stashed changes
 
 async function renderTreatmentTable (recordId) {
-  const { data } = await (await fetch(`/api/1.0/clinic/recordtreatments/recordid/${recordId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/recordtreatments/recordid/${recordId}`, { headers })).json()
 
   $(`.record-container-${recordId}`).find('.treatment-table').jsGrid(
     {

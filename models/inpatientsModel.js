@@ -40,6 +40,7 @@ async function getChargedPets () {
       o.cellphone AS ownerCellphone,
       u.id AS vetId,
       u.fullname AS vetFullname
+      
       FROM inpatient AS i
       JOIN user AS u ON i.vet_id = u.id
       JOIN pet AS p ON i.pet_id = p.id 

@@ -219,9 +219,32 @@ async function createRecord (req, res, next) {
   // const { subjective, objective, assessment, plan, exams, medications, treatments, petId } = req.body
   if (!req.body.petId) { return res.status(400).json({ error: 'no petId provided' }) }
   try {
+    // check exam, medication, treatment format and set default value if undefined
+    // TODO: 可以載入emt data 由後端檢查是否存在已登陸的資料當中
+    // TODO: check exam
+
+    // TODO: check treatment
+
+    // check medication
+    Object.values(req.body.medications).forEach(medication => {
+      if (!medication.name || medication.name === '') {
+        return res.status(400).json({ error: `invalid medication name provided: ${medication.name}` })
+      }
+      medication.details.forEach(detail => {
+        if (!detail.medicineName) {
+          return res.status(400).json({ error: `invalid medicine name provided: ${detail.medicineName}` })
+        }
+        detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
+        detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
+        detail.day = detail.day !== undefined ? detail.day : 0
+        detail.quantity = detail.quantity !== undefined ? detail.quantity : 1
+        detail.discount = detail.discount !== undefined ? detail.discount : 1
+        detail.subtotal = detail.subtotal !== undefined ? detail.subtotal : 0
+      })
+    })
     const result = await recordsModel.createRecord(req.user.id, req.body)
-    if (result.error) {
-      return res.status(500).json({ error: result.error })
+    if (result.status_code) {
+      return res.status(result.status_code).json({ error: result.error })
     }
   } catch (err) {
     console.log(err)
@@ -234,7 +257,9 @@ async function createRecordExam (req, res, next) {
   const { recordId, examName } = req.body
   console.log(req.body)
   if (!recordId || !examName) { return res.status(400).json({ error: 'invalid record id or exam name provided' }) }
+
   const result = await recordExamsModel.createRecordExam(req.body)
+
   if (result.status_code) {
     return res.status(result.status_code).json({ error: result.error })
   }

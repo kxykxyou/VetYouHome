@@ -3,7 +3,7 @@ const cacheRenderedInpatientOrders = {}
 
 renderAllInpatientOrderHeaders()
 async function renderAllInpatientOrderHeaders () {
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`, { headers })).json()
   console.log('inpatientorders: ', data)
   // let html = ''
 
@@ -21,29 +21,6 @@ function makeSingleInpatientOrderHeaderHtml (inpatientOrder) {
     `${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}`
   )
   return headerTemplate
-  // return `
-  //         <!-- key: inpatient_order.id -->
-  //         <div
-  //             key="${inpatientOrder.inpatientOrderId}"
-  //             class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
-  //             style="display: block"
-  //             >
-  //             <div class="row inpatientorder-header mx-1">
-  //                 <button
-  //                 type="button"
-  //                 class="btn btn-primary my-1 toggle-btn"
-  //                 data-bs-toggle="button"
-  //                 autocomplete="off"
-  //                 aria-pressed="true"
-  //                 onclick="singleInpatientOrderDisplayTurn(this)"
-  //                 >
-  //                 <div class="title">${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}</h3>
-  //                 </button>
-  //             </div>
-  //             <div class="inpatientorder-content display">
-  //             </div>
-  //         </div>
-  //        `
 }
 
 async function singleInpatientOrderDisplayTurn (thisTag) {
@@ -138,7 +115,7 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
 }
 
 async function insertInpatientOrderTable (inpatientOrderId, details) {
-  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorderdetails/id/${inpatientOrderId}`)).json()
+  const { data } = await (await fetch(`/api/1.0/clinic/inpatientorderdetails/id/${inpatientOrderId}`, { headers })).json()
   console.log('data: ', data)
 
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-table').jsGrid()
