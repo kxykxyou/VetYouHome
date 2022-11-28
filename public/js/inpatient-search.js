@@ -64,10 +64,11 @@ speciesSelectionTag.on('change', () => {
   }
 })
 
-$('#search-button').click(searchRecords)
+$('#search-button').click(searchInpatients)
 
-async function searchRecords () {
+async function searchInpatients () {
   // Get query condition and make it to query string
+  searchResultTag.empty()
   const dates = $('#date-range').val()
   const [dateStart, dateEnd] = dates ? dates.replaceAll('/', '-').split(' - ') : ['', '']
 
@@ -104,34 +105,27 @@ async function searchRecords () {
   const response = await fetch('/api/1.0/inpatients/search' + queryString, { headers })
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
-  let html = ''
-  data.forEach(row => {
-    html +=
-    `
-    <br>
-    <div class="col">
-      <div class="row">
-        <div class="col-2">
-          <a href="/clinic.html#${row.petId}">
-            <img
-              src="/images/${row.petSpecies === 'd' ? 'dog' : 'cat'}.png"
-              class="pet-icon col align-self-center"
-              alt=""
-            />
-          </a>
-        </div>
-        <div class="col">
-          <p class="card-subtitle">${row.inpatientCode}</p>
-          <p class="card-subtitle">${row.petName}</p>
-          <p class="card-subtitle">${row.vetFullname}</p>
-          <p class="card-subtitle">${row.ownerFullname}</p>
-          <p class="card-subtitle">${row.ownerCellphone}</p>
-          <p class="card-subtitle">${row.summary ? row.summary : ''}</p>
-        </div>
-      </div>
-  </div>
-    `
-  })
-  searchResultTag.html(html)
   console.log('search results: ', data)
+  data.sort((inpatient1, inpatient2) => {
+    return new Date(inpatient2.chargeStart) - new Date(inpatient1.chargeStart)
+  })
+
+  const inpatientCardTemplate = $('#inpatient-card-template').clone().removeAttr('id hidden')
+  inpatientCardTemplate.find('.operation-group').remove()
+  data.forEach(inpatient => {
+    const card = inpatientCardTemplate.clone()
+    card.attr('key', inpatient.inpatientId)
+    card.find('.cage').html(inpatient.cage)
+    card.find('.summary').html(inpatient.summary ? inpatient.summary : '')
+    card.find('.clinic-link').attr('href', `/clinic.html#${inpatient.petId}`)
+    card.find('.pet-icon').attr('src', `/images/${inpatient.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
+    card.find('.inpatient-code').val(inpatient.inpatientCode)
+    card.find('.pet-name').val(inpatient.petName)
+    card.find('.charged-start').val(inpatient.chargeStart.split('T')[0])
+    card.find('.charged-end').val(inpatient.chargeEnd ? inpatient.chargeEnd.split('T')[0] : '住院中')
+    card.find('.vet-fullname').val(inpatient.vetFullname)
+    card.find('.owner-fullname').val(inpatient.ownerFullname)
+    card.find('.owner-cellphone').val(inpatient.ownerCellphone)
+    searchResultTag.append(card)
+  })
 }
