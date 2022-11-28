@@ -4,7 +4,7 @@ const path = require('path')
 const utils = require('./utils/utils')
 // const cookieParser = require('cookie-parser')
 
-const indexRouter = require('./routes/index')
+// const indexRouter = require('./routes/index')
 
 const app = express()
 
@@ -17,7 +17,6 @@ app.use(express.static(path.join(__dirname, 'views')))
 app.use('/api/' + process.env.API_VERSION, require('./routes/users'))
 
 app.use(utils.wrapAsync(utils.authUser))
-app.use('/emt-data/', express.static(path.join(__dirname, 'emt-data')))
 
 app.use('/api/' + process.env.API_VERSION, [
   require('./routes/records'),
@@ -26,7 +25,8 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/pets'),
   require('./routes/inpatients'),
   require('./routes/cages'),
-  require('./routes/clinic')
+  require('./routes/clinic'),
+  require('./routes/emt')
 ])
 
 // Error handling
