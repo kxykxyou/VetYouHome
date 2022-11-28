@@ -27,7 +27,7 @@ async function singleInpatientOrderDisplayTurn (thisTag) {
   const inpatientOrderId = $(thisTag).parents('.inpatientorder-container').attr('key')
   const inpatientOrderContentTag = $(thisTag).parent().siblings('.inpatientorder-content')
   if (!cacheRenderedInpatientOrders[inpatientOrderId]) {
-    // 如果沒有render過該病歷
+    // 如果沒有render過該order
     await renderBothSingleInpatientOrder(inpatientOrderId)
   }
   inpatientOrderContentTag.css('display') === 'none' ? inpatientOrderContentTag.show() : inpatientOrderContentTag.hide()
@@ -229,5 +229,5 @@ async function updateInpatientOrder (thisTag) {
 
   container.find('.inpatientorder-comment').attr('readonly', '')
 
-  return alert('更新病歷成功！')
+  return alert('更新醫囑成功！')
 }

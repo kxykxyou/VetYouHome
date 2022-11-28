@@ -246,7 +246,6 @@ async function createRecord () {
     petId
   }
   console.log(record)
-  return
   const response = await fetch('/api/1.0/clinic/records', {
     method: 'POST',
     headers,
