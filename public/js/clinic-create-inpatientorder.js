@@ -40,7 +40,37 @@ async function renderCreateInpatientOrder () {
         { title: '預定時間', name: 'schedule', type: 'text', editing: true },
         { title: '備註', name: 'comment', type: 'text', editing: true },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
+            alert('優先級請輸入0~99的整數')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          if (item.content === '') {
+            alert('請輸入醫囑內容')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          console.log(item)
+          return item
+        },
+        updateItem: function (item) {
+          if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
+            alert('優先級請輸入0~99的整數')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          if (item.content === '') {
+            alert('請輸入醫囑內容')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          console.log('update item: ', item)
+          return item
+        }
+      }
     }
   )
 }
