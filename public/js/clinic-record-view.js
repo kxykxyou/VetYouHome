@@ -73,7 +73,6 @@ function createAutocompleteField (customName, data) {
 
 // functions and controllers
 renderPetInfo(petId).then(() => {
-  renderCreateInpatientOrder()
   renderCreateInpatientModal()
 })
 renderAllRecordHeaders(petId)

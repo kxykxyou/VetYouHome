@@ -1,9 +1,10 @@
-// renderCreateInpatientOrder()
+$('#right-display-selector').change(initRenderCreateInpatientOrder)
+
 const newInpatientOrder = {
   details: []
 }
 
-async function renderCreateInpatientOrder () {
+async function initRenderCreateInpatientOrder () {
 //   if (petInfo.status != '3') {
 //     return
 //   }
