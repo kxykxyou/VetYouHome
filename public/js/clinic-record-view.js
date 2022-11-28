@@ -26,9 +26,9 @@ const petId = url.split('#')[url.split('#').length - 1]
 const EMTContainer = {}
 createEMTAutocompleteFields()
 async function createEMTAutocompleteFields () {
-  EMTContainer.allExamNames = await (await fetch('/api/1.0/emt/exams', { headers })).json()
-  EMTContainer.allMedicineNames = await (await fetch('/api/1.0/emt/medicines', { headers })).json()
-  EMTContainer.allTreatmentNames = await (await fetch('/api/1.0/emt/treatments', { headers })).json()
+  EMTContainer.allExamNames = (await (await fetch('/api/1.0/emt/exams', { headers })).json()).data
+  EMTContainer.allMedicineNames = (await (await fetch('/api/1.0/emt/medicines', { headers })).json()).data
+  EMTContainer.allTreatmentNames = (await (await fetch('/api/1.0/emt/treatments', { headers })).json()).data
   createAutocompleteField('autocompleteExam', EMTContainer.allExamNames)
   createAutocompleteField('autocompleteMedicine', EMTContainer.allMedicineNames)
   createAutocompleteField('autocompleteTreatment', EMTContainer.allTreatmentNames)
