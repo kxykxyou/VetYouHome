@@ -195,118 +195,133 @@
       <!-- 所有分區容器 -->
       <div
         id="charged-inpatients-container"
-        class="charged-inpatients container-fluid my-5"
+        class="charged-inpatients container-fluid my-1"
       ></div>
 
       <div
         id="history-inpatients-container"
-        class="charged-inpatients container-fluid my-5"
+        class="search-inpatients container-fluid"
         style="display: none"
       >
-        <div id="history-search-bar" class="container d-flex">
-          <div class="form-group date-range-group">
-            <label>出院時間:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="far fa-calendar-alt"></i>
-                </span>
+        <div id="history-search-bar" class="row d-flex">
+          <div class="row">
+            <div class="form-group history-search-form-group date-range-group">
+              <label>出院時間:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="far fa-calendar-alt"></i>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control float-right"
+                  id="date-range"
+                  value=""
+                />
               </div>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>主治醫師</label>
+              <select
+                id="vet"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option selected="selected" key="">所有醫師</option>
+              </select>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="record-code">住院編號</label>
               <input
                 type="text"
-                class="form-control float-right"
-                id="date-range"
-                value=""
+                class="form-control"
+                id="record-code"
+                placeholder="請輸入住院編號"
               />
             </div>
+            <div class="form-group history-search-form-group">
+              <label for="owner-fullname">飼主名字</label>
+              <input
+                type="text"
+                class="form-control"
+                id="owner-fullname"
+                placeholder="請輸入飼主名字"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-name">寵物名字</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-name"
+                placeholder="請輸入寵物名字"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-code">寵物編號</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-code"
+                placeholder="請輸入寵物編號"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label for="pet-chip">寵物晶片編號</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pet-chip"
+                placeholder="請輸入寵物晶片編號"
+              />
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>物種</label>
+              <select
+                id="pet-species"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option key="" selected="selected">所有物種</option>
+                <option key="d">犬</option>
+                <option key="c">貓</option>
+              </select>
+            </div>
+            <div class="form-group history-search-form-group">
+              <label>品種</label>
+              <select
+                id="pet-breed"
+                class="form-control select2bs4"
+                style="width: 100%"
+              >
+                <option selected="selected" key="">所有品種</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label>主治醫師</label>
-            <select
-              id="vet"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option selected="selected" key="">所有醫師</option>
-            </select>
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-1">
+                <button
+                  type="button"
+                  class="search btn btn-secondary"
+                  id="unarchive-search-button"
+                  style=""
+                  onclick="searchInpatients()"
+                >
+                  搜尋
+                  <!-- <img
+                src="/images/search.png"
+                class="icon search-icon"
+                style="height: 100%; width: auto"
+                alt=""
+              /> -->
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="record-code">住院編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="record-code"
-              placeholder="請輸入住院編號"
-            />
-          </div>
-          <div class="form-group">
-            <label for="owner-fullname">飼主名字</label>
-            <input
-              type="text"
-              class="form-control"
-              id="owner-fullname"
-              placeholder="請輸入飼主名字"
-            />
-          </div>
-          <div class="form-group">
-            <label for="pet-name">寵物名字</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-name"
-              placeholder="請輸入寵物名字"
-            />
-          </div>
-          <div class="form-group">
-            <label for="pet-code">寵物編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-code"
-              placeholder="請輸入寵物編號"
-            />
-          </div>
-          <div class="form-group">
-            <label for="pet-chip">寵物晶片編號</label>
-            <input
-              type="text"
-              class="form-control"
-              id="pet-chip"
-              placeholder="請輸入寵物晶片編號"
-            />
-          </div>
-          <div class="form-group">
-            <label>物種</label>
-            <select
-              id="pet-species"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option key="" selected="selected">所有物種</option>
-              <option key="d">犬</option>
-              <option key="c">貓</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>品種</label>
-            <select
-              id="pet-breed"
-              class="form-control select2bs4"
-              style="width: 100%"
-            >
-              <option selected="selected" key="">所有品種</option>
-            </select>
-          </div>
-          <button class="search" id="search-button">
-            <img
-              src="/images/search.png"
-              id="search-icon"
-              class="icon"
-              alt=""
-            />
-          </button>
         </div>
-        <div id="history-search-result" class="container"></div>
+        <div id="history-search-result" class="row row-cols-4"></div>
       </div>
     </main>
     <!-- 變換籠位Modal -->
@@ -382,6 +397,18 @@
     <div class="tepmlates" hidden>
       <!-- inpatient header; key: inpatient_order.id -->
       <div
+        id="block-cage-container-template"
+        class="block-cages border border-dark my-3 container-fluid"
+      >
+        <div class="row justify-content-center">
+          <h4 class="cage-header text-center border-bottom border-dark"></h4>
+        </div>
+        <div
+          id="inpatients-display-${cageBlock}"
+          class="row row-cols-4 inpatients-display"
+        ></div>
+      </div>
+      <div
         id="inpatient-order-header-template"
         key=""
         class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
@@ -400,6 +427,184 @@
           </button>
         </div>
         <div key="" class="inpatientorder-content display"></div>
+      </div>
+
+      <!-- 單一卡片; key: key: inpatient.id -->
+      <div id="inpatient-card-template" class="col-3 my-3 mx-0" key="">
+        <div class="inpatient-card border card border-success">
+          <!-- 籠位編號 + summary -->
+          <div class="col cage text-center fw-bold fs-4"></div>
+          <div class="col summary text-center text-danger fw-bold fs-5"></div>
+          <!-- 圖片與寵物基本資料 -->
+          <div class="col">
+            <div class="row">
+              <!-- 寵物圖片 -->
+              <div
+                class="col-4 pet-icon-container justify-content-center d-flex"
+                style=""
+              >
+                <a class="clinic-link align-self-center" href="">
+                  <img src="" class="pet-icon col align-self-center" alt="" />
+                </a>
+              </div>
+              <!-- 寵物基本資料 -->
+              <div class="col-8 inpatient-info">
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >住院編號</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control inpatient-code"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default"
+                    readonly
+                  />
+                </div>
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >寵物</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control pet-name"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    readonly
+                  />
+                </div>
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >住院日期</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control charged-start"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    readonly
+                  />
+                </div>
+                <div class="input-group charge-end-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >出院日期</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control charged-end"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    readonly
+                  />
+                </div>
+
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >主治醫師</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control vet-fullname"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default"
+                    readonly
+                  />
+                </div>
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >飼主</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control owner-fullname"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    readonly
+                  />
+                </div>
+                <div class="input-group">
+                  <span
+                    class="input-group-text"
+                    style="background-color: #20c997"
+                    >聯絡電話</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control owner-cellphone"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    readonly
+                  />
+                </div>
+              </div>
+              <!-- 病歷操作icon -->
+            </div>
+          </div>
+          <div class="col">
+            <div class="row operation-group justify-content-center">
+              <div class="col-11 btn-group">
+                <button type="button" class="btn btn-default">
+                  <a class="clinic-link" href="/clinic.html#${inpatient.petId}">
+                    <img
+                      src="/images/medical-record.png"
+                      class="operation-icon"
+                      alt=""
+                    />
+                  </a>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-default btn-check-inpatient-order"
+                  data-bs-toggle="modal"
+                  data-bs-target="#inpatientorder-modal"
+                  onclick=""
+                >
+                  <img
+                    src="/images/medical-order.png"
+                    class="operation-icon"
+                    alt=""
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-default btn-swap-cage"
+                  data-bs-toggle="modal"
+                  data-bs-target="#swap-cage-modal"
+                  onclick=""
+                >
+                  <img
+                    src="/images/exchange.png"
+                    class="operation-icon"
+                    alt=""
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-default btn-discharge"
+                  onclick=""
+                >
+                  <img
+                    src="/images/discharge.png"
+                    class="operation-icon"
+                    alt=""
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

@@ -21,7 +21,6 @@ router.get('/clinic/inpatientorderdetails/id/:id', wrapAsync(clinicController.ge
 router.get('/clinic/inpatients/mostrecent/pet/id/:id', wrapAsync(clinicController.getMostRecentInpatientByPetId))
 
 router.post('/clinic/records', wrapAsync(clinicController.createRecord))
-// router.post('/clinic/recordsmedications', wrapAsync(authUser), wrapAsync(clinicController.createRecordMedication))
 router.post('/clinic/recordexams', wrapAsync(clinicController.createRecordExam))
 router.post('/clinic/recordmedications', wrapAsync(clinicController.createRecordMedication))
 router.post('/clinic/medicationdetails', wrapAsync(clinicController.createMedicationDetail))

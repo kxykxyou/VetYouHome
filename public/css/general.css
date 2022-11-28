@@ -17,5 +17,5 @@
 }
 
 .jsgrid-cell {
-  overflow: hidden;
+  overflow: auto;
 }

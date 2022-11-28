@@ -1,17 +1,22 @@
-// renderCreateInpatientOrder()
+$('#right-display-selector').change(initRenderCreateInpatientOrder)
+
 const newInpatientOrder = {
   details: []
 }
 
-async function renderCreateInpatientOrder () {
-//   if (petInfo.status != '3') {
-//     return
-//   }
+async function initRenderCreateInpatientOrder () {
+  // if (petInfo.status != '3') {
+  //   return
+  // }
 
   const { data } = await (await fetch(`/api/1.0/clinic/inpatients/mostrecent/pet/id/${petId}`, { headers })).json()
   if (!Object.keys(data).length) {
     $('#create-new-inpatientorder').html('該寵物無住院紀錄')
     console.log('該寵物無住院紀錄')
+    return
+  }
+  if (data.charge_end) {
+    $('#create-new-inpatientorder').html('該寵物目前非住院狀態')
     return
   }
   console.log('該寵物最新住院資訊', data)

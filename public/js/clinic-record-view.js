@@ -6,6 +6,12 @@ const cacheRenderedRecords = {} // id: complex record objects；已經render過�
 let petInfo
 const sides = ['left', 'right']
 const newMedicationsMap = {}
+const SOAPs = [
+  'subjective',
+  'objective',
+  'assessment',
+  'plan'
+]
 const headers = {
   'Content-Type': 'application/json',
   Authorization: `Bearer ${localStorage.vyh_token}`,
@@ -67,7 +73,6 @@ function createAutocompleteField (customName, data) {
 
 // functions and controllers
 renderPetInfo(petId).then(() => {
-  renderCreateInpatientOrder()
   renderCreateInpatientModal()
 })
 renderAllRecordHeaders(petId)
@@ -146,10 +151,21 @@ async function renderBothSingleRecord (recordId) {
   const recordTemplate = $('#record-template').clone()
   recordTemplate.removeAttr('id')
   recordTemplate.removeAttr('hidden')
-  recordTemplate.find('.s-textarea').val(record.subjective)
-  recordTemplate.find('.o-textarea').val(record.objective)
-  recordTemplate.find('.a-textarea').val(record.assessment)
-  recordTemplate.find('.p-textarea').val(record.plan)
+  // console.log('length: ', record.subjective.split(/\r|\r\n|\n/).length)
+  const soapTextareaTags = recordTemplate.find('textarea')
+  console.log(soapTextareaTags)
+  SOAPs.forEach(attr => {
+    // console.log(`.${attr}`, record[attr])
+    // console.log(soapTextareaTags.find(attr))
+    soapTextareaTags
+      .filter(`.${attr}`)
+      .attr('rows', record[attr].split(/\r|\r\n|\n/).length)
+      .html(record[attr])
+  })
+  // recordTemplate.find('.s-textarea').val(record.subjective)
+  // recordTemplate.find('.o-textarea').val(record.objective)
+  // recordTemplate.find('.a-textarea').val(record.assessment)
+  // recordTemplate.find('.p-textarea').val(record.plan)
 
   renderExamTable(recordId)
   renderMedicationAndTable(recordId)
@@ -201,7 +217,8 @@ async function updateRecord (thisTag) {
     console.log((await response.json()))
     return alert('更新病歷失敗')
   }
-  return alert('更新病歷成功！')
+  alert('更新病歷成功！')
+  renderBothSingleRecord(id)
 }
 
 async function deleteRecord (thisTag) {

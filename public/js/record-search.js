@@ -115,6 +115,7 @@ async function searchRecords () {
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
   const recordCardTemplate = $('#record-card-template').clone().show().removeAttr('id')
+
   data.forEach(row => {
     const card = recordCardTemplate.clone()
     card.find('.clinic-link').attr('href', `/clinic.html#${row.petId}`)
