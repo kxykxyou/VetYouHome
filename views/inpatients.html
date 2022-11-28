@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/style.css" />
     <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <script
       src="https://code.jquery.com/jquery-3.6.1.js"
@@ -318,10 +317,10 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modal-label">變換籠位</h5>
+            <h5 class="modal-title">變換籠位</h5>
             <button
               type="button"
               class="btn-close"
@@ -363,10 +362,10 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modal-label">查看醫囑</h5>
+            <h5 class="modal-title">查看醫囑</h5>
             <button
               type="button"
               class="btn-close"
@@ -405,19 +404,9 @@
     </div>
   </body>
   <link rel="stylesheet" href="/css/inpatient-charged.css" />
+  <script src="/js/general-control.js"></script>
   <script src="/js/inpatient-charged.js"></script>
   <script src="/js/inpatient-search.js"></script>
   <script src="/js/inpatient-subpage-control.js"></script>
   <script src="/js/datepicker.js"></script>
-  <script type="text/javascript">
-    if (!localStorage.user) {
-      location.href = "/signin.html";
-    }
-    const user = JSON.parse(localStorage.user);
-    $("#user-dropdown").append(user.fullname);
-    async function signout() {
-      localStorage.clear();
-      location.href = "/signin.html";
-    }
-  </script>
 </html>

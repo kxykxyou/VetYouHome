@@ -4,7 +4,7 @@ const path = require('path')
 const utils = require('./utils/utils')
 // const cookieParser = require('cookie-parser')
 
-const indexRouter = require('./routes/index')
+// const indexRouter = require('./routes/index')
 
 const app = express()
 
@@ -25,7 +25,8 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/pets'),
   require('./routes/inpatients'),
   require('./routes/cages'),
-  require('./routes/clinic')
+  require('./routes/clinic'),
+  require('./routes/emt')
 ])
 
 // Error handling

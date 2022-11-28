@@ -1,7 +1,6 @@
 if (!localStorage.vyh_token) {
   location.href = '/signin.html'
 }
-const url = location.href
 // let cacheRecords // id: complex record objects
 const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
 let petInfo
@@ -22,6 +21,51 @@ const petStatusMap = {
 
 const petId = url.split('#')[url.split('#').length - 1]
 
+// autocomplete field prepare
+// autocomplete data source files: exams, medicines, treatments
+const EMTContainer = {}
+createEMTAutocompleteFields()
+async function createEMTAutocompleteFields () {
+  EMTContainer.allExamNames = await (await fetch('/api/1.0/emt/exams', { headers })).json()
+  EMTContainer.allMedicineNames = await (await fetch('/api/1.0/emt/medicines', { headers })).json()
+  EMTContainer.allTreatmentNames = await (await fetch('/api/1.0/emt/treatments', { headers })).json()
+  createAutocompleteField('autocompleteExam', EMTContainer.allExamNames)
+  createAutocompleteField('autocompleteMedicine', EMTContainer.allMedicineNames)
+  createAutocompleteField('autocompleteTreatment', EMTContainer.allTreatmentNames)
+}
+
+function createAutocompleteField (customName, data) {
+  const customField = function (config) {
+    jsGrid.Field.call(this, config)
+  }
+  customField.prototype = new jsGrid.Field({
+    sorter: function (tag1, tag2) {
+      return tag1.localeCompare(tag2)
+    },
+    itemTemplate: function (value) {
+      return $('<div>').html(value)
+    },
+    insertTemplate: function (value) {
+      return (this._insertAuto = $('<input type="text">').autocomplete({
+        source: data
+      }))
+    },
+    editTemplate: function (value) {
+      return (this._editAuto = $('<input type="text">')
+        .autocomplete({ source: data })
+        .val(value))
+    },
+    insertValue: function () {
+      return this._insertAuto.val()
+    },
+    editValue: function () {
+      return this._editAuto.val()
+    }
+  })
+  jsGrid.fields[customName] = customField
+}
+
+// functions and controllers
 renderPetInfo(petId).then(() => {
   renderCreateInpatientOrder()
   renderCreateInpatientModal()
@@ -77,7 +121,7 @@ async function createInpatient () {
     return
   }
   alert('收住院成功！')
-  location.reload()
+  return location.reload()
 }
 
 async function renderAllRecordHeaders (petId) {
@@ -163,7 +207,7 @@ async function updateRecord (thisTag) {
 async function deleteRecord (thisTag) {
   if (confirm('確定要刪除病歷嗎？') !== true) { return }
   const id = $(thisTag).parents('.record-container').attr('key')
-  console.log(id)
+  // console.log(id)
   const response = await fetch('/api/1.0/clinic/records', {
     method: 'DELETE',
     headers,
@@ -173,7 +217,8 @@ async function deleteRecord (thisTag) {
     console.log(response)
     return alert('刪除病歷失敗!')
   }
-  $(thisTag).parents('.record-container').remove()
+  const recordId = $(thisTag).parents('.record-container').attr('key')
+  $(`.record-container[key=${recordId}]`).remove()
   return alert('刪除病歷成功!')
 }
 
@@ -190,19 +235,24 @@ async function renderExamTable (recordId) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data,
 
       fields: [
-        { name: 'id', type: 'text', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
+        { name: 'id', type: 'number', visible: false, editing: false },
+        { title: '名稱', name: 'examName', type: 'autocompleteExam', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
         { type: 'control' }
       ],
 
       controller: {
         insertItem: function (item) {
+          if (!EMTContainer.allExamNames.includes(item.examName)) {
+            alert('不存在的檢查項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
           const body = {
             ...item,
             recordId
@@ -216,6 +266,11 @@ async function renderExamTable (recordId) {
           })
         },
         updateItem: function (item) {
+          if (!EMTContainer.allExamNames.includes(item.examName)) {
+            alert('不存在的檢查項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
           console.log('update item: ', item)
           return $.ajax({
             headers,
@@ -234,29 +289,6 @@ async function renderExamTable (recordId) {
           })
         }
       }
-
-      // onItemInserting: async function (data) {
-      //   const body = {
-      //     recordId,
-      //     name: data.item.name,
-      //     comment: data.item.comment
-      //   }
-      //   console.log(body)
-      //   const headers = {
-      //     'Content-Type': 'application/json',
-      //     Accept: 'application/json',
-      //     Authorization: `Bearer ${localStorage.vyh_token}`
-      //   }
-      //   const response = await fetch('/api/1.0/clinic/recordexams', {
-      //     headers,
-      //     method: 'POST',
-      //     body: JSON.stringify(body)
-      //   })
-      //   if (response.status !== 200) {
-      //     console.log((await response.json()))
-      //     return alert('新增檢驗項目失敗！')
-      //   }
-      // }
     }
   )
 }
@@ -283,21 +315,26 @@ async function renderMedicationAndTable (recordId) {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: true,
+        paging: false,
 
         data: medication.details,
 
         fields: [
           { name: 'id', type: 'number', visible: false, editing: false },
           // { name: 'medicineId', type: 'number', visible: false, editing: false },
-          { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-          { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
+          { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
+          { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
           { title: '頻率', name: 'frequency', type: 'number', editing: true },
           { title: '天數', name: 'day', type: 'number', editing: true },
           { type: 'control' }
         ],
         controller: {
           insertItem: function (item) {
+            if (!EMTContainer.allMedicineNames.includes(item.medicineName)) {
+              alert('不存在的藥品！')
+              const d = $.Deferred().reject()
+              return d.promise()
+            }
             const body = {
               ...item,
               medicationId: medication.id
@@ -310,6 +347,11 @@ async function renderMedicationAndTable (recordId) {
             })
           },
           updateItem: function (item) {
+            if (!EMTContainer.allMedicineNames.includes(item.medicineName)) {
+              alert('不存在的藥品！')
+              const d = $.Deferred().reject()
+              return d.promise()
+            }
             console.log('update item: ', item)
             return $.ajax({
               headers,
@@ -352,19 +394,29 @@ function addMedication (addMedicationBtn) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newMedicationsMap[newMedicationKey].details,
 
       fields: [
         // { name: 'id', type: 'number', visible: false, editing: false },
         // { name: 'medicineId', type: 'number', visible: false, editing: false },
-        { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
+        { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
+        { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (!EMTContainer.allMedicineNames.includes(item.medicineName)) {
+            alert('不存在的藥品！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        }
+      }
     }
   )
   $(addMedicationBtn).before(container)
@@ -377,18 +429,21 @@ async function saveNewMedication (thisTag, newMedicationKey) {
   newMedication.name = $(thisTag).parents('.medication-container').find('.medication-name').val()
   newMedication.type = $(thisTag).parents('.medication-container').find('.medication-type').val()
   newMedication.comment = $(thisTag).parents('.medication-container').find('.medication-comment').val()
-  if (!newMedication.details.length || !newMedication.name) {
-    return alert('新增處方失敗: 處方或藥品資訊不完全')
+  if (!newMedication.name || !newMedication.details.length) {
+    return alert('新增處方失敗: 無處方名稱或無用藥')
   }
   let detailCheck = true
   for (const detail of newMedication.details) {
-    if (!detail.name || !detail.dose || !detail.frequency || !detail.day) {
+    if (
+      !detail.medicineName
+    ) {
       detailCheck = false
+      break
     }
   }
 
   if (!detailCheck) {
-    return alert('新增處方失敗: 處方或藥品資訊不完全')
+    return alert('新增處方失敗: 缺乏用藥名稱')
   }
 
   const response = await fetch('/api/1.0/clinic/recordmedications', {
@@ -402,7 +457,7 @@ async function saveNewMedication (thisTag, newMedicationKey) {
   }
   $(thisTag).parents('.all-medications-container').children('.medication-container').remove()
   renderMedicationAndTable(id) // record id
-  alert('新增處方成功！')
+  return alert('新增處方成功！')
 }
 
 async function deleteMedication (thisTag) {
@@ -466,7 +521,7 @@ function insertMedicationTable (sortedMedications) {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: true,
+        paging: false,
 
         data: medication.details,
 
@@ -528,19 +583,24 @@ async function renderTreatmentTable (recordId) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data,
 
       fields: [
-        { name: 'id', type: 'text', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
+        { name: 'recordTreatmentId', type: 'number', visible: false, editing: false },
+        { title: '名稱', name: 'treatmentName', type: 'autocompleteTreatment', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
         { type: 'control' }
       ],
 
       controller: {
         insertItem: function (item) {
+          if (!EMTContainer.allTreatmentNames.includes(item.treatmentName)) {
+            alert('不存在的治療項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
           const body = {
             ...item,
             recordId
@@ -554,6 +614,11 @@ async function renderTreatmentTable (recordId) {
           })
         },
         updateItem: function (item) {
+          if (!EMTContainer.allTreatmentNames.includes(item.treatmentName)) {
+            alert('不存在的治療項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
           console.log('update item: ', item)
           return $.ajax({
             headers,
@@ -584,472 +649,3 @@ function makeSingleRecordHeaderHtml (record) {
   )
   return headerTemplate
 }
-
-const backupHtml = `
-<!-- key: record.id -->
-<div
-  id="record-container-1"
-  key="1"
-  class="record-container container"
-  style="display: block"
->
-  <div class="row record-header">
-    <button
-      type="button"
-      class="btn btn-primary my-1"
-      data-bs-toggle="button"
-      autocomplete="off"
-      aria-pressed="true"
-      onclick="singleRecordDisplayTurn(this)"
-    >
-      <h3>REC2212345 | 2022/10/10 | 主治醫師：王小明</h3>
-    </button>
-  </div>
-  <div class="container record-content">
-    <div class="container soap-container">
-      <div class="container soap soap-s">
-        <p class="fs-3 header">Subjective主觀描述</p>
-        <p class="fs-4 content">
-          Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Distinctio iusto numquam, quasi molestiae ratione
-          voluptas. Ullam, similique odit quam voluptatum harum
-          itaque asperiores et accusamus debitis optio, sunt quae
-          veritatis!
-        </p>
-      </div>
-      <div class="container soap soap-o">
-        <p class="fs-3 header">Objective客觀檢查</p>
-        <p class="fs-4 content">
-          Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Distinctio iusto numquam, quasi molestiae ratione
-          voluptas. Ullam, similique odit quam voluptatum harum
-          itaque asperiores et accusamus debitis optio, sunt quae
-          veritatis!
-        </p>
-        <div class="container exam-result">
-          <button
-            type="button"
-            class="btn btn-primary my-1"
-            data-bs-toggle="button"
-            autocomplete="off"
-            aria-pressed="true"
-            onclick="displayTurn(this)"
-          >
-            檢查結果
-          </button>
-          <div class="container display">
-              <div class="form-group">
-                  <div class="btn btn-default btn-file">
-                    <i class="fas fa-paperclip"></i> 上傳檔案(限制10MB)
-                    <input type="file" name="attachment" />
-                  </div>
-                </div>
-                <div class="row">
-                  <ul
-                    class="mailbox-attachments d-flex align-items-stretch clearfix"
-                  >
-                    <li>
-                      <span class="mailbox-attachment-icon"
-                        ><i class="far fa-file-pdf"></i
-                      ></span>
-
-                      <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name"
-                          ><i class="fas fa-paperclip"></i>
-                          Sep2014-report.pdf</a
-                        >
-                        <span
-                          class="mailbox-attachment-size clearfix mt-1"
-                        >
-                          <span>1,245 KB</span>
-                          <a
-                            href="#"
-                            class="btn btn-default btn-sm float-right"
-                            ><i class="fas fa-cloud-download-alt"></i
-                          ></a>
-                        </span>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="mailbox-attachment-icon"
-                        ><i class="far fa-file-word"></i
-                      ></span>
-
-                      <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name"
-                          ><i class="fas fa-paperclip"></i> App
-                          Description.docx</a
-                        >
-                        <span
-                          class="mailbox-attachment-size clearfix mt-1"
-                        >
-                          <span>1,245 KB</span>
-                          <a
-                            href="#"
-                            class="btn btn-default btn-sm float-right"
-                            ><i class="fas fa-cloud-download-alt"></i
-                          ></a>
-                        </span>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="mailbox-attachment-icon has-img"
-                        ><img
-                          src="../../dist/img/photo1.png"
-                          alt="Attachment"
-                      /></span>
-
-                      <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name"
-                          ><i class="fas fa-camera"></i> photo1.png</a
-                        >
-                        <span
-                          class="mailbox-attachment-size clearfix mt-1"
-                        >
-                          <span>2.67 MB</span>
-                          <a
-                            href="#"
-                            class="btn btn-default btn-sm float-right"
-                            ><i class="fas fa-cloud-download-alt"></i
-                          ></a>
-                        </span>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="mailbox-attachment-icon has-img"
-                        ><img
-                          src="../../dist/img/photo2.png"
-                          alt="Attachment"
-                      /></span>
-
-                      <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name"
-                          ><i class="fas fa-camera"></i> photo2.png</a
-                        >
-                        <span
-                          class="mailbox-attachment-size clearfix mt-1"
-                        >
-                          <span>1.9 MB</span>
-                          <a
-                            href="#"
-                            class="btn btn-default btn-sm float-right"
-                            ><i class="fas fa-cloud-download-alt"></i
-                          ></a>
-                        </span>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="container soap soap-a col-4">
-          <p class="fs-3 header">Assessment評估</p>
-          <p class="fs-4 content">
-            Lorem, ipsum dolor sit amet consectetur adipisicing
-            elit. Distinctio iusto numquam, quasi molestiae
-            ratione voluptas. Ullam, similique odit quam
-            voluptatum harum itaque asperiores et accusamus
-            debitis optio, sunt quae veritatis!
-          </p>
-        </div>
-        <div class="container soap soap-p col-6">
-          <p class="fs-3 header">Plan計畫</p>
-          <p class="fs-4 content">
-            Lorem, ipsum dolor sit amet consectetur adipisicing
-            elit. Distinctio iusto numquam, quasi molestiae
-            ratione voluptas. Ullam, similique odit quam
-            voluptatum harum itaque asperiores et accusamus
-            debitis optio, sunt quae veritatis!
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="container treatments-container">
-      <h3>Treatment治療</h3>
-      <div class="container treatment medication-continer">
-        <button
-          type="button"
-          class="btn btn-primary my-1"
-          data-bs-toggle="button"
-          autocomplete="off"
-          aria-pressed="true"
-          onclick="displayTurn(this)"
-        >
-          Medication 用藥
-        </button>
-        <div id="medications-REC2212345" class="container display">
-          <!-- key: record_medication.id -->
-          <div key="1" class="container rx">
-            <h5>處方藥名稱1</h5>
-            <div class="row fw-bolder">供應形式：藥粉</div>
-            <div class="row fw-bolder">
-              備註: 備註for處方藥名稱1
-            </div>
-
-            <table class="record-medication">
-              <thead>
-                <tr>
-                  <!-- key: medication_detail.id -->
-                  <th>用藥細節id</th>
-                  <th>藥品名稱</th>
-                  <th>藥品劑量<br />(單位)</th>
-                  <th>處方劑量<br />(mg/kg)</th>
-                  <th>每日次數</th>
-                  <th>天數</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td key="1">1</td>
-                  <td>medicineA</td>
-                  <td>50</td>
-                  <td>100</td>
-                  <td>3</td>
-                  <td>7</td>
-                </tr>
-                <tr>
-                  <td key="2">2</td>
-                  <td>medicineB</td>
-                  <td>70</td>
-                  <td>50</td>
-                  <td>1</td>
-                  <td>7</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="container treatment other-treatments-container">
-        <button
-          type="button"
-          class="btn btn-primary my-1"
-          data-bs-toggle="button"
-          autocomplete="off"
-          aria-pressed="true"
-          onclick="displayTurn(this)"
-        >
-          Others treatments其他治療
-        </button>
-        <div id="treatmetns-REC2212345" class="container display">
-          <div class="container tx">
-            <table class="record-medication">
-              <thead>
-                <tr>
-                  <th>治療id</th>
-                  <th>項目</th>
-                  <th>說明</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <!-- key: record_exam.id -->
-
-                  <td key="1">1</td>
-                  <td>胸腔手術</td>
-                  <td>取出胡迪娃娃</td>
-                </tr>
-                <tr>
-                  <td key="2">2</td>
-                  <td>健康檢查</td>
-                  <td>手術前健康檢查</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container payment-container">
-      <h3>費用計算</h3>
-      <div
-        class="container payment payment-container payment-exams"
-      >
-        <button
-          type="button"
-          class="btn btn-primary my-1"
-          data-bs-toggle="button"
-          autocomplete="off"
-          aria-pressed="true"
-          onclick="displayTurn(this)"
-        >
-          醫療檢驗
-        </button>
-        <div id="payment-exams-REC2212345" class="container display">
-          <!-- key: record_exam.id -->
-          <div key="1" class="container">
-            <table class="record-medication">
-              <thead>
-                <tr>
-                  <!-- key: medication_detail.id -->
-                  <th>檢驗id</th>
-                  <th>項目</th>
-                  <th>說明</th>
-                  <th>單價</th>
-                  <th>數量</th>
-                  <th>小計</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td key="1">1</td>
-                  <td>胸腔X光</td>
-                  <td>前後兩側</td>
-                  <td>600</td>
-                  <td>2</td>
-                  <td>1200</td>
-                </tr>
-                <tr>
-                  <td key="2">2</td>
-                  <td>血液檢查</td>
-                  <td>WBC、RBC</td>
-                  <td>500</td>
-                  <td>1</td>
-                  <td>500</td>
-                </tr>
-                <tr>
-                  <td key="3">3</td>
-                  <td>尿液檢查</td>
-                  <td></td>
-                  <td>200</td>
-                  <td>1</td>
-                  <td>200</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div
-        class="container payment payment-container payment-medications"
-      >
-        <button
-          type="button"
-          class="btn btn-primary my-1"
-          data-bs-toggle="button"
-          autocomplete="off"
-          aria-pressed="true"
-          onclick="displayTurn(this)"
-        >
-          Medication 用藥
-        </button>
-        <div
-          id="payment-medications-REC2212345"
-          class="container display"
-        >
-          <!-- key: record_medication.id -->
-          <div key="1" class="container rx">
-            <h5>處方藥名稱1</h5>
-            <div class="row fw-bolder">供應形式：藥粉</div>
-            <div class="row fw-bolder">
-              備註：備註for處方藥名稱1
-            </div>
-
-            <table class="record-medication">
-              <thead>
-                <tr>
-                  <!-- key: medication_detail.id -->
-                  <th>用藥細節id</th>
-                  <th>藥品名稱</th>
-                  <th>藥品劑量<br />(單位)</th>
-                  <th>處方劑量<br />(mg/kg)</th>
-                  <th>每日次數</th>
-                  <th>天數</th>
-                  <th>單價</th>
-                  <th>製藥數量</th>
-                  <th>折扣</th>
-                  <th>小計</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td key="1">1</td>
-                  <td>medicineA</td>
-                  <td>50</td>
-                  <td>100</td>
-                  <td>3</td>
-                  <td>7</td>
-                  <td>100</td>
-                  <td>21</td>
-                  <td>1</td>
-                  <td>2100</td>
-                </tr>
-                <tr>
-                  <td key="2">2</td>
-                  <td>medicineB</td>
-                  <td>70</td>
-                  <td>50</td>
-                  <td>1</td>
-                  <td>7</td>
-                  <td>50</td>
-                  <td>7</td>
-                  <td>1</td>
-                  <td>350</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div
-        class="container payment payment-container payment-other-treatments"
-      >
-        <button
-          type="button"
-          class="btn btn-primary my-1 "
-          data-bs-toggle="button"
-          autocomplete="off"
-          aria-pressed="true"
-          onclick="displayTurn(this)"
-        >
-          Other treatments其他治療
-        </button>
-        <div
-          id="payment-treatments-REC2212345"
-          class="container display"
-        >
-          <div class="container tx">
-            <table class="record-medication">
-              <thead>
-                <tr>
-                  <th>id</th>
-                  <th>項目</th>
-                  <th>說明</th>
-                  <th>單價</th>
-                  <th>數量</th>
-                  <th>折扣</th>
-                  <th>小計</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <!-- key: record_exam.id -->
-
-                  <td key="1">1</td>
-                  <td>胸腔手術</td>
-                  <td>取出胡迪娃娃</td>
-                  <td>10000</td>
-                  <td>1</td>
-                  <td>1</td>
-                  <td>10000</td>
-                </tr>
-                <tr>
-                  <td key="2">2</td>
-                  <td>健康檢查</td>
-                  <td>手術前健康檢查</td>
-                  <td>1500</td>
-                  <td>1</td>
-                  <td>1</td>
-                  <td>1500</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`

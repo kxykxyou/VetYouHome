@@ -2,7 +2,8 @@ const newExams = []
 const newCreateMedicationsMap = {}
 const newTreatments = []
 
-initRenderCreateRecord()
+$('#right-display-selector').change(initRenderCreateRecord)
+// initRenderCreateRecord()
 
 async function initRenderCreateRecord () {
   renderNewExamTable()
@@ -44,7 +45,7 @@ async function initRenderCreateRecord () {
 //       inserting: true,
 //       editing: true,
 //       sorting: true,
-//       paging: true,
+//       paging: false,
 
 //       data: newMedications[medicationCount].details,
 
@@ -83,21 +84,37 @@ async function renderNewExamTable () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newExams,
 
       fields: [
-        // { name: 'examId', type: 'number', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
+        { title: '名稱', name: 'examName', type: 'autocompleteExam', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
-        // { title: '原價', name: 'originalPrice', type: 'number', editing: false },
-        // { name: 'price', type: 'number', editing: true },
-        // { title: '數量', name: 'quantity', type: 'number', editing: true },
-        // { title: '折扣', name: 'discount', type: 'number', editing: true },
-        // { title: '小計', name: 'subtotal', type: 'number', editing: false },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (!EMTContainer.allExamNames.includes(item.examName)) {
+            alert('不存在的檢查項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        },
+        updateItem: function (item) {
+          console.log('update item: ', item)
+          if (!EMTContainer.allExamNames.includes(item.examName)) {
+            alert('不存在的檢查項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        },
+        deleteItem: function (item) {
+          console.log('delete item: ', item)
+        }
+      }
     }
   )
 }
@@ -124,19 +141,27 @@ function addNewMedication (addNewMedicationBtn) {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newCreateMedicationsMap[newMedicationKey].details,
 
       fields: [
-        // { name: 'id', type: 'number', visible: false, editing: false },
-        // { name: 'medicineId', type: 'number', visible: false, editing: false },
-        { title: '藥品', name: 'name', type: 'text', editing: true, validate: 'required' },
-        { title: '劑量(mg/kg)', name: 'dose', type: 'number', editing: true },
+        { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
+        { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
         { title: '天數', name: 'day', type: 'number', editing: true },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (!EMTContainer.allMedicineNames.includes(item.medicineName)) {
+            alert('不存在的藥品！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        }
+      }
     }
   )
   $(addNewMedicationBtn).before(container)
@@ -151,21 +176,37 @@ async function renderNewTreatmentTable () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newTreatments,
 
       fields: [
-        // { name: 'treatmentId', type: 'number', visible: false, editing: false },
-        { title: '名稱', name: 'name', type: 'text', editing: true, validate: 'required' },
+        { title: '名稱', name: 'treatmentName', type: 'autocompleteTreatment', editing: true, validate: 'required' },
         { title: '說明', name: 'comment', type: 'text', editing: true },
-        // { title: '原價', name: 'originalPrice', type: 'number', editing: false },
-        // { name: 'price', type: 'number', editing: true },
-        // { title: '數量', name: 'quantity', type: 'number', editing: true },
-        // { title: '折扣', name: 'discount', type: 'number', editing: true },
-        // { title: '小計', name: 'subtotal', type: 'number', editing: false },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (!EMTContainer.allTreatmentNames.includes(item.treatmentName)) {
+            alert('不存在的治療項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        },
+        updateItem: function (item) {
+          if (!EMTContainer.allTreatmentNames.includes(item.treatmentName)) {
+            alert('不存在的治療項目！')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          console.log('update item: ', item)
+          return item
+        },
+        deleteItem: function (item) {
+          console.log('delete item: ', item)
+        }
+      }
     }
   )
 }
@@ -174,6 +215,9 @@ async function createRecord () {
   for (const [key, newMedication] of Object.entries(newCreateMedicationsMap)) {
     const medicationContainer = $(`.new-medication[key=${key}]`)
     newMedication.name = medicationContainer.find('.medication-name').val()
+    if (newMedication.name === '' || newMedication.name === undefined || !newMedication.details.length) {
+      return alert('缺乏處方名稱或處方中未開立藥品')
+    }
     newMedication.type = medicationContainer.find('.medication-type').val()
     newMedication.comment = medicationContainer.find('.medication-comment').val()
   }
@@ -201,17 +245,19 @@ async function createRecord () {
     // total,
     petId
   }
-
+  console.log(record)
+  return
   const response = await fetch('/api/1.0/clinic/records', {
     method: 'POST',
     headers,
     body: JSON.stringify(record)
   })
+
+  console.log(response)
   if (response.status !== 200) {
     console.log(response)
-    return alert('建立病歷失敗！')
+    return alert('新增病歷失敗!')
   }
-
-  alert('建立病歷成功')
+  alert('新增病歷成功!')
   return location.reload()
 }

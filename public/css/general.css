@@ -3,11 +3,19 @@
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 } */
 
-a {
+/* a {
   color: #00b7ff;
-}
+} */
 
 .icon {
   width: 36px;
   height: 36px;
+}
+
+.display {
+  display: none;
+}
+
+.jsgrid-cell {
+  overflow: hidden;
 }

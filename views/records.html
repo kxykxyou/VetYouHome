@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/style.css" />
     <link rel="shortcut icon" href="/images/favicon-32x32.png" />
     <!-- jquery -->
     <script
@@ -230,10 +229,15 @@
             <button
               class="search align-self-center"
               id="unarchive-search-button"
-              style="width: 50%"
+              style=""
               onclick="searchUnarchiveRecords()"
             >
-              <img src="/images/search.png" class="icon search-icon" alt="" />
+              <img
+                src="/images/search.png"
+                class="icon search-icon"
+                style=""
+                alt=""
+              />
             </button>
           </div>
         </div>
@@ -448,18 +452,8 @@
     </div>
   </body>
   <link rel="stylesheet" href="/css/record-search.css" />
+  <script src="/js/general-control.js"></script>
   <script src="/js/record-search.js"></script>
   <script src="/js/datepicker.js"></script>
   <script src="/js/record-subpage-control.js"></script>
-  <script type="text/javascript">
-    if (!localStorage.user) {
-      location.href = "/signin.html";
-    }
-    const user = JSON.parse(localStorage.user);
-    $("#user-dropdown").append(user.fullname);
-    async function signout() {
-      localStorage.clear();
-      location.href = "/signin.html";
-    }
-  </script>
 </html>

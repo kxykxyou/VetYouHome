@@ -29,18 +29,37 @@ async function renderCreateInpatientOrder () {
       inserting: true,
       editing: true,
       sorting: true,
-      paging: true,
+      paging: false,
 
       data: newInpatientOrder.details,
 
       fields: [
-        { title: '優先級', name: 'priority', type: 'number', editing: true },
-        { title: '醫囑內容', name: 'content', type: 'text', editing: true },
+        { title: '優先級', name: 'priority', type: 'number', editing: true, validate: 'required' },
+        { title: '內容', name: 'content', type: 'text', editing: true, validate: 'required' },
         { title: '頻率', name: 'frequency', type: 'text', editing: true },
         { title: '預定時間', name: 'schedule', type: 'text', editing: true },
         { title: '備註', name: 'comment', type: 'text', editing: true },
         { type: 'control' }
-      ]
+      ],
+      controller: {
+        insertItem: function (item) {
+          if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
+            alert('優先級請輸入0~99的整數')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          return item
+        },
+        updateItem: function (item) {
+          if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
+            alert('優先級請輸入0~99的整數')
+            const d = $.Deferred().reject()
+            return d.promise()
+          }
+          console.log('update item: ', item)
+          return item
+        }
+      }
     }
   )
 }
@@ -49,19 +68,13 @@ async function createInpatientOrder () {
   newInpatientOrder.date = $('input[name="inpatientorder-date"]').val().replaceAll('/', '-')
   newInpatientOrder.comment = $('#new-inpatientorder-comment').val()
   console.log('newInpatientOrder: ', newInpatientOrder)
-  // const headers = {
-  //   'Content-Type': 'application/json',
-  //   Accept: 'application/json',
-  //   Authorization: `Bearer ${localStorage.vyh_token}`
-  // }
   const response = await fetch('/api/1.0/clinic/inpatientorders', {
     method: 'POST',
     headers,
     body: JSON.stringify(newInpatientOrder)
   })
   if (response.status !== 200) {
-    alert('建立醫囑失敗: ', response.message)
-    return
+    return alert('建立醫囑失敗: ', response.message)
   }
   alert('建立醫囑成功！')
   return location.reload()
