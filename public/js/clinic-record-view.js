@@ -18,6 +18,8 @@ const headers = {
   Accept: 'application/json'
 }
 
+const availableCages = []
+
 const petStatusMap = {
   0: '非住院/非看診動物',
   1: '待看診',
@@ -105,15 +107,26 @@ async function renderCreateInpatientModal () {
   const cageSelection = $('#inpatient-target-cage')
   data.forEach(cage => {
     const option = $('<option>')
+    availableCages.push(cage.name)
     cageSelection.append(option.attr('key', cage.name).html(cage.name))
   })
 }
 
 async function createInpatient () {
+  const cage = $('#inpatient-target-cage option:selected').attr('key')
+  if (!cage || cage === '' || !availableCages.includes(cage)) {
+    return alert('請選擇籠位')
+  }
+
+  const summary = $('#inpatient-summary').val()
+  if (summary === '' || !summary) {
+    return alert('請輸入住院摘要')
+  }
+
   const newInpatient = {
     petId: petInfo.petId,
-    cage: $('#inpatient-target-cage option:selected').attr('key'),
-    summary: $('#inpatient-summary').val()
+    cage,
+    summary
   }
   console.log($('#inpatient-target-cage option:selected').attr('key'))
   const response = await fetch('/api/1.0/clinic/inpatients', {
