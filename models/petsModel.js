@@ -30,7 +30,29 @@ async function getClinicPetById (id) {
   return data[0]
 }
 
+async function callRegisterPet (id) {
+  try {
+    await db.execute('UPDATE pet SET status = 2 WHERE id = ?', [id])
+    return {}
+  } catch (error) {
+    console.log(error)
+    return { status_code: 500, error: error.message }
+  }
+}
+
+async function finishInquiryPet (id) {
+  try {
+    await db.execute('UPDATE pet SET status = 0 WHERE id = ?', [id])
+    return {}
+  } catch (error) {
+    console.log(error)
+    return { status_code: 500, error: error.message }
+  }
+}
+
 module.exports = {
   getPetById,
-  getClinicPetById
+  getClinicPetById,
+  callRegisterPet,
+  finishInquiryPet
 }

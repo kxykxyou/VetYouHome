@@ -44,26 +44,34 @@ CREATE TABLE `cage` (
 
 CREATE TABLE `exam` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) UNIQUE NOT NULL,
   `statement` varchar(255),
   `price` mediumint unsigned NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `treatment` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) UNIQUE NOT NULL,
   `statement` varchar(255),
   `price` mediumint unsigned NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `medicine` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) UNIQUE NOT NULL,
   `type` varchar(20) NOT NULL,
   `dose` smallint unsigned,
   `dose_unit` varchar(30),
   `statement` varchar(50),
   `price` mediumint unsigned NOT NULL
+);
+
+CREATE TABLE `register` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `vet_id` int NOT NULL,
+  `pet_id` int NOT NULL,
+  `reserve_time` datetime NOT NULL DEFAULT (current_timestamp()),
+  `subjective` varchar(512) NOT NULL
 );
 
 CREATE TABLE `record` (
@@ -87,7 +95,6 @@ CREATE TABLE `record_exam` (
   `record_id` int NOT NULL,
   `exam_id` int NOT NULL,
   `file_path` varchar(100) NOT NULL,
-  `price` mediumint unsigned NOT NULL DEFAULT 0,
   `quantity` tinyint NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
   `subtotal` mediumint unsigned NOT NULL DEFAULT 0,
@@ -109,7 +116,6 @@ CREATE TABLE `medication_detail` (
   `dose` int NOT NULL DEFAULT 0,
   `frequency` varchar(20) NOT NULL,
   `day` tinyint NOT NULL DEFAULT 1,
-  `price` mediumint NOT NULL DEFAULT 0,
   `quantity` smallint unsigned NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
   `subtotal` mediumint unsigned NOT NULL DEFAULT 0
@@ -119,7 +125,6 @@ CREATE TABLE `record_treatment` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `record_id` int NOT NULL,
   `treatment_id` int NOT NULL,
-  `price` mediumint unsigned NOT NULL DEFAULT 0,
   `quantity` tinyint NOT NULL DEFAULT 1,
   `discount` float NOT NULL DEFAULT 1,
   `subtotal` mediumint unsigned NOT NULL DEFAULT 0,
@@ -166,15 +171,25 @@ CREATE INDEX `user_index_0` ON `user` (`fullname`);
 
 CREATE INDEX `pet_index_1` ON `pet` (`code`);
 
-CREATE INDEX `record_index_2` ON `record` (`code`);
+CREATE INDEX `exam_index_2` ON `exam` (`name`);
 
-CREATE INDEX `inpatient_index_3` ON `inpatient` (`code`);
+CREATE INDEX `treatment_index_3` ON `treatment` (`name`);
 
-CREATE INDEX `inpatient_order_index_4` ON `inpatient_order` (`code`);
+CREATE INDEX `medicine_index_4` ON `medicine` (`name`);
+
+CREATE INDEX `record_index_5` ON `record` (`code`);
+
+CREATE INDEX `inpatient_index_6` ON `inpatient` (`code`);
+
+CREATE INDEX `inpatient_order_index_7` ON `inpatient_order` (`code`);
 
 ALTER TABLE `pet` ADD FOREIGN KEY (`breed_id`) REFERENCES `breed` (`id`);
 
 ALTER TABLE `pet` ADD FOREIGN KEY (`owner_id`) REFERENCES `owner` (`id`);
+
+ALTER TABLE `register` ADD FOREIGN KEY (`pet_id`) REFERENCES `pet` (`id`);
+
+ALTER TABLE `register` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `record` ADD FOREIGN KEY (`vet_id`) REFERENCES `user` (`id`);
 

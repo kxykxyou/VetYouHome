@@ -23,9 +23,10 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/breeds'),
   require('./routes/vets'),
   require('./routes/pets'),
-  require('./routes/inpatients'),
   require('./routes/cages'),
+  require('./routes/registers'),
   require('./routes/clinic'),
+  require('./routes/inpatients'),
   require('./routes/emt')
 ])
 

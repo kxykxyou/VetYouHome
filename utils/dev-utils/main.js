@@ -11,6 +11,7 @@ async function main () {
       await fakeDataInjector.injectFakeData()
       break
     } catch (err) {
+      console.log(err)
       console.log('inject fail, run again!')
       continue
     }

@@ -17,6 +17,7 @@ const dropTableOrders = [
   'inpatient_order_detail',
   'inpatient_order',
   'inpatient',
+  'register',
   'pet',
   'owner',
   'cage',

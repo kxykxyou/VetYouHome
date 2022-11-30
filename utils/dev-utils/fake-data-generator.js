@@ -1,7 +1,8 @@
 async function generateFakeData () {
+  require('dotenv').config('../../.env')
   const fsPromise = require('fs/promises')
   const path = require('path')
-
+  const argon2 = require('argon2')
   // 1st class data
   const users = [] // 十個醫師
   const owners = [] // 十個飼主
@@ -18,8 +19,33 @@ async function generateFakeData () {
 
   // 2nd class data
   const pets = []
+  const password = 'test'
+  const hashedPassword = await argon2.hash(password, process.env.ARGON2_SALT)
 
   // 3rd class data
+  const registers = []
+  const appointmentTimeAndVetIdPair = [
+    '10:00:00, 9',
+    '10:00:00, 8',
+    '10:30:00, 7',
+    '11:00:00, 6',
+    '11:30:00, 5',
+    '10:00:00, 4',
+    '10:30:00, 3',
+    '11:00:00, 2',
+    '11:30:00, 1',
+    '12:00:00, 10',
+    '12:30:00, 9',
+    '13:00:00, 8',
+    '13:30:00, 7',
+    '14:00:00, 6',
+    '14:30:00, 5',
+    '15:00:00, 4',
+    '15:30:00, 3',
+    '16:00:00, 2',
+    '16:30:00, 1'
+  ]
+
   const records = []
   const inpatients = []
   const inpatientDates = [
@@ -81,6 +107,7 @@ async function generateFakeData () {
     pet: pets
   }
   const thirdTableMapData = {
+    register: registers,
     record: records,
     inpatient: inpatients
   }
@@ -120,9 +147,9 @@ async function generateFakeData () {
 
   for (let i = 1; i < 11; i++) {
     const user = {
-      hashed_password: 'hashed_password' + i,
+      hashed_password: hashedPassword,
       fullname: '獸醫' + i,
-      cellphone: i < 10 ? '098765432' + i : '09876543' + i,
+      cellphone: '09' + (i % 10).toString().repeat(8),
       email: 'vet' + i + '@example.com'
     }
     users.push(user)
@@ -209,6 +236,30 @@ async function generateFakeData () {
     } else {
       breed_id = Math.floor(Math.random() * 100) + 1
     }
+
+    let status
+    if (i < 37) {
+      status = 3
+    } else if (i < 51) {
+      status = 1
+    } else if (i < 56) {
+      status = 2
+    } else {
+      status = 0
+    }
+
+    // 由status 決定 class 3 的register
+    if (i >= 37 && i < 56) {
+      const [time, vet_id] = appointmentTimeAndVetIdPair.pop().split(', ')
+      const register = {
+        vet_id,
+        pet_id: i,
+        reserve_time: new Date().toISOString().split('T')[0] + ' ' + time,
+        subjective: '看診主訴' + status
+      }
+      registers.push(register)
+    }
+
     const pet = {
       owner_id: Math.floor(Math.random() * 10) + 1,
       breed_id,
@@ -219,7 +270,7 @@ async function generateFakeData () {
       birthday: '2020-10-10',
       chip: Math.floor(Math.random() * (10 ** 14)),
       comment: '1. 藥物過敏: acetaminophen 2. 主人希望能自己餵藥',
-      status: i < 37 ? 3 : Math.floor(Math.random() * 3),
+      status,
       status_comment: null
     }
     pets.push(pet)

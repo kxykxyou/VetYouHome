@@ -82,21 +82,21 @@ renderAllRecordHeaders(petId)
 async function renderPetInfo (petId) {
   const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`, { headers })).json()
   petInfo = data
-  const dayDiff = (Date.now() - (new Date(data.birthday))) / (24 * 60 * 60 * 1000)
+  const dayDiff = (Date.now() - (new Date(petInfo.birthday))) / (24 * 60 * 60 * 1000)
   // console.log(dayDiff)
   const year = Math.floor(dayDiff / 365)
   const month = Math.floor((dayDiff % 365) / 30)
-  const petInfoTemplate = $('#pet-info-template').clone().removeAttr('id').removeAttr('hidden')
-  petInfoTemplate.find('.pet-icon').attr('src', `/images/${data.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
-  petInfoTemplate.find('.pet-name').html(`${data.petName} / ${data.petCode}`)
-  petInfoTemplate.find('.pet-species').html(`${data.petSpecies === 'c' ? '貓' : '狗'} / ${data.petBreed}`)
-  petInfoTemplate.find('.pet-status').html(`狀態: ${petStatusMap[data.status]}`)
-  petInfoTemplate.find('.pet-birthday').html(`生日: ${new Date(data.birthday).toISOString().split('T')[0]}`)
-  petInfoTemplate.find('.pet-age').html(`年齡: ${year} y ${month} m`)
-  if (petInfo.status === 3) { petInfoTemplate.find('.inpatient-btn').remove() }
-  petInfoTemplate.find('.pet-chip').html(`${data.chip ? data.chip : '無'}`)
-  petInfoTemplate.find('.pet-comment').html(`${data.comment ? data.comment : ''}`)
-  $('#pet-info').html(petInfoTemplate)
+  const petInfoTag = $('#pet-info').removeAttr('hidden')
+  petInfoTag.find('.pet-icon').attr('src', `/images/${petInfo.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
+  petInfoTag.find('.pet-name').html(`${petInfo.petName} / ${petInfo.petCode}`)
+  petInfoTag.find('.pet-species').html(`${petInfo.petSpecies === 'c' ? '貓' : '狗'} / ${petInfo.petBreed}`)
+  petInfoTag.find('.pet-status').html(`狀態: ${petStatusMap[petInfo.status]}`)
+  petInfoTag.find('.pet-birthday').html(`生日: ${new Date(petInfo.birthday).toISOString().split('T')[0]}`)
+  petInfoTag.find('.pet-age').html(`年齡: ${year} y ${month} m`)
+  if (petInfo.status !== 3 && petInfo.status !== 0) { petInfoTag.find('.inpatient-btn').show() }
+  if (petInfo.status === 2) { petInfoTag.find('.finish-inquiry-btn').show() }
+  petInfoTag.find('.pet-chip').html(`${petInfo.chip ? petInfo.chip : '無'}`)
+  petInfoTag.find('.pet-comment').html(`${petInfo.comment ? petInfo.comment : ''}`)
 }
 
 async function renderCreateInpatientModal () {
@@ -678,4 +678,17 @@ function makeSingleRecordHeaderHtml (record) {
     `${record.recordCode} | ${new Date(record.recordCreatedAt).toISOString().split('T')[0]} | 主治醫師：${record.vetFullname}`
   )
   return headerTemplate
+}
+
+async function finishInquiry () {
+  const response = await fetch(`/api/1.0/registers/finish/pet/id/${petInfo.petId}`, {
+    method: 'PATCH',
+    headers
+  })
+  if (response.status !== 200) {
+    console.log(response)
+    return alert('操作失敗！')
+  }
+  alert('結束看診！')
+  return location.reload()
 }
