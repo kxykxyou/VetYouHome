@@ -121,7 +121,6 @@
     ></script>
 
     <title>VetYouHome</title>
-    <title>VetYouHome</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -177,10 +176,47 @@
       </div>
     </nav>
     <main class="my-2">
-      <div class="container">
-        <div class="row">
-          <div id="pet-info" class="pet-info mx-2 my-3 col align-self-center"></div>
+      <div class="container-fluid">
+        <!-- <div class="row"> -->
+        <div id="pet-info" class="pet-info mx-2 my-3 row align-self-center">
+        <!-- pet info -->
+          <div class="col-1 pet-icon-container mx-2">
+                <img
+                  src=""
+                  alt=""
+                  class="pet-icon align-self-center"
+                  style="width: 5vw; height: 'auto'"
+                />
+          </div>
+          <div class="col-2">
+            <div class="row pet-name"></div>
+            <div class="row pet-species"></div>
+            <div class="row pet-status"></div>
+          </div>
+          <div class="col-2">
+            <div class="row pet-birthday"></div>
+            <div class="row pet-age"></div>
+          </div>
+          <div class="col-2">
+            <div class="row">晶片號碼</div>
+            <div class="row pet-chip"></div>
+          </div>
+          <div class="col-3">
+            <div class="row">備註:</div>
+            <div class="row border-dark">
+              <textarea class="pet-comment" readonly></textarea>
+            </div>
+          </div>
+          <div class="col justify-content-center">
+            <div class="row mx-5 my-1">
+              <button type="button" style="display: none" class="btn btn-warning inpatient-btn" data-bs-toggle="modal" data-bs-target="#create-inpatient-modal">收住院</button>
+            </div>
+            <div class="row mx-5">
+              <button type="button" style="display: none" class="btn btn-success finish-inquiry-btn" onclick="finishInquiry()">結束看診</button>
+            </div>
+          </div>
         </div>
+        <!-- </div> -->
       </div>
       <div id="display-block" class="row row-col-2 mx-1">
         <div class="col-6">
@@ -551,38 +587,7 @@
         </div>
       </div>
     </div> -->
-    <div class="templates">
-      <!-- pet info -->
-      <div id="pet-info-template" class="row" hidden>
-        <div class="col-2">
-          <img
-            src=""
-            alt=""
-            class="pet-icon align-self-center"
-            style="width: 5vw; height: 'auto'"
-          />
-        </div>
-        <div class="col-2">
-          <div class="row pet-name">${data.petName} / ${data.petCode}</div>
-          <div class="row pet-species">${data.petSpecies === 'c' ? '貓' : '狗'} / ${data.petBreed}</div>
-          <div class="row pet-status">狀態: ${petStatusMap[data.status]}</div>
-        </div>
-        <div class="col-2">
-          <div class="row pet-birthday">生日: ${new Date(data.birthday).toISOString().split('T')[0]}</div>
-          <div class="row pet-age">年齡: ${year} y ${month} m</div>
-          <button type="button" class="btn btn-warning inpatient-btn" data-bs-toggle="modal" data-bs-target="#create-inpatient-modal">收住院</button>
-        </div>
-        <div class="col-2">
-          <div class="row">晶片號碼</div>
-          <div class="row pet-chip">${data.chip}</div>
-        </div>
-        <div class="col-3">
-          <div class="row">備註:</div>
-          <div class="row border border-dark pet-comment">
-            ${data.comment}
-          </div>
-        </div>
-      </div>
+    <div class="templates" hidden>
       <!-- record header; key: record.id -->
       <div id="record-header-template"
         key=""
