@@ -76,7 +76,7 @@ async function searchInpatients () {
   const petSpecies = $('#pet-species option:selected').attr('key')
   // const isArchive = $('#is-archive option:selected').attr('key')
   const petBreed = $('#pet-breed option:selected').attr('key')
-  const recordCode = $('#record-code').val()
+  const inpatientCode = $('#inpatient-code').val()
   const ownerFullname = $('#owner-fullname').val()
   const petName = $('#pet-name').val()
 
@@ -87,7 +87,7 @@ async function searchInpatients () {
     petSpecies,
     petBreed,
     // isArchive,
-    recordCode,
+    inpatientCode,
     ownerFullname,
     petName,
     petCode,
