@@ -22,7 +22,8 @@ if (url.includes('clinic.html')) {
 }
 
 const user = JSON.parse(localStorage.user)
-$('#user-dropdown').append(user.fullname)
+// $('#user-dropdown').append($('<p>').addClass('user-fullname').html(user.fullname))
+$('#user-dropdown').append('&ensp;' + user.fullname + '&ensp;')
 
 async function signout () {
   localStorage.clear()
