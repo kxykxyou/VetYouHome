@@ -146,9 +146,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li>
-                <a class="dropdown-item" href="#" onclick="signout()"
-                  >Sign out</a
-                >
+                <a class="dropdown-item" href="#" onclick="signout()">登出</a>
               </li>
             </ul>
           </div>
@@ -195,20 +193,18 @@
         >
       </div>
       <div id="unarchive-records-display" class="container-fluid">
-        <div
-          id="unarchive-search-bar"
-          class="row justify-content-center d-flex"
-        >
-          <div class="col-2">
-            <div class="form-group">
-              <label>主治醫師</label>
-              <select
-                id="unarchive-vet-selector"
-                class="form-control select2bs4 vet-selector"
-                style="width: 50%"
-              ></select>
-            </div>
-
+        <div id="unarchive-search-bar" class="row justify-content-center">
+          <div class="col-1 my-auto">
+            <div class="text-center my-auto fw-bold">主治醫師</div>
+          </div>
+          <div class="col-1">
+            <select
+              id="unarchive-vet-selector"
+              class="form-control select2bs4 vet-selector"
+              style=""
+            ></select>
+          </div>
+          <div class="col-1">
             <button
               type="button"
               class="search btn btn-secondary"
@@ -217,14 +213,32 @@
               onclick="searchUnarchiveRecords()"
             >
               搜尋
-              <!-- <img
-                src="/images/search.png"
-                class="icon search-icon"
-                style="height: 100%; width: auto"
-                alt=""
-              /> -->
             </button>
           </div>
+          <!-- <div class="col-2 d-flex justfy-content-center">
+            <div class="col">
+              <div class="form-group">
+                <label>主治醫師</label>
+                <select
+                  id="unarchive-vet-selector"
+                  class="form-control select2bs4 vet-selector"
+                  style=""
+                ></select>
+              </div>
+            </div>
+            <div class="col">
+              <button
+                type="button"
+                class="search btn btn-secondary"
+                id="unarchive-search-button"
+                style=""
+                onclick="searchUnarchiveRecords()"
+              >
+                搜尋
+              </button>
+            </div>
+            </div>
+          </div> -->
         </div>
         <div id="unarchive-search-result" class="row row-cols-4"></div>
       </div>
@@ -234,8 +248,8 @@
         class="container-fluid"
         style="display: none"
       >
-        <div id="history-search-bar" class="row d-flex">
-          <div class="row">
+        <div id="history-search-bar" class="container-fluid">
+          <div class="row justify-content-center">
             <div class="form-group history-search-form-group date-range-group">
               <label>看診日期:</label>
               <div class="input-group">
@@ -443,7 +457,7 @@
       </div>
     </div>
   </body>
-  <link rel="stylesheet" href="/css/record-search.css" />
+  <link rel="stylesheet" href="/css/general.css" />
   <script src="/js/general-control.js"></script>
   <script src="/js/record-search.js"></script>
   <script src="/js/datepicker.js"></script>

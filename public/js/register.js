@@ -1,13 +1,3 @@
-if (!localStorage.vyh_token) {
-  location.href = '/signin.html'
-}
-
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-  Authorization: `Bearer ${localStorage.vyh_token}`
-}
-
 let registers
 
 initRegistersRender()
@@ -51,10 +41,10 @@ async function initRegistersRender () {
     queueCard.find('.owner-cellphone').val(pet.ownerCellphone)
     queueCard.find('.btn-call-register').attr('onclick', `callRegisterPet(${pet.petId})`)
 
-    // 判斷是否預約時間是否超時
+    // 判斷是否預約時間是否超時，超時顯示紅色；反之則為藍色
     const now = Date.now()
-    const reserveTime = (new Date('2022-11-30T16:30:00.000Z').getTime() + (new Date().getTimezoneOffset() * 60 * 1000))
-
+    const reserveTime = (new Date(pet.reserveTime).getTime() + (new Date().getTimezoneOffset() * 60 * 1000))
+    // console.log(now, reserveTime)
     if (reserveTime > now) {
       queueCard.find('.reserve-header').addClass('text-primary')
     } else {
