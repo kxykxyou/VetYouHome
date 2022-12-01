@@ -1,33 +1,9 @@
-if (!localStorage.vyh_token) {
-  location.href = '/signin.html'
-}
 // let cacheRecords // id: complex record objects
 const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
 let petInfo
-const sides = ['left', 'right']
+
 const newMedicationsMap = {}
-const SOAPs = [
-  'subjective',
-  'objective',
-  'assessment',
-  'plan'
-]
-const headers = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.vyh_token}`,
-  Accept: 'application/json'
-}
-
 const availableCages = []
-
-const petStatusMap = {
-  0: '非住院/非看診動物',
-  1: '待看診',
-  2: '看診中',
-  3: '住院中'
-}
-
-const petId = url.split('#')[url.split('#').length - 1]
 
 // autocomplete field prepare
 // autocomplete data source files: exams, medicines, treatments
