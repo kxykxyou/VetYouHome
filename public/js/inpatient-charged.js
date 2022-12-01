@@ -1,13 +1,4 @@
-if (!localStorage.vyh_token) {
-  location.href = '/signin.html'
-}
-
 const inpatientsContainerTag = $('#charged-inpatients-container')
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-  Authorization: `Bearer ${localStorage.vyh_token}`
-}
 
 let allChargedInpatients
 let allCageStatus

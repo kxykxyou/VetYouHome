@@ -1,13 +1,5 @@
-if (!localStorage.vyh_token) {
-  location.href = '/signin.html'
-}
 const speciesSelectionTag = $('#pet-species')
 const breedSelectionTag = $('#pet-breed')
-const headers = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.vyh_token}`,
-  Accept: 'application/json'
-}
 
 let vets
 let allBreeds

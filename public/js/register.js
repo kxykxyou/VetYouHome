@@ -1,13 +1,3 @@
-if (!localStorage.vyh_token) {
-  location.href = '/signin.html'
-}
-
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-  Authorization: `Bearer ${localStorage.vyh_token}`
-}
-
 let registers
 
 initRegistersRender()
