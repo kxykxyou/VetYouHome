@@ -17,6 +17,7 @@ const dropTableOrders = [
   'inpatient_order_detail',
   'inpatient_order',
   'inpatient',
+  'register',
   'pet',
   'owner',
   'cage',
@@ -25,7 +26,7 @@ const dropTableOrders = [
 ]
 
 async function buildAllTables () {
-  const filePath = path.join(__dirname, 'sql.txt')
+  const filePath = path.join(__dirname, '../VetYouHome.sql')
   const data = await fsPromise.readFile(filePath, 'utf-8')
   const sqls = data.replaceAll('\n', '').split(';').filter(sql => sql !== '')
   const dbConnection = await db.getConnection()
