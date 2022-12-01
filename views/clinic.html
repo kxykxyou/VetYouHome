@@ -368,7 +368,7 @@
                       <div class="all-medications-container display" style="display: none">
                         <button
                           type="button"
-                          class="btn btn-secondary my-1 add-medication"
+                          class="btn btn-info my-1 add-medication"
                           onclick="addNewMedication(this)"
                         >
                           新增處方
@@ -467,7 +467,7 @@
                   <div class="form-group">
                     <div class="new-inpatientorder-table">
                       <div class="title order fs-4">醫囑: </div>
-                      <div class="title order fs-6">(優先級請填寫0~99整數)</div>
+                      <div class="title order fs-6">(優先級請填寫0~99整數、預定時間請以逗號分隔如「7,13,19」)</div>
                       <div
                         id="new-inpatientorder-table"
                         class="new-inpatientorder-table"
@@ -615,24 +615,24 @@
           <button key="${data.id}" type="button" class="btn btn-warning edit-record" onclick="editRecord(this)">編輯病歷</button>
           <button key="${data.id}" type="button" style="display: none" class="btn btn-success update-record" onclick="updateRecord(this)">儲存病歷</button>
           <div class="soap soap-s">
-              <p class="fs-3 header">Subjective主觀描述</p>
+              <p class="fs-3 fw-bold mb-0 mt-2">Subjective主觀描述</p>
               <textarea readonly class="form-control  soap-textarea subjective s-textarea"></textarea>
           </div>
           <div class="soap soap-o">
-              <p class="fs-3 header">Objective客觀檢查</p>
+              <p class="fs-3 fw-bold mb-0 mt-2">Objective客觀檢查</p>
               <textarea readonly class="form-control soap-textarea objective o-textarea"></textarea>
           </div>
           <div class="soap soap-a">
-            <p class="fs-3 header">Assessment評估</p>
+            <p class="fs-3 fw-bold mb-0 mt-2">Assessment評估</p>
             <textarea readonly class="form-control soap-textarea assessment a-textarea"></textarea>
           </div>
           <div class="soap soap-p">
-            <p class="fs-3 header">Plan計畫</p>
+            <p class="fs-3 fw-bold mb-0 mt-2">Plan計畫</p>
             <textarea readonly class="form-control soap-textarea plan p-textarea"></textarea>
           </div>
         </div>
         <div class="emt-container">
-          <h3>檢驗與治療</h3>  
+          <p class="fs-3 fw-bold mb-0 mt-2">檢驗與治療</p>
           <div class="exams-container">
             <button
               type="button"
@@ -663,7 +663,7 @@
             <div class="display all-medications-container">
               <button
                 type="button"
-                class="btn btn-secondary my-1 add-medication"
+                class="btn btn-info my-1 add-medication"
                 onclick="addMedication(this)"
               >
                 新增處方
@@ -688,7 +688,7 @@
         </div>
       </div>
       <!-- single medication container; key: record_medication.id -->
-      <div id="single-medication-container-template" key="" class="medication-container my-2" hidden>
+      <div id="single-medication-container-template" key="" class="medication-container mb-2 border border-warning p-1" hidden>
         <div class="input-group">
           <span class="input-group-text" style="background-color: #20c997">處方名稱</span>
           <input type="text" class="form-control medication-name medication-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly>
