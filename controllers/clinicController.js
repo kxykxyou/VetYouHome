@@ -4,41 +4,6 @@ const recordMedicationsModel = require('../models/recordMedicationsModel')
 const recordTreatmentsModel = require('../models/recordTreatmentsModel')
 const petsModel = require('../models/petsModel')
 const inpatientsModel = require('../models/inpatientsModel')
-// const methodTargetFunctionMap = {
-//   post: {
-//     records: recordsModel.createRecord,
-//     inpatientorders: inpatientsModel.createInpatient,
-//     inpatients: inpatientsModel.createInpatient
-//   },
-//   delete: {
-//     records: recordsModel.deleteRecord,
-//     inpatientorders: inpatientsModel.deleteInpatientOrder,
-//     recordexams: recordExamsModel.deleteRecordExam,
-//     recordmedications: recordMedicationsModel.deleteRecordMedication,
-//     medicationdetails: recordMedicationsModel.deleteMedicationDetail,
-//     recordtreatments: recordTreatmentsModel.deleteRecordTreatment
-//   },
-//   patch: {
-//     records: recordsModel.updateRecord,
-//     recordexams: recordsModel.updateRecordExam,
-//     medicationdetails: recordMedicationsModel.updateMedicationDetail,
-//     recordtreatments: recordTreatmentsModel.updateRecordTreatment
-//   }
-// }
-
-// createRecord,
-// createInpatientOrder,
-// createInpatient,
-// deleteRecord,
-// deleteInpatientOrder,
-// deleteRecordExam,
-// deleteRecordMedication,
-// deleteMedicationDetail,
-// deleteRecordTreatment,
-// updateRecord,
-// updateRecordExam,
-// updateMedicationDetail,
-// updateRecordTreatment
 
 async function getAllRecordsByPetId (req, res, next) {
   const id = Number(req.params.id)

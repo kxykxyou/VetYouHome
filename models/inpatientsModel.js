@@ -450,6 +450,21 @@ async function getTodayInpatientOrderComplexByInpatientId (inpatientId) {
   return { data: inpatientOrder }
 }
 
+async function getInpatientOrderComplexByInpatientOrderId (inpatientOrderId) {
+  const [inpatientOrder] = await db.execute(`
+  SELECT 
+    * 
+  FROM inpatient_order
+  WHERE id = ?
+  `, [inpatientOrderId])
+  if (!inpatientOrder.length) { return { data: {} } }
+
+  const [inpatientOrderDetails] = await db.execute('SELECT * FROM inpatient_order_detail WHERE inpatient_order_id = ?', [inpatientOrderId])
+  inpatientOrder[0].details = inpatientOrderDetails
+
+  return { data: inpatientOrder[0] }
+}
+
 module.exports = {
   query,
   getChargedPets,
@@ -462,6 +477,7 @@ module.exports = {
   getInpatientOrderById,
   getMostRecentInpatientByPetId,
   getTodayInpatientOrderComplexByInpatientId,
+  getInpatientOrderComplexByInpatientOrderId,
   createInpatientOrder,
   createInpatientOrderDetail,
   createInpatient,

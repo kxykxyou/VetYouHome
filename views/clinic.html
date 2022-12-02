@@ -423,7 +423,7 @@
                       class="col fs-4"
                     ></div>
                     <div class="col-3">
-                      <button class="btn btn-primary" hidden>匯入醫囑</button>
+                      <button type="button" class="btn btn-primary btn-import-order" data-bs-toggle="modal" data-bs-target="#import-inpatient-order-modal">匯入醫囑</button>
                     </div>
                   </div>
                   <div class="row">
@@ -545,10 +545,10 @@
         </div>
       </div>
     </div>
-    <!-- 刪除醫囑Modal -->
-    <!-- <div
+    <!-- 匯入醫囑Modal -->
+    <div
       class="modal fade"
-      id="remove-inpatientorder-modal"
+      id="import-inpatient-order-modal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -556,8 +556,8 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="remove-inpatientorder-modal-label">
-              刪除病歷
+            <h5 class="modal-title" id="import-inpatient-order-modal-label">
+              匯入醫囑
             </h5>
             <button
               type="button"
@@ -566,7 +566,17 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">真的要刪除這份醫囑嗎？</div>
+          <div class="modal-body">請選擇歷史醫囑：</div>
+          <div class="modal-body inpatient-order-selection">
+            <select
+              id="target-inpatient-order"
+              name="target-inpatient-order"
+              class="form-control select2bs4 target-inpatient-order"
+              style="width: 100%"
+            >
+              <option key="" selected>請選擇醫囑</option>
+            </select>
+          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -577,16 +587,15 @@
             </button>
             <button
               type="button"
-              id="remove-inpatientorder-btn"
               class="btn btn-primary"
-              onclick="removeInpatientOrder(this)"
+              onclick="importInpatientOrder()"
             >
               確定
             </button>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
     <div class="templates" hidden>
       <!-- record header; key: record.id -->
       <div id="record-header-template"

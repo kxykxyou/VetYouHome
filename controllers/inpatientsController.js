@@ -48,11 +48,24 @@ async function swapCage (req, res, next) {
 }
 
 async function getTodayInpatientOrderComplexByInpatientId (req, res, next) {
+  const inpatientId = Number(req.params.id)
+  if (!(Number.isSafeInteger(inpatientId) && inpatientId > 0)) {
+    return res.status(400).json({ message: 'not invalid id' })
+  }
+  const result = await inpatientsModel.getTodayInpatientOrderComplexByInpatientId(inpatientId)
+  if (result.error) {
+    console.log(result.error)
+    return res.status(500).json({ error: result.error })
+  }
+  return res.status(200).json({ data: result.data })
+}
+
+async function getInpatientOrderComplexByInpatientOrderId (req, res, next) {
   const inpatientOrderId = Number(req.params.id)
   if (!(Number.isSafeInteger(inpatientOrderId) && inpatientOrderId > 0)) {
     return res.status(400).json({ message: 'not invalid id' })
   }
-  const result = await inpatientsModel.getTodayInpatientOrderComplexByInpatientId(inpatientOrderId)
+  const result = await inpatientsModel.getInpatientOrderComplexByInpatientOrderId(inpatientOrderId)
   if (result.error) {
     console.log(result.error)
     return res.status(500).json({ error: result.error })
@@ -65,5 +78,6 @@ module.exports = {
   searchInpatients,
   discharge,
   swapCage,
-  getTodayInpatientOrderComplexByInpatientId
+  getTodayInpatientOrderComplexByInpatientId,
+  getInpatientOrderComplexByInpatientOrderId
 }
