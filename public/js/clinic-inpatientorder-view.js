@@ -1,11 +1,12 @@
 // sides = ['left', 'right']
 const cacheRenderedInpatientOrders = {}
+let allInpatientOrders
 
 renderAllInpatientOrderHeaders()
 async function renderAllInpatientOrderHeaders () {
   const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`, { headers })).json()
-  console.log('inpatientorders: ', data)
-  // let html = ''
+  allInpatientOrders = data
+  console.log('allInpatientOrders: ', data)
 
   sides.forEach(side => {
     data.forEach(inpatientOrder => {
@@ -119,66 +120,6 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
     }
   )
 }
-
-// async function insertInpatientOrderTable (inpatientOrderId, details) {
-//   const { data } = await (await fetch(`/api/1.0/clinic/inpatientorderdetails/id/${inpatientOrderId}`, { headers })).json()
-//   console.log('data: ', data)
-
-//   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-table').jsGrid()
-//   $(`.inpatientorder-table-${inpatientOrderId}`).jsGrid(
-//     {
-//       width: '100%',
-//       height: 'auto',
-
-//       inserting: true,
-//       editing: true,
-//       sorting: true,
-//       paging: false,
-
-//       data: details,
-
-//       fields: [
-//         { name: 'inpatientOrderDetailId', type: 'number', visible: false, editing: false },
-//         { title: '優先級', name: 'priority', type: 'number', editing: true },
-//         { title: '內容', name: 'content', type: 'text', editing: true },
-//         { title: '頻率', name: 'frequency', type: 'text', editing: true },
-//         { title: '預定時間', name: 'schedule', type: 'text', editing: true },
-//         { title: '備註', name: 'comment', type: 'text', editing: true },
-//         { type: 'control' }
-//       ],
-//       controller: {
-//         insertItem: function (item) {
-//           if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
-//             alert('優先級請輸入0~99的整數')
-//             const d = $.Deferred().reject()
-//             return d.promise()
-//           }
-//           if (item.content === '') {
-//             alert('請輸入醫囑內容')
-//             const d = $.Deferred().reject()
-//             return d.promise()
-//           }
-//           console.log(item)
-//           return item
-//         },
-//         updateItem: function (item) {
-//           if (item.priority === '' || item.priority === undefined || Math.floor(item.priority) < 0 || Math.floor(item.priority) > 99) {
-//             alert('優先級請輸入0~99的整數')
-//             const d = $.Deferred().reject()
-//             return d.promise()
-//           }
-//           if (item.content === '') {
-//             alert('請輸入醫囑內容')
-//             const d = $.Deferred().reject()
-//             return d.promise()
-//           }
-//           console.log('update item: ', item)
-//           return item
-//         }
-//       }
-//     }
-//   )
-// }
 
 function updateRemoveInpatientOrderModal (thisTag) {
   const key = $(thisTag).attr('key')
