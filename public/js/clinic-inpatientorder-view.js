@@ -44,7 +44,9 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
   // cage render 籠位名稱(住院動物名字)
 
   inpatientOrderTemplate.find('.inpatient-cage').html(`${complexInpatientOrder.cage}`)
-  inpatientOrderTemplate.find('.inpatientorder-comment').html(`${complexInpatientOrder.inpatientOrderComment}`)
+  inpatientOrderTemplate.find('.inpatientorder-comment')
+    .html(`${complexInpatientOrder.inpatientOrderComment}`)
+    .attr('rows', complexInpatientOrder.inpatientOrderComment.split(/\r|\r\n|\n/).length)
 
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-content').append(inpatientOrderTemplate)
   // insertInpatientOrderTable(inpatientOrderId, complexInpatientOrder.details)
@@ -63,12 +65,12 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
 
       fields: [
         { name: 'id', type: 'number', visible: false, editing: false, validate: 'required' },
-        { title: '優先級', name: 'priority', type: 'number', editing: true, validate: 'required' },
+        { title: '優先級', name: 'priority', type: 'number', editing: true, validate: 'required', width: '10%', align: 'center' },
         { title: '內容', name: 'content', type: 'text', editing: true, validate: 'required' },
-        { title: '頻率', name: 'frequency', type: 'text', editing: true },
-        { title: '預定時間', name: 'schedule', type: 'text', editing: true },
-        { title: '備註', name: 'comment', type: 'text', editing: true },
-        { type: 'control' }
+        { title: '頻率', name: 'frequency', type: 'text', editing: true, width: '10%', align: 'center' },
+        { title: '預定時間', name: 'schedule', type: 'text', editing: true, width: '15%', align: 'center' },
+        { title: '備註', name: 'comment', type: 'text', editing: true, width: '20%' },
+        { type: 'control', width: '10%' }
       ],
 
       controller: {
@@ -210,9 +212,10 @@ function editInpatientOrder (thisTag) {
 
 async function updateInpatientOrder (thisTag) {
   const container = $(thisTag).parents('.inpatientorder-container')
+  const comment = $(thisTag).parents('.inpatientorder-container').find('.inpatientorder-comment').val()
   const body = {
     id: container.attr('key'),
-    comment: $(thisTag).parents('.inpatientorder-container').find('.inpatientorder-comment').val()
+    comment
   }
   const response = await fetch('/api/1.0/clinic/inpatientorders', {
     method: 'PUT',
@@ -227,7 +230,9 @@ async function updateInpatientOrder (thisTag) {
   $(thisTag).hide()
   $(thisTag).siblings('.edit-inpatientorder-btn').show()
 
-  container.find('.inpatientorder-comment').attr('readonly', '')
+  container.find('.inpatientorder-comment')
+    .attr('readonly', '')
+    .attr('rows', comment.split(/\r|\r\n|\n/).length)
 
   return alert('更新醫囑成功！')
 }
