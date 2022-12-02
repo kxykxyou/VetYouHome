@@ -45,11 +45,12 @@ async function getAllRecordsByPetId (req, res, next) {
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
-  const data = await recordsModel.getAllRecordsByPetId(id)
-  if (!data.length) {
-    return res.status(400).json({ error: 'not invalid id' })
+  const result = await recordsModel.getAllRecordsByPetId(id)
+  if (result.status_code) {
+    console.log(result.error)
+    return res.status(result.status_code).json({ error: 'Internal Server Error' })
   }
-  return res.status(200).json({ data })
+  return res.status(200).json({ data: result.data })
 }
 
 async function getRecordById (req, res, next) {
