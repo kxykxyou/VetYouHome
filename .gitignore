@@ -1,5 +1,6 @@
 views/exp*
 utils/dev-utils/fake-data.json
+utils/dev-utils/sql-query-examples
 Wireframes
 AdminLTE-3.2.0
 .vscode

@@ -21,7 +21,8 @@ async function getRecordById (id) {
 }
 
 async function getAllRecordsByPetId (id) {
-  const [data] = await db.execute(`
+  try {
+    const [data] = await db.execute(`
   SELECT 
       u.fullname as vetFullname,
       r.id as recordId,
@@ -40,7 +41,11 @@ async function getAllRecordsByPetId (id) {
   JOIN user as u on r.vet_id = u.id
   WHERE p.id = ?
     `, [id])
-  return data
+    return { data }
+  } catch (error) {
+    console.log(error)
+    return { status_code: 500, error }
+  }
 }
 
 async function searchRecords (queryPairs) {
