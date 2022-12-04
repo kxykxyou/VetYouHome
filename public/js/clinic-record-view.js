@@ -67,11 +67,12 @@ async function renderPetInfo (petId) {
   petInfoTag.find('.pet-name').html(`${petInfo.petName} / ${petInfo.petCode}`)
   petInfoTag.find('.pet-species').html(`${petInfo.petSpecies === 'c' ? '貓' : '狗'} / ${petInfo.petBreed}`)
   petInfoTag.find('.pet-status').html(`狀態: ${petStatusMap[petInfo.status]}`)
+  petInfoTag.find('.pet-sex-neutered').html(`${petInfo.sex ? '公' : '母'} / ${petInfo.isNeutered ? '已結紮' : '未結紮'}`)
   petInfoTag.find('.pet-birthday').html(`生日: ${new Date(petInfo.birthday).toISOString().split('T')[0]}`)
   petInfoTag.find('.pet-age').html(`年齡: ${year} y ${month} m`)
   if (petInfo.status !== 3 && petInfo.status !== 0) { petInfoTag.find('.inpatient-btn').show() }
   if (petInfo.status === 2) { petInfoTag.find('.finish-inquiry-btn').show() }
-  petInfoTag.find('.pet-chip').html(`${petInfo.chip ? petInfo.chip : '無'}`)
+  petInfoTag.find('.pet-chip').html(`晶片號碼 : ${petInfo.chip ? petInfo.chip : '無'}`)
   petInfoTag.find('.pet-comment').html(`${petInfo.comment ? petInfo.comment : ''}`)
 }
 
