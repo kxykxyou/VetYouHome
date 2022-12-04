@@ -70,7 +70,7 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
         { title: '內容', name: 'content', type: 'text', editing: true, validate: 'required' },
         { title: '頻率', name: 'frequency', type: 'text', editing: true, width: '10%', align: 'center' },
         { title: '預定時間', name: 'schedule', type: 'text', editing: true, width: '15%', align: 'center' },
-        { title: '備註', name: 'comment', type: 'text', editing: true, width: '20%' },
+        { title: '執行備註', name: 'comment', type: 'text', editing: true, width: '20%' },
         { type: 'control', width: '10%' }
       ],
 
