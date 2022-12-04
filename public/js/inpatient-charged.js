@@ -21,7 +21,6 @@ const inpatientsContainer = {
   }
 }
 
-// $('window').ready(initRenderInpatients)
 initInpatientsRender()
 async function initInpatientsRender () {
   await initRenderInpatients()
@@ -112,86 +111,6 @@ async function initRenderInpatients () {
     })
 }
 
-// function blockInitHtml (cageBlock) {
-//   return `
-//   <div
-//   id="block-${cageBlock}-cages"
-//   class="block-cages border border-dark my-3"
-//   >
-//     <div class="row justify-content-center">
-//       <h4 class="text-center border-bottom border-dark">${inpatientsContainer[cageBlock].name}</h4>
-//     </div>
-//     <div id="inpatients-display-${cageBlock}" class="row">
-//     </div>
-//   </div>
-//   `
-// }
-
-// function cageCardHtml (inpatient) {
-//   return `
-//   <!-- 單一卡片 -->
-//   <div class="col-3 my-3 inpatient-card" key=${inpatient.inpatientId}>
-//     <!-- 籠位編號 + summary -->
-//     <div class="row">
-//       <div class="col-1">${inpatient.inpatientCage}</div>
-//       <div class="col">${inpatient.inpatientSummary ? inpatient.inpatientSummary : ''}</div>
-//     </div>
-//     <!-- 圖片與寵物基本資料 -->
-//     <div class="row">
-//       <!-- 寵物圖片 -->
-//       <div class="col">
-//         <a href="/clinic.html#${inpatient.petId}">
-//           <img
-//             src="/images/${inpatient.petSpecies === 'd' ? 'dog' : 'cat'}.png"
-//             class="pet-icon col align-self-center"
-//             alt=""
-//           />
-//         </a>
-//       </div>
-//       <!-- 寵物基本資料 -->
-//       <div class="col">
-//         <p class="card-subtitle">${inpatient.petName}</p>
-//         <p class="card-subtitle">${inpatient.vetFullname}</p>
-//         <p class="card-subtitle">${inpatient.ownerFullname}</p>
-//         <p class="card-subtitle">${inpatient.ownerCellphone}</p>
-//       </div>
-//       <!-- 病歷操作icon -->
-//       <div class="btn-group">
-//         <button type="button" class="btn btn-default">
-//           <a href="/clinic.html#${inpatient.petId}">
-//             <img
-//             src="/images/medical-record.png"
-//             class="operation-icon"
-//             alt=""
-//             />
-//           </a>
-//         </button>
-//         <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#inpatientorder-modal" onclick="modalUpdateCurrentInpatientOrder(${inpatient.inpatientId})">
-//           <img
-//           src="/images/medical-order.png"
-//           class="operation-icon"
-//           alt=""
-//         />
-//         </button>
-//         <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#swap-cage-modal" onclick="modalUpdateCurrentCage(${inpatient.inpatientId})">
-//           <img
-//           src="/images/exchange.png"
-//           class="operation-icon"
-//           alt=""
-//         />
-//         </button>
-//         <button type="button" class="btn btn-default" onclick="discharge(${inpatient.inpatientId})">
-//           <img
-//           src="/images/discharge.png"
-//           class="operation-icon"
-//           alt=""
-//         />
-//         </button>
-//       </div>
-//     </div>
-//   </div>`
-// }
-
 async function discharge (inpatientId) {
   if (confirm('確定要讓此病患出院嗎？') !== true) {
     return
@@ -254,10 +173,15 @@ async function modalUpdateCurrentInpatientOrder (inpatientId) {
   const complexInpatientOrder = data
   console.log('complexInpatientOrder: ', complexInpatientOrder)
 
+  const inpatientInfo = allChargedInpatients.find(inpatient => inpatient.inpatientId === inpatientId)
+  $('#inpatientorder-current-cage').html(`${inpatientInfo.inpatientCage} - ${inpatientInfo.petName}`)
+  // console.log(complexInpatientOrder)
   if (!Object.keys(complexInpatientOrder).length) {
+    $('#inpatient-order-comment').empty()
     return $('#inpatientorder-table').html('尚未建立今日醫囑！')
   }
-  // console.log(complexInpatientOrder)
+
+  $('#inpatient-order-comment').html(`${complexInpatientOrder.comment}`)
   $('#inpatientorder-table').jsGrid({
     width: '100%',
     height: 'auto',
@@ -271,11 +195,11 @@ async function modalUpdateCurrentInpatientOrder (inpatientId) {
 
     fields: [
       // { name: 'inpatientOrderDetailId', type: 'number', visible: false, editing: false },
-      { title: '優先級', name: 'priority', type: 'number', editing: false },
-      { title: '內容', name: 'content', type: 'text', editing: false },
-      { title: '頻率', name: 'frequency', type: 'text', editing: false },
-      { title: '預定時間', name: 'schedule', type: 'text', editing: false },
-      { title: '備註', name: 'comment', type: 'text', editing: false }
+      { title: '優先級', name: 'priority', type: 'number', editing: true, validate: 'required', width: '10%', align: 'center' },
+      { title: '內容', name: 'content', type: 'text', editing: true, validate: 'required', headercss: 'text-align: center' },
+      { title: '頻率', name: 'frequency', type: 'text', editing: true, width: '10%', align: 'center' },
+      { title: '預定時間', name: 'schedule', type: 'text', editing: true, width: '15%', align: 'center' },
+      { title: '執行備註', name: 'comment', type: 'text', editing: true, width: '30%' }
       // { type: 'control' }
     ]
   })

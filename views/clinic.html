@@ -178,41 +178,44 @@
     <main class="my-2">
       <div class="container-fluid">
         <!-- <div class="row"> -->
-        <div id="pet-info" class="pet-info mx-2 my-3 row align-self-center">
+        <div id="pet-info" class="pet-info mx-2 my-3 row justify-content-center">
         <!-- pet info -->
-          <div class="col-1 pet-icon-container mx-2">
-                <img
-                  src=""
-                  alt=""
-                  class="pet-icon align-self-center"
-                  style="width: 5vw; height: 'auto'"
-                />
+          <div class="col-1 pet-icon-container justfy-content-center mx-2">
+            <img
+              src=""
+              alt=""
+              class="pet-icon align-self-center"
+              style="width: 5vw; height: 'auto'"
+            />
           </div>
           <div class="col-2">
-            <div class="row pet-name"></div>
-            <div class="row pet-species"></div>
-            <div class="row pet-status"></div>
+            <div class="row pet-name fs-5"></div>
+            <div class="row pet-species fs-5"></div>
+            <div class="row pet-sex-neutered fs-5"></div>
           </div>
           <div class="col-2">
-            <div class="row pet-birthday"></div>
-            <div class="row pet-age"></div>
+            <div class="row pet-chip fs-5"></div>
+            <div class="row pet-birthday fs-5"></div>
+            <div class="row pet-age fs-5"></div>
           </div>
-          <div class="col-2">
-            <div class="row">晶片號碼</div>
-            <div class="row pet-chip"></div>
-          </div>
+          <!-- <div class="col-2">
+          </div> -->
           <div class="col-3">
-            <div class="row">備註:</div>
-            <div class="row border-dark">
-              <textarea class="pet-comment" readonly></textarea>
+            <div class="row pet-status fs-5"></div>
+            <div class="row fs-5">備註:</div>
+            <div class="row border-dark pet-comment">
             </div>
           </div>
-          <div class="col justify-content-center">
-            <div class="row mx-5 my-1">
-              <button type="button" style="display: none" class="btn btn-warning inpatient-btn" data-bs-toggle="modal" data-bs-target="#create-inpatient-modal">收住院</button>
-            </div>
-            <div class="row mx-5">
-              <button type="button" style="display: none" class="btn btn-success finish-inquiry-btn" onclick="finishInquiry()">結束看診</button>
+          <div class="col-2 justify-content-end">
+            <div class="row ">
+              <div class="col justify-content-center align-self-end">
+                <div class="row mx-5 mt-1">
+                  <button type="button" style="display: none" class="btn btn-warning inpatient-btn" data-bs-toggle="modal" data-bs-target="#create-inpatient-modal">收住院</button>
+                </div>
+                <div class="row mx-5 mt-2">
+                  <button type="button" style="display: none" class="btn btn-success finish-inquiry-btn" onclick="finishInquiry()">結束看診</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -291,10 +294,7 @@
                 <!-- form start -->
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="create-record-subjective"
-                      >Subjective 主觀症狀</label
-                    >
-                    <br />
+                    <p class="fs-3 fw-bold mb-0 mt-2">Subjective 主觀描述</p>
                     <textarea
                       id="create-record-subjective"
                       class="form-control"
@@ -303,10 +303,7 @@
                     ></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="create-record-objective"
-                      >Objective 客觀檢查</label
-                    >
-                    <br />
+                    <p class="fs-3 fw-bold mb-0 mt-2">Objective 客觀檢查</p>
                     <textarea
                       id="create-record-objective"
                       class="form-control"
@@ -315,10 +312,7 @@
                     ></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="create-record-assessment"
-                      >Assessment 評估</label
-                    >
-                    <br />
+                    <p class="fs-3 fw-bold mb-0 mt-2">Assessment 評估</p>
                     <textarea
                       id="create-record-assessment"
                       class="form-control"
@@ -327,8 +321,7 @@
                     ></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="create-record-plan">Plan 計畫</label>
-                    <br />
+                    <p class="fs-3 fw-bold mb-0 mt-2">Plan 計畫</p>
                     <textarea
                       id="create-record-plan"
                       class="form-control"
@@ -337,7 +330,7 @@
                     ></textarea>
                   </div>
                   <div id="new-emt-container">
-                    <h3>檢查與治療</h3>
+                    <p class="fs-3 fw-bold mb-0 mt-2">檢驗與治療</p>
                     <div class="new-exams-container">
                       <button
                         type="button"
@@ -420,7 +413,7 @@
                   <div class="row">
                     <div
                       id="create-new-inpatientorder-cage"
-                      class="col fs-4"
+                      class="col fs-3"
                     ></div>
                     <div class="col-3">
                       <button type="button" class="btn btn-primary btn-import-order" data-bs-toggle="modal" data-bs-target="#import-inpatient-order-modal">匯入醫囑</button>
@@ -429,11 +422,11 @@
                   <div class="row">
                     <div
                       id="create-new-inpatientorder-summary"
-                      class="fs-4"
+                      class="fs-3"
                     ></div>
                   </div>
                   <div class="form-group">
-                    <div class="fs-5">醫囑日期: </div>
+                    <p class="fs-3 mb-0 mt-2">醫囑日期: </p>
                     <div class="input-group date" data-target-input="nearest">
                       <div
                         class="input-group-append"
@@ -454,9 +447,7 @@
                   </div>
 
                   <div class="new-inpatientorder-comment">
-                    <div class="fs-5"
-                      >醫囑備註</label
-                    >
+                    <p class="fs-3 mb-0 mt-2">醫囑備註</p>
                     <textarea
                       id="new-inpatientorder-comment"
                       class="form-control"
@@ -466,8 +457,8 @@
                   </div>
                   <div class="form-group">
                     <div class="new-inpatientorder-table">
-                      <div class="title order fs-4">醫囑: </div>
-                      <div class="title order fs-6">(優先級請填寫0~99整數、預定時間請以逗號分隔如「7,13,19」)</div>
+                      <p class="fs-3 mb-0 mt-2">醫囑: </p>
+                      <p class="fs-6 mb-0">(優先級請填寫0~99整數、預定時間請以逗號分隔如「7,13,19」)</p>
                       <div
                         id="new-inpatientorder-table"
                         class="new-inpatientorder-table"
@@ -624,19 +615,19 @@
           <button key="${data.id}" type="button" class="btn btn-warning edit-record" onclick="editRecord(this)">編輯病歷</button>
           <button key="${data.id}" type="button" style="display: none" class="btn btn-success update-record" onclick="updateRecord(this)">儲存病歷</button>
           <div class="soap soap-s">
-              <p class="fs-3 fw-bold mb-0 mt-2">Subjective主觀描述</p>
+              <p class="fs-3 fw-bold mb-0 mt-2">Subjective 主觀描述</p>
               <textarea readonly class="form-control  soap-textarea subjective s-textarea"></textarea>
           </div>
           <div class="soap soap-o">
-              <p class="fs-3 fw-bold mb-0 mt-2">Objective客觀檢查</p>
+              <p class="fs-3 fw-bold mb-0 mt-2">Objective 客觀檢查</p>
               <textarea readonly class="form-control soap-textarea objective o-textarea"></textarea>
           </div>
           <div class="soap soap-a">
-            <p class="fs-3 fw-bold mb-0 mt-2">Assessment評估</p>
+            <p class="fs-3 fw-bold mb-0 mt-2">Assessment 評估</p>
             <textarea readonly class="form-control soap-textarea assessment a-textarea"></textarea>
           </div>
           <div class="soap soap-p">
-            <p class="fs-3 fw-bold mb-0 mt-2">Plan計畫</p>
+            <p class="fs-3 fw-bold mb-0 mt-2">Plan 計畫</p>
             <textarea readonly class="form-control soap-textarea plan p-textarea"></textarea>
           </div>
         </div>
@@ -796,20 +787,20 @@
         </button>
 
         <div class="inpatient cage my-1">
-          <div class="title cage fs-4">籠位: </div>
+          <p class="fs-3 fw-bold mb-0 mt-2">籠位: </p>
           <textarea class="inpatient-cage form-control" rows="1" readonly></textarea>
         <div class="inpatient summary my-1">
-          <div class="title summary fs-4">住院摘要: </div>
+          <p class="fs-3 fw-bold mb-0 mt-2">住院摘要: </p>
           <textarea class="inpatient-summary form-control" readonly></textarea>
         </div>          
         </div>
         <div class="inpatient comment my-1">
-          <div class="title comment fs-4">備註: </div>
+          <p class="fs-3 fw-bold mb-0 mt-2">備註: </p>
           <textarea class="inpatientorder-comment form-control" readonly></textarea>
         </div>
         <div class="inpatientorder my-1">
           <div class="row">
-            <div class="title order fs-4">醫囑: </div>
+            <p class="fs-3 fw-bold mb-0 mt-2">醫囑: </p>
             <div class="title order fs-6">(優先級請填寫0~99正整數)</div>
           </div>
           <div class="inpatientorder-table"></div>

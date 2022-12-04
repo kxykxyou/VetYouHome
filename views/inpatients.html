@@ -378,7 +378,7 @@
       <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">查看醫囑</h5>
+            <div class="modal-title col text-center fs-3 fw-bold">查看醫囑</div>
             <button
               type="button"
               class="btn-close"
@@ -386,8 +386,17 @@
               aria-label="Close"
             ></button>
           </div>
-          <!-- <div id="inpatientorder-current-cage" class="modal-body"></div> -->
-          <div id="inpatientorder-table"></div>
+          <div
+            id="inpatientorder-current-cage"
+            class="fs-4 fw-bold mt-3 text-center"
+          ></div>
+          <div class="row px-3 mt-2">
+            <div class="row">
+              <p class="fs-4 fw-bold mb-0 mt-2">醫囑備註:</p>
+              <div id="inpatient-order-comment" class="col fs-5"></div>
+            </div>
+          </div>
+          <div id="inpatientorder-table" class="px-3 mt-3 w-100"></div>
           <div class="modal-footer"></div>
         </div>
       </div>
