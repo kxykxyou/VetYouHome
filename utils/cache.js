@@ -24,14 +24,14 @@ redisClient.on('connect', () => {
 })
 redisClient.on('ready', async () => {
   console.log(
-    `Redis ready  : ${new Date().toLocaleString('zh-TW', {
+    `Redis ready in TW timezone : ${new Date().toLocaleString('zh-TW', {
       timeZone: 'Asia/Taipei'
     })}`
   )
 })
 redisClient.on('reconnecting', (err) => {
   console.log(
-    `Redis Client Reconnect at : ${new Date().toLocaleString('zh-TW', {
+    `Redis Client Reconnect in TW timezone at : ${new Date().toLocaleString('zh-TW', {
       timeZone: 'Asia/Taipei'
     })}`
   )
@@ -39,7 +39,7 @@ redisClient.on('reconnecting', (err) => {
 })
 redisClient.on('error', (err) => {
   console.log(
-    `Redis Client Error at : ${new Date().toLocaleString('zh-TW', {
+    `Redis Client Error in TW timezone at : ${new Date().toLocaleString('zh-TW', {
       timeZone: 'Asia/Taipei'
     })}\n`,
     err.message

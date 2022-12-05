@@ -7,6 +7,8 @@ const headers = {
   Accept: 'application/json'
 }
 
+const timezoneOffsetMilliseconds = new Date().getTimezoneOffset() * 60 * 1000
+
 const url = location.href
 if (url.includes('clinic.html')) {
   // 若為clinic頁面，加粗navbar的病歷系統

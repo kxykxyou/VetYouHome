@@ -18,8 +18,9 @@ async function renderAllInpatientOrderHeaders () {
 function makeSingleInpatientOrderHeaderHtml (inpatientOrder) {
   const headerTemplate = $('#inpatient-order-header-template').clone().removeAttr('id').removeAttr('hidden')
   headerTemplate.attr('key', inpatientOrder.inpatientOrderId)
+  const date = new Date(new Date(inpatientOrder.targetDate).getTime() - timezoneOffsetMilliseconds).toISOString().split('T')[0]
   headerTemplate.find('.toggle-btn').find('.title').html(
-    `${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}`
+    `${inpatientOrder.inpatientOrderCode} | ${date} | 主治醫師：${inpatientOrder.vetFullname}`
   )
   return headerTemplate
 }

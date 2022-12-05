@@ -31,7 +31,7 @@ async function initRegistersRender () {
   queuePets.forEach(pet => {
     const queueCard = registerCard.clone()
     queueCard.find('.register-card').attr('key', pet.registerId)
-    queueCard.find('.reserve-time').html('預約時間: ' + pet.reserveTime.split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
+
     queueCard.find('.register-subjective').html(pet.registerSubjective)
     queueCard.find('.pet-icon').attr('src', `/images/${pet.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
     queueCard.find('.clinic-link').attr('href', `/clinic.html#${pet.petId}`)
@@ -43,8 +43,9 @@ async function initRegistersRender () {
 
     // 判斷是否預約時間是否超時，超時顯示紅色；反之則為藍色
     const now = Date.now()
-    const reserveTime = (new Date(pet.reserveTime).getTime() + (new Date().getTimezoneOffset() * 60 * 1000))
-    // console.log(now, reserveTime)
+    const reserveTime = new Date(pet.reserveTime).getTime()
+    const localReserveTime = new Date(new Date(pet.reserveTime).getTime() - timezoneOffsetMilliseconds)
+    queueCard.find('.reserve-time').html('預約時間: ' + localReserveTime.toISOString().split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
     if (reserveTime > now) {
       queueCard.find('.reserve-header').addClass('text-primary')
     } else {
