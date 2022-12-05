@@ -432,7 +432,7 @@ async function updateInpatientOrderDetail (body) {
 }
 
 async function getTodayInpatientOrderComplexByInpatientId (inpatientId) {
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date((Date.now() - new Date().getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
 
   const [todayInpatientOrder] = await db.execute(`
   SELECT 

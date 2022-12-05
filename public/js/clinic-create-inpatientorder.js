@@ -23,8 +23,11 @@ async function initRenderCreateInpatientOrder () {
   // 如果有歷史的住院醫囑才render selection
   if (allInpatientOrders.length) {
     const importSelectionTag = $('#target-inpatient-order')
+    importSelectionTag.empty()
+    importSelectionTag.html('<option key="" selected>請選擇醫囑</option>')
     allInpatientOrders.forEach(inpatientOrder => {
-      const option = $('<option>').attr('key', inpatientOrder.inpatientOrderId).html(`${inpatientOrder.inpatientOrderCode} | ${new Date(inpatientOrder.targetDate).toISOString().split('T')[0]} | 主治醫師：${inpatientOrder.vetFullname}`)
+      const date = new Date(new Date(inpatientOrder.targetDate).getTime() - timezoneOffsetMilliseconds).toISOString().split('T')[0]
+      const option = $('<option>').attr('key', inpatientOrder.inpatientOrderId).html(`${inpatientOrder.inpatientOrderCode} | ${date} | 主治醫師：${inpatientOrder.vetFullname}`)
       importSelectionTag.append(option)
     })
   } else {
