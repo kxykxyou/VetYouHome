@@ -1,7 +1,7 @@
 const { db } = require('./mysql')
 const argon2 = require('argon2')
 const jwt = require('jsonwebtoken')
-const { TOKEN_EXPIRE, JWT_SECRET, ARGON2_SALT } = process.env
+const { JWT_SECRET, ARGON2_SALT } = process.env
 
 async function queryUserCellphone (cellphone) {
   const [dbCellphone] = await db.execute('SELECT cellphone FROM user WHERE cellphone = ?', [cellphone])
@@ -51,6 +51,7 @@ async function signup (fullname, email, password, cellphone) {
 
 async function signin (cellphone, password) {
   const [user] = await db.execute('SELECT * FROM user WHERE cellphone = ?', [cellphone])
+  // 若手機號碼不存在或者是密碼不對則回傳401
   if (!user[0] || !(await argon2.verify(user[0].hashed_password, password))) {
     return { error: 'Incorrect cellphone or password', status_code: 401 }
   }

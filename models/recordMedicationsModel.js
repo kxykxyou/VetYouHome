@@ -26,10 +26,10 @@ async function getMedicationComplexByRecordId (id) {
   WHERE rm.record_id = ?;
   `, [id])
   if (!data.length) { return data }
-  const groupedData = {}
-  data.forEach(row => {
-    if (!groupedData[row.medicationId]) {
-      // 若該medication還沒被加入groupedData，則建立該medication array
+  const medications = {}
+  data.forEach(row => { // row for every medication details
+    if (!medications[row.medicationId]) {
+      // 若該medication還沒被加入medications，則建立該medication object
       const medication = {
         id: row.medicationId,
         name: row.medicationName,
@@ -37,7 +37,7 @@ async function getMedicationComplexByRecordId (id) {
         comment: row.medicationComment,
         details: []
       }
-      groupedData[row.medicationId] = medication
+      medications[row.medicationId] = medication
     }
     const detail = {
       medicationDetailId: row.medicationDetailId,
@@ -53,17 +53,15 @@ async function getMedicationComplexByRecordId (id) {
       discount: row.discount,
       subtotal: row.subtotal
     }
-    groupedData[row.medicationId].details.push(detail)
+    medications[row.medicationId].details.push(detail) // 將medication detail加入該medication的details中
   })
-  console.log('groupedData: ', groupedData)
-  return { data: Object.values(groupedData) }
+  return { data: Object.values(medications) }
 }
 
 async function createRecordMedication (body) {
   const dbConnection = await db.getConnection()
   await dbConnection.beginTransaction()
   try {
-    console.log('body: ', body)
     const [medication] = await dbConnection.execute(`
     INSERT INTO record_medication 
     (record_id, name, type, comment)
@@ -99,7 +97,6 @@ async function createMedicationDetail (body) {
       return { error: 'invalid medicine name', status_code: 400 }
     }
     const medicineId = medicine[0].id
-    console.log('body: ', body)
     const [result] = await db.execute(`
     INSERT INTO medication_detail 
     (record_medication_id, medicine_id, dose, frequency, day)

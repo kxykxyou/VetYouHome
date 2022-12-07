@@ -50,7 +50,6 @@ async function getAllRecordsByPetId (id) {
 
 async function searchRecords (queryPairs) {
   let queryValues = []
-  //   console.log(queryValues)
   let sql = `
         SELECT *
         FROM
@@ -109,8 +108,6 @@ async function searchRecords (queryPairs) {
     sql = sql + 'WHERE ' + sqlConditions.join(' AND ')
   }
   sql += ' ORDER BY recordId DESC'
-  console.log('/records/search sqlConditions', sqlConditions)
-  console.log('/records/search queryValues: ', queryValues)
   const [data] = await db.execute(sql, queryValues)
   return data
 }
@@ -124,7 +121,6 @@ async function createRecord (vetId, body) {
       INSERT INTO record (code, vet_id, pet_id, subjective, objective, assessment, plan)
       VALUES (?, ?, ?, ?, ?, ?, ?)
       `, ['REC' + '22' + randomCodeGenerator(5), vetId, petId, subjective, objective, assessment, plan])
-    console.log('record: ', record)
     const recordId = record.insertId
     const examInsertPromises = exams.map(async (exam) => {
       const [examQuery] = await dbConnection.execute('SELECT id FROM exam WHERE name = ?', [exam.examName])
@@ -136,7 +132,6 @@ async function createRecord (vetId, body) {
       (?, ?, ?, ?)`
       , [recordId, examId, exam.comment, ''])
     })
-    console.log('after exam')
     const treatmentInsertPromises = treatments.map(async (treatment) => {
       const [treatmentQuery] = await dbConnection.execute('SELECT id FROM treatment WHERE name = ?', [treatment.treatmentName])
       const treatmentId = treatmentQuery[0].id
@@ -147,7 +142,6 @@ async function createRecord (vetId, body) {
       (?, ?, ?)`
       , [recordId, treatmentId, treatment.comment])
     })
-    console.log('after treatment')
 
     const medicationDetailInsertPromises = []
     Object.values(medications).forEach(async (medication) => {
@@ -161,7 +155,6 @@ async function createRecord (vetId, body) {
       const insertMedicationDetailPromises = medication.details.map(async (detail) => {
         const [medicineQuery] = await dbConnection.execute('SELECT id FROM medicine WHERE name = ?', [detail.medicineName])
         const medicineId = medicineQuery[0].id
-        console.log(detail)
         await dbConnection.execute(`
           INSERT INTO medication_detail
           (record_medication_id, medicine_id, dose, frequency, day)
@@ -172,24 +165,20 @@ async function createRecord (vetId, body) {
       medicationDetailInsertPromises.push(...insertMedicationDetailPromises)
     })
 
-    console.log('prepared to promise.all')
     let insertionSuccess = true
     await Promise.all(examInsertPromises)
-      .then(res => console.log('examInsertPromises result', res))
       .catch((res) => { insertionSuccess = false })
     await Promise.all(treatmentInsertPromises)
-      .then(res => console.log('treatmentInsertPromises result', res))
       .catch((res) => { insertionSuccess = false })
     await Promise.all(medicationDetailInsertPromises)
-      .then(res => console.log('medicationDetailInsertPromises', res))
       .catch((res) => { insertionSuccess = false })
     if (insertionSuccess) {
       await dbConnection.commit()
     } else {
-      throw new Error('insertion failed')
+      throw new Error('Record insertion error')
     }
   } catch (err) {
-    console.log('error happened while creating records', err)
+    console.log(err)
     await dbConnection.rollback()
     return { error: err, status_code: 500 }
   } finally {
