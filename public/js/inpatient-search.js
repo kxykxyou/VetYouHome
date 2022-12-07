@@ -74,7 +74,6 @@ async function searchInpatients () {
 
   const vetId = $('#vet option:selected').attr('key')
   const petSpecies = $('#pet-species option:selected').attr('key')
-  // const isArchive = $('#is-archive option:selected').attr('key')
   const petBreed = $('#pet-breed option:selected').attr('key')
   const inpatientCode = $('#inpatient-code').val()
   const ownerFullname = $('#owner-fullname').val()
@@ -86,7 +85,6 @@ async function searchInpatients () {
     vetId,
     petSpecies,
     petBreed,
-    // isArchive,
     inpatientCode,
     ownerFullname,
     petName,
@@ -101,7 +99,7 @@ async function searchInpatients () {
     }
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
-  // // fetch api and get data
+  // fetch api and get data
   const response = await fetch('/api/1.0/inpatients/search' + queryString, { headers })
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()

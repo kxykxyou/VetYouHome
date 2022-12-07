@@ -1,3 +1,6 @@
+/*
+Clinic page common variables
+*/
 const petId = url.split('#')[url.split('#').length - 1]
 const sides = ['left', 'right']
 const SOAPs = [

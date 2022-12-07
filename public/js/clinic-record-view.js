@@ -1,4 +1,3 @@
-// let cacheRecords // id: complex record objects
 const cacheRenderedRecords = {} // id: complex record objects；已經render過的完整record的id
 let petInfo
 
@@ -122,9 +121,6 @@ async function createInpatient () {
 async function renderAllRecordHeaders (petId) {
   // get all records of target pet (not nested)
   const { data } = await (await fetch(`/api/1.0/clinic/records/pet/id/${petId}`, { headers })).json()
-  // cacheRecords = data
-  // const recordHeadersHtml = ''
-
   sides.forEach(side => {
     data.forEach(record => {
       $(`#${side}-records-container`).append(makeSingleRecordHeaderHtml(record))
@@ -141,21 +137,16 @@ async function renderBothSingleRecord (recordId) {
   const recordTemplate = $('#record-template').clone()
   recordTemplate.removeAttr('id')
   recordTemplate.removeAttr('hidden')
-  // console.log('length: ', record.subjective.split(/\r|\r\n|\n/).length)
   const soapTextareaTags = recordTemplate.find('textarea')
   console.log(soapTextareaTags)
+
+  // 顯示SOAP內容以及讓textarea的rows數量與內容一致
   SOAPs.forEach(attr => {
-    // console.log(`.${attr}`, record[attr])
-    // console.log(soapTextareaTags.find(attr))
     soapTextareaTags
       .filter(`.${attr}`)
       .attr('rows', record[attr].split(/\r|\r\n|\n/).length)
       .html(record[attr])
   })
-  // recordTemplate.find('.s-textarea').val(record.subjective)
-  // recordTemplate.find('.o-textarea').val(record.objective)
-  // recordTemplate.find('.a-textarea').val(record.assessment)
-  // recordTemplate.find('.p-textarea').val(record.plan)
 
   renderExamTable(recordId)
   renderMedicationAndTable(recordId)
@@ -168,17 +159,17 @@ async function singleRecordDisplayTurn (thisTag) {
   const recordId = $(thisTag).parent().parent().attr('key')
   const recordContentTag = $(thisTag).parent().siblings('.record-content')
   if (!cacheRenderedRecords[recordId]) {
-    // 如果沒有render過該病歷
+    // 如果沒有render過該病歷，則從頭打API獲得資料後render
     await renderBothSingleRecord(recordId)
   }
-  // recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
+  // 若有render過，那就把該病歷的toggle內容打開即可
   recordContentTag.css('display') === 'none' ? recordContentTag.show() : recordContentTag.hide()
 }
 
 function displayTurn (thisTag) {
+  // 把toggle中的內容打開
   console.log($(thisTag).parent())
   const recordContentTag = $(thisTag).siblings('.display')
-  // recordContentTag.css('display') === 'none' ? recordContentTag.css('display', 'block') : recordContentTag.css('display', 'none')
   recordContentTag.css('display') === 'none' ? recordContentTag.show() : recordContentTag.hide()
 }
 
@@ -232,7 +223,6 @@ async function deleteRecord (thisTag) {
 async function renderExamTable (recordId) {
   const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`, { headers })).json()
   console.log('data: ', data)
-  // const sourceData = ['auto1', 'auto2', 'auto3']
 
   $(`.record-container-${recordId}`).find('.exam-table').jsGrid(
     {
@@ -328,7 +318,6 @@ async function renderMedicationAndTable (recordId) {
 
         fields: [
           { name: 'id', type: 'number', visible: false, editing: false },
-          // { name: 'medicineId', type: 'number', visible: false, editing: false },
           { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
           { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
           { title: '頻率', name: 'frequency', type: 'number', editing: true },
@@ -406,8 +395,6 @@ function addMedication (addMedicationBtn) {
       data: newMedicationsMap[newMedicationKey].details,
 
       fields: [
-        // { name: 'id', type: 'number', visible: false, editing: false },
-        // { name: 'medicineId', type: 'number', visible: false, editing: false },
         { title: '藥品', name: 'medicineName', type: 'autocompleteMedicine', editing: true, validate: 'required' },
         { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
         { title: '頻率', name: 'frequency', type: 'number', editing: true },
@@ -470,7 +457,7 @@ async function saveNewMedication (thisTag, newMedicationKey) {
 async function deleteMedication (thisTag) {
   if (confirm('確定要刪除處方嗎？') !== true) { return }
   if (!$(thisTag).parents('.medication-container').attr('key')) {
-    return $(thisTag).parent().remove() // for 舊病歷中新建立的醫囑，
+    return $(thisTag).parent().remove() // for 舊病歷中新建立的醫囑
   }
   const id = $(thisTag).parent().attr('key')
   console.log(id)
@@ -534,7 +521,6 @@ function insertMedicationTable (sortedMedications) {
 
         fields: [
           { name: 'medicationDetailId', type: 'number', visible: false, editing: false },
-          // { name: 'medicineId', type: 'number', visible: false, editing: false },
           { title: '藥品', name: 'medicineName', type: 'text', editing: true, validate: 'required' },
           { title: '劑量(mg/kg)', name: 'medicationDose', type: 'number', editing: true },
           { title: '頻率', name: 'frequency', type: 'number', editing: true },

@@ -119,7 +119,6 @@ async function searchRecords () {
     card.find('.owner-fullname').val(row.ownerFullname)
     $('#history-search-result').append(card)
   })
-  // console.log('search results: ', data)
 }
 
 async function searchUnarchiveRecords () {
@@ -137,7 +136,7 @@ async function searchUnarchiveRecords () {
     }
   }
   const queryString = '?' + new URLSearchParams(queryPairs).toString()
-  // // fetch api and get data
+  // fetch api and get data
   let response = await fetch('/api/1.0/records/search' + queryString, { headers })
   if (response.status !== 200) {
     response = await response.json()

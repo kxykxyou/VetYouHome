@@ -1,4 +1,3 @@
-// sides = ['left', 'right']
 const cacheRenderedInpatientOrders = {}
 let allInpatientOrders
 
@@ -43,15 +42,14 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
   const inpatientOrderTemplate = $('#inpatient-order-content-template').clone().removeAttr('id').removeAttr('hidden')
   inpatientOrderTemplate.attr('key', complexInpatientOrder.inpatientOrderId)
   inpatientOrderTemplate.find('.inpatient-summary').html(`${complexInpatientOrder.inpatientSummary}`)
-  // cage render 籠位名稱(住院動物名字)
 
+  // cage render 籠位名稱(住院動物名字)
   inpatientOrderTemplate.find('.inpatient-cage').html(`${complexInpatientOrder.cage}`)
   inpatientOrderTemplate.find('.inpatientorder-comment')
     .html(`${complexInpatientOrder.inpatientOrderComment}`)
     .attr('rows', complexInpatientOrder.inpatientOrderComment.split(/\r|\r\n|\n/).length)
 
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-content').append(inpatientOrderTemplate)
-  // insertInpatientOrderTable(inpatientOrderId, complexInpatientOrder.details)
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-table').attr('key', inpatientOrderId)
   $(`.inpatientorder-container[key=${inpatientOrderId}]`).find('.inpatientorder-table').jsGrid(
     {
