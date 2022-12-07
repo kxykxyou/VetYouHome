@@ -17,7 +17,7 @@ async function query (id) {
 }
 
 async function getChargedPets () {
-  const sql = `
+  const [data] = await db.query(`
     SELECT *
     FROM
     (
@@ -48,8 +48,7 @@ async function getChargedPets () {
     ) AS new_table
     WHERE chargeEnd IS NULL
     ORDER BY inpatientCage
-  `
-  const [data] = await db.query(sql)
+  `)
   return data
 }
 
@@ -131,9 +130,9 @@ async function discharge (id) {
     await dbConnection.execute('UPDATE pet SET status = 0 WHERE id = ? ', [inpatient[0].pet_id])
     await dbConnection.execute('UPDATE cage SET inpatient_id = NULL WHERE name = ? ', [inpatient[0].cage])
     await dbConnection.commit()
-  } catch (err) {
+  } catch (error) {
     await dbConnection.rollback()
-    console.log(err)
+    console.log(error)
   } finally {
     await dbConnection.release()
   }
@@ -161,8 +160,8 @@ async function swapCage (cage1, cage2) {
       await dbConnection.execute('UPDATE cage SET inpatient_id = ? WHERE name = ?', [patient2[0].inpatient_id, cage1])
     }
     dbConnection.commit()
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
   } finally {
     dbConnection.release()
@@ -228,7 +227,7 @@ async function getInpatientOrderDetailsByInpatientOrderId (id) {
 
 async function getInpatientOrderById (id) {
   const [data] = await db.execute('SELECT * FROM inpatient_order WHERE id = ?', [id])
-  return { data: data[0] }
+  return data[0]
 }
 
 async function getMostRecentInpatientByPetId (id) {
@@ -263,8 +262,8 @@ async function createInpatientOrder (userId, body) {
     await Promise.all(insertInpatientOrderDetailPromises)
     await dbConnection.commit()
     return { message: 'inpatient order & detail insert success!' }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
     return { error: 'Error happened while create inpatient order', status_code: 500 }
   } finally {
@@ -281,9 +280,9 @@ async function createInpatientOrderDetail (inpatientOrderId, body) {
     (?, ?, ?, ?, ?, ?)
     `, [body.inpatientOrderId, body.priority, body.content, body.frequency, body.schedule, body.comment])
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
 }
 
@@ -304,8 +303,8 @@ async function createInpatient (userId, body) {
     await dbConnection.execute('UPDATE pet SET status = 3 WHERE id = ?', [body.petId])
     await dbConnection.commit()
     return { message: 'inpatient insert success!' }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
     return { error: 'Error happened while create inpatient order', status_code: 500 }
   } finally {
@@ -316,9 +315,9 @@ async function createInpatient (userId, body) {
 async function deleteInpatientOrder (id) {
   try {
     await db.execute('DELETE FROM inpatient_order WHERE id = ?', [id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -326,9 +325,9 @@ async function deleteInpatientOrder (id) {
 async function deleteInpatientOrderDetail (body) {
   try {
     await db.execute('DELETE FROM inpatient_order_detail WHERE id = ?', [body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -342,9 +341,9 @@ async function updateInpatientOrder (body) {
     `, [body.comment, body.id]
     )
     return {}
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
 }
 
@@ -354,9 +353,9 @@ async function updateInpatientOrderDetail (body) {
     UPDATE inpatient_order_detail SET 
     priority = ?, content = ?, frequency = ?, schedule = ?, comment = ?
     WHERE id = ?`, [body.priority, body.content, body.frequency, body.schedule, body.comment, body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }

@@ -15,7 +15,7 @@ async function getRecordExamsByRecordId (id) {
   JOIN exam as e on re.exam_id = e.id
   WHERE record_id = ?`
   , [id])
-  return { data }
+  return data
 }
 
 async function createRecordExam (body) {
@@ -31,18 +31,18 @@ async function createRecordExam (body) {
     , [body.recordId, examId, body.comment, ''])
 
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
 }
 
 async function deleteRecordExam (body) {
   try {
     await db.execute('DELETE FROM record_exam WHERE id = ?', [body.recordExamId])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -65,9 +65,9 @@ async function updateRecordExam (body) {
       body.comment,
       body.recordExamId
     ])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }

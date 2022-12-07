@@ -14,7 +14,7 @@ async function getRecordTreatmentsByRecordId (id) {
   JOIN treatment as t on rt.treatment_id = t.id
   WHERE record_id = ?`
   , [id])
-  return { data }
+  return data
 }
 
 async function createRecordTreatment (body) {
@@ -31,17 +31,17 @@ async function createRecordTreatment (body) {
     (?, ?, ?)`
     , [body.recordId, treatmentId, body.comment])
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
 }
 
 async function deleteRecordTreatment (body) {
   try {
     await db.execute('DELETE FROM record_treatment WHERE id = ?', [body.recordTreatmentId])
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}
@@ -59,8 +59,8 @@ async function updateRecordTreatment (body) {
     treatment_id = ?, quantity = ?, discount = ?, subtotal = ?, comment = ?
     WHERE id = ?`,
     [treatmentId, body.quantity, body.discount, body.subtotal, body.comment, body.recordTreatmentId])
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}

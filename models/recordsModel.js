@@ -1,7 +1,4 @@
 const { db } = require('./mysql')
-const recordExamsModel = require('./recordExamsModel')
-const recordMedicationsModel = require('./recordMedicationsModel')
-const recordTreatmentsModel = require('./recordTreatmentsModel')
 const { randomCodeGenerator } = require('../utils/utils')
 const recordQueryFields = [
   'vetId',
@@ -21,8 +18,7 @@ async function getRecordById (id) {
 }
 
 async function getAllRecordsByPetId (id) {
-  try {
-    const [data] = await db.execute(`
+  const [data] = await db.execute(`
   SELECT 
       u.fullname as vetFullname,
       r.id as recordId,
@@ -41,11 +37,7 @@ async function getAllRecordsByPetId (id) {
   JOIN user as u on r.vet_id = u.id
   WHERE p.id = ?
     `, [id])
-    return { data }
-  } catch (error) {
-    console.log(error)
-    return { status_code: 500, error }
-  }
+  return data
 }
 
 async function searchRecords (queryPairs) {
@@ -177,10 +169,10 @@ async function createRecord (vetId, body) {
     } else {
       throw new Error('Record insertion error')
     }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
-    return { error: err, status_code: 500 }
+    return { error, status_code: 500 }
   } finally {
     await dbConnection.release()
   }
@@ -190,9 +182,9 @@ async function createRecord (vetId, body) {
 async function deleteRecord (id) {
   try {
     await db.execute('DELETE FROM record WHERE id = ?', [id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -203,9 +195,9 @@ async function updateRecord (body) {
     UPDATE record SET 
     subjective = ?, objective = ?, assessment = ?, plan = ?
     WHERE id = ?`, [body.subjective, body.objective, body.assessment, body.plan, body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }

@@ -41,8 +41,8 @@ async function signup (fullname, email, password, cellphone) {
     user.id = result.insertId
     await dbConnection.commit()
     return user
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
   } finally {
     await dbConnection.release()

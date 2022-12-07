@@ -25,37 +25,7 @@ async function getMedicationComplexByRecordId (id) {
   JOIN medicine as m on md.medicine_id = m.id
   WHERE rm.record_id = ?;
   `, [id])
-  if (!data.length) { return data }
-  const medications = {}
-  data.forEach(row => { // row for every medication details
-    if (!medications[row.medicationId]) {
-      // 若該medication還沒被加入medications，則建立該medication object
-      const medication = {
-        id: row.medicationId,
-        name: row.medicationName,
-        type: row.medicationType,
-        comment: row.medicationComment,
-        details: []
-      }
-      medications[row.medicationId] = medication
-    }
-    const detail = {
-      medicationDetailId: row.medicationDetailId,
-      medicineId: row.medicineId,
-      medicineName: row.medicineName,
-      medicineUnitDose: row.medicineUnitDose,
-      medicineDoseUnit: row.medicineDoseUnit,
-      medicationDose: row.medicationDose,
-      frequency: row.frequency,
-      day: row.day,
-      price: row.price,
-      quantity: row.quantity,
-      discount: row.discount,
-      subtotal: row.subtotal
-    }
-    medications[row.medicationId].details.push(detail) // 將medication detail加入該medication的details中
-  })
-  return { data: Object.values(medications) }
+  return data
 }
 
 async function createRecordMedication (body) {
@@ -81,8 +51,8 @@ async function createRecordMedication (body) {
     await Promise.all(insertMedicationDetailPromises)
     await dbConnection.commit()
     return {}
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
     return { error: 'Internal Server Error', status_code: 500 }
   } finally {
@@ -104,8 +74,8 @@ async function createMedicationDetail (body) {
     (?, ?, ?, ?, ?)
     `, [body.medicationId, medicineId, body.medicationDose, body.frequency, body.day])
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Sever Error', status_code: 500 }
   }
 }
@@ -122,8 +92,8 @@ async function updateMedicationDetail (body) {
     medicine_id = ?, dose = ?, frequency = ?, day = ?
     WHERE id = ?`,
     [medicineId, body.medicationDose, body.frequency, body.day, body.medicationDetailId])
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Sever Error', status_code: 500 }
   }
   return {}
@@ -136,9 +106,9 @@ async function updateRecordMedication (body) {
     name = ?, type = ?, comment = ?
     WHERE id = ?`,
     [body.name, body.type, body.comment, body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -146,9 +116,9 @@ async function updateRecordMedication (body) {
 async function deleteRecordMedication (body) {
   try {
     await db.execute('DELETE FROM record_medication WHERE id = ?', [body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
@@ -156,9 +126,9 @@ async function deleteRecordMedication (body) {
 async function deleteMedicationDetail (body) {
   try {
     await db.execute('DELETE FROM medication_detail WHERE id = ?', [body.medicationDetailId])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
