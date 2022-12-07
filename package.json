@@ -15,7 +15,8 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql2": "^2.3.3",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "eslint": "^8.26.0",

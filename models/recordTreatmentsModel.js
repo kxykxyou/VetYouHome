@@ -1,4 +1,5 @@
 const { db } = require('./mysql')
+const xss = require('xss')
 
 async function getRecordTreatmentsByRecordId (id) {
   const [data] = await db.execute(`
@@ -29,7 +30,7 @@ async function createRecordTreatment (body) {
     (record_id, treatment_id, comment) 
     VALUES 
     (?, ?, ?)`
-    , [body.recordId, treatmentId, body.comment])
+    , [body.recordId, treatmentId, xss(body.comment)])
     return { id: result.insertId }
   } catch (error) {
     console.log(error)
@@ -58,7 +59,7 @@ async function updateRecordTreatment (body) {
     UPDATE record_treatment SET 
     treatment_id = ?, quantity = ?, discount = ?, subtotal = ?, comment = ?
     WHERE id = ?`,
-    [treatmentId, body.quantity, body.discount, body.subtotal, body.comment, body.recordTreatmentId])
+    [treatmentId, body.quantity, body.discount, body.subtotal, xss(body.comment), body.recordTreatmentId])
   } catch (error) {
     console.log(error)
     return { error: 'Internal Server Error', status_code: 500 }

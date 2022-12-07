@@ -35,7 +35,7 @@ async function callRegisterPet (id) {
     return {}
   } catch (error) {
     console.log(error)
-    return { status_code: 500, error: erroror.message }
+    return { status_code: 500, error: error.message }
   }
 }
 
@@ -45,7 +45,7 @@ async function finishInquiryPet (id) {
     return {}
   } catch (error) {
     console.log(error)
-    return { status_code: 500, error: erroror.message }
+    return { status_code: 500, error: error.message }
   }
 }
 

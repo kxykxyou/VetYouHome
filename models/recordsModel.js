@@ -1,5 +1,6 @@
 const { db } = require('./mysql')
 const { randomCodeGenerator } = require('../utils/utils')
+const xss = require('xss')
 const recordQueryFields = [
   'vetId',
   'recordCode',
@@ -112,17 +113,20 @@ async function createRecord (vetId, body) {
     const [record] = await dbConnection.execute(`
       INSERT INTO record (code, vet_id, pet_id, subjective, objective, assessment, plan)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, ['REC' + '22' + randomCodeGenerator(5), vetId, petId, subjective, objective, assessment, plan])
+      `, ['REC' +
+        new Date().getYear().toString().slice(1) + // 西元年末兩位, e.g. 2022年會得到22
+        randomCodeGenerator(5),
+    vetId, petId, xss(subjective), xss(objective), xss(assessment), xss(plan)])
     const recordId = record.insertId
     const examInsertPromises = exams.map(async (exam) => {
       const [examQuery] = await dbConnection.execute('SELECT id FROM exam WHERE name = ?', [exam.examName])
       const examId = examQuery[0].id
       await dbConnection.execute(`
       INSERT INTO record_exam 
-      (record_id, exam_id, comment, file_path) 
+      (record_id, exam_id, comment, file_path)
       VALUES 
       (?, ?, ?, ?)`
-      , [recordId, examId, exam.comment, ''])
+      , [recordId, examId, xss(exam.comment), ''])
     })
     const treatmentInsertPromises = treatments.map(async (treatment) => {
       const [treatmentQuery] = await dbConnection.execute('SELECT id FROM treatment WHERE name = ?', [treatment.treatmentName])
@@ -132,7 +136,7 @@ async function createRecord (vetId, body) {
       (record_id, treatment_id, comment) 
       VALUES 
       (?, ?, ?)`
-      , [recordId, treatmentId, treatment.comment])
+      , [recordId, treatmentId, xss(treatment.comment)])
     })
 
     const medicationDetailInsertPromises = []
@@ -142,7 +146,7 @@ async function createRecord (vetId, body) {
         (record_id, name, type, comment)
         VALUES
         (?, ?, ?, ?)`,
-      [recordId, medication.name, medication.type, medication.comment])
+      [recordId, medication.name, medication.type, xss(medication.comment)])
       const medicationId = medicationResult.insertId
       const insertMedicationDetailPromises = medication.details.map(async (detail) => {
         const [medicineQuery] = await dbConnection.execute('SELECT id FROM medicine WHERE name = ?', [detail.medicineName])
@@ -184,7 +188,7 @@ async function deleteRecord (id) {
     await db.execute('DELETE FROM record WHERE id = ?', [id])
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }
@@ -194,10 +198,10 @@ async function updateRecord (body) {
     await db.execute(`
     UPDATE record SET 
     subjective = ?, objective = ?, assessment = ?, plan = ?
-    WHERE id = ?`, [body.subjective, body.objective, body.assessment, body.plan, body.id])
+    WHERE id = ?`, [xss(body.subjective), xss(body.objective), xss(body.assessment), xss(body.plan), body.id])
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }

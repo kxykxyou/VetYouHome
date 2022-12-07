@@ -1,5 +1,6 @@
 const { db } = require('./mysql')
 const { randomCodeGenerator } = require('../utils/utils')
+const xss = require('xss')
 const inpatientQueryFields = [
   'inpatientCode',
   'vetId',
@@ -242,7 +243,7 @@ async function createInpatientOrder (userId, body) {
     await dbConnection.beginTransaction()
     const inpatientOrderInsertResult = await dbConnection.execute(`
       INSERT INTO inpatient_order (code, inpatient_id, date, comment) 
-      VALUES (?, ?, ?, ?)`, ['ORD22' + randomCodeGenerator(5), body.id, body.date, body.comment])
+      VALUES (?, ?, ?, ?)`, ['ORD22' + randomCodeGenerator(5), body.id, body.date, xss(body.comment)])
     result = inpatientOrderInsertResult[0]
     const insertInpatientOrderDetailPromises = body.details.map(async (inpatientOrderDetail) => {
       await dbConnection.execute(`
@@ -252,11 +253,11 @@ async function createInpatientOrder (userId, body) {
         (?, ?, ?, ?, ?, ?, ?)`, [
         result.insertId,
         inpatientOrderDetail.priority,
-        inpatientOrderDetail.content,
+        xss(inpatientOrderDetail.content),
         inpatientOrderDetail.frequency,
         inpatientOrderDetail.schedule,
         inpatientOrderDetail.schedule.split(',').length,
-        inpatientOrderDetail.comment
+        xss(inpatientOrderDetail.comment)
       ])
     })
     await Promise.all(insertInpatientOrderDetailPromises)
@@ -278,11 +279,11 @@ async function createInpatientOrderDetail (inpatientOrderId, body) {
     (inpatient_order_id, priority, content, frequency, schedule, comment)
     VALUES
     (?, ?, ?, ?, ?, ?)
-    `, [body.inpatientOrderId, body.priority, body.content, body.frequency, body.schedule, body.comment])
+    `, [body.inpatientOrderId, body.priority, xss(body.content), body.frequency, xss(body.schedule), xss(body.comment)])
     return { id: result.insertId }
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
 }
 
@@ -292,7 +293,10 @@ async function createInpatient (userId, body) {
     await dbConnection.beginTransaction()
     const [result] = await dbConnection.execute(`
     INSERT INTO inpatient (code, vet_id, pet_id, cage, summary) VALUES (?, ?, ?, ?, ?)
-    `, ['INP' + '22' + randomCodeGenerator(5), userId, body.petId, body.cage, body.summary]
+    `, ['INP' +
+      new Date().getYear().toString().slice(1) +
+      randomCodeGenerator(5),
+    userId, body.petId, body.cage, xss(body.summary)]
     )
     const inpatientId = result.insertId
     // update cage and pet info
@@ -317,7 +321,7 @@ async function deleteInpatientOrder (id) {
     await db.execute('DELETE FROM inpatient_order WHERE id = ?', [id])
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }
@@ -327,7 +331,7 @@ async function deleteInpatientOrderDetail (body) {
     await db.execute('DELETE FROM inpatient_order_detail WHERE id = ?', [body.id])
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }
@@ -343,7 +347,7 @@ async function updateInpatientOrder (body) {
     return {}
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
 }
 
@@ -352,10 +356,10 @@ async function updateInpatientOrderDetail (body) {
     await db.execute(`
     UPDATE inpatient_order_detail SET 
     priority = ?, content = ?, frequency = ?, schedule = ?, comment = ?
-    WHERE id = ?`, [body.priority, body.content, body.frequency, body.schedule, body.comment, body.id])
+    WHERE id = ?`, [body.priority, xss(body.content), body.frequency, xss(body.schedule), xss(body.comment), body.id])
   } catch (error) {
     console.log(error)
-    return { error: error.message }
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }

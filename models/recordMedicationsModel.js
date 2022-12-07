@@ -1,4 +1,5 @@
 const { db } = require('./mysql')
+const xss = require('xss')
 
 async function getMedicationComplexByRecordId (id) {
   const [data] = await db.execute(`
@@ -36,7 +37,7 @@ async function createRecordMedication (body) {
     INSERT INTO record_medication 
     (record_id, name, type, comment)
     VALUES
-    (?, ?, ?, ?)`, [body.recordId, body.name, body.type, body.comment])
+    (?, ?, ?, ?)`, [body.recordId, xss(body.name), xss(body.type), xss(body.comment)])
     const medicationId = medication.insertId
     const insertMedicationDetailPromises = body.details.map(async detail => {
       const [medicine] = await dbConnection.execute('SELECT id FROM medicine WHERE name = ?', [detail.medicineName])
@@ -105,7 +106,7 @@ async function updateRecordMedication (body) {
     UPDATE record_medication SET 
     name = ?, type = ?, comment = ?
     WHERE id = ?`,
-    [body.name, body.type, body.comment, body.id])
+    [xss(body.name), xss(body.type), xss(body.comment), body.id])
   } catch (error) {
     console.log(error)
     return { error: error.message }
