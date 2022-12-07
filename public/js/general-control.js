@@ -13,6 +13,8 @@ const url = location.href
 if (url.includes('clinic.html')) {
   // 若為clinic頁面，加粗navbar的病歷系統
   $('a[href="/records.html"]').addClass('fw-bold').css('color', '#000000')
+} else if (url.includes('index.html')) {
+  $('a[href="/registers.html"]').addClass('fw-bold').css('color', '#000000')
 } else {
   const fileName = url.split('/')[url.split('/').length - 1]
   // 若非clinic頁面，則filter相對應的page link font
