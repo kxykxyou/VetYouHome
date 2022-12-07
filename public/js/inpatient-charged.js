@@ -24,7 +24,6 @@ const inpatientsContainer = {
 initInpatientsRender()
 async function initInpatientsRender () {
   await initRenderInpatients()
-  console.log('allChargedInpatients', allChargedInpatients)
   initRenderSwapCageModal()
 }
 
@@ -46,7 +45,6 @@ async function initRenderSwapCageModal () {
 async function initRenderInpatients () {
   const { data } = await (await fetch('/api/1.0/inpatients/charged', { headers })).json()
   allChargedInpatients = data
-  console.log('charged inpatients: ', data)
   // 把 fetch的結果丟到inpatientsContainer中
   data.forEach(inpatient => {
     inpatientsContainer[inpatient.inpatientCage[0]].inpatients.push(inpatient)
@@ -74,7 +72,6 @@ async function initRenderInpatients () {
       inpatientsContainer[cageBlock].tag = $(`#inpatients-display-${cageBlock}`)
     })
 
-  console.log('inpatientsContainer: ', inpatientsContainer)
   // inpatients-display-${cage} 下新增各個病患卡片
   const inpatientCardTemplate = $('#inpatient-card-template').clone().removeAttr('id').removeAttr('hidden')
   inpatientCardTemplate.find('.charge-end-group').remove()
@@ -137,8 +134,6 @@ async function swapCage () {
   const currentCage = $('#current-cage').attr('key')
   const targetCage = $('#target-cage option:selected').attr('key')
   if (!targetCage) { alert('請選擇籠位') }
-  console.log('currentCage: ', currentCage)
-  console.log('targetCage: ', targetCage)
 
   // TODO: POST to swap cage API
   const body = {
@@ -161,11 +156,9 @@ async function swapCage () {
 async function modalUpdateCurrentInpatientOrder (inpatientId) {
   const { data } = await (await fetch(`/api/1.0/inpatients/id/${inpatientId}/inpatientorders/complex/today`, { headers })).json()
   const complexInpatientOrder = data
-  console.log('complexInpatientOrder: ', complexInpatientOrder)
 
   const inpatientInfo = allChargedInpatients.find(inpatient => inpatient.inpatientId === inpatientId)
   $('#inpatientorder-current-cage').html(`${inpatientInfo.inpatientCage} - ${inpatientInfo.petName}`)
-  // console.log(complexInpatientOrder)
   if (!Object.keys(complexInpatientOrder).length) {
     $('#inpatient-order-comment').empty()
     return $('#inpatientorder-table').html('尚未建立今日醫囑！')

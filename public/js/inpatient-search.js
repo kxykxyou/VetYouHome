@@ -103,7 +103,6 @@ async function searchInpatients () {
   const response = await fetch('/api/1.0/inpatients/search' + queryString, { headers })
   if (response.status !== 200) { return alert('Server error!') }
   const { data } = await response.json()
-  console.log('search results: ', data)
   data.sort((inpatient1, inpatient2) => {
     return new Date(inpatient2.chargeStart) - new Date(inpatient1.chargeStart)
   })

@@ -5,7 +5,6 @@ renderAllInpatientOrderHeaders()
 async function renderAllInpatientOrderHeaders () {
   const { data } = await (await fetch(`/api/1.0/clinic/inpatientorders/pet/id/${petId}`, { headers })).json()
   allInpatientOrders = data
-  console.log('allInpatientOrders: ', data)
 
   sides.forEach(side => {
     data.forEach(inpatientOrder => {
@@ -84,7 +83,6 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
             ...item,
             inpatientOrderId
           }
-          console.log('insert body: ', body)
           return $.ajax({
             headers,
             type: 'POST',
@@ -98,7 +96,6 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
             const d = $.Deferred().reject()
             return d.promise()
           }
-          console.log('update item: ', item)
           return $.ajax({
             headers,
             type: 'PUT',
@@ -107,7 +104,6 @@ async function renderBothSingleInpatientOrder (inpatientOrderId) {
           })
         },
         deleteItem: function (item) {
-          console.log('delete item: ', item)
           return $.ajax({
             headers,
             type: 'DELETE',
@@ -134,7 +130,6 @@ async function deleteInpatientOrder (thisTag) {
     body: JSON.stringify({ id })
   })
   if (response.status !== 200) {
-    console.log(response)
     return alert('刪除醫囑失敗!')
   }
   alert('刪除醫囑成功!')
@@ -147,7 +142,6 @@ function editInpatientOrder (thisTag) {
   $(thisTag).siblings('.update-inpatientorder-btn').show()
   const container = $(thisTag).parents('.inpatientorder-container')
   container.find('.inpatientorder-comment').removeAttr('readonly')
-  console.log(container)
 }
 
 async function updateInpatientOrder (thisTag) {
@@ -163,7 +157,6 @@ async function updateInpatientOrder (thisTag) {
     body: JSON.stringify(body)
   })
   if (response.status !== 200) {
-    console.log(response)
     return alert('更新醫囑失敗！')
   }
 

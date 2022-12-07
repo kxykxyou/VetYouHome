@@ -294,7 +294,7 @@ async function createInpatient (userId, body) {
     const [result] = await dbConnection.execute(`
     INSERT INTO inpatient (code, vet_id, pet_id, cage, summary) VALUES (?, ?, ?, ?, ?)
     `, ['INP' +
-      new Date().getYear().toString().slice(1) +
+      new Date().getYear().toString().slice(1) + // 西元年末兩位, e.g. 2022年會得到22
       randomCodeGenerator(5),
     userId, body.petId, body.cage, xss(body.summary)]
     )

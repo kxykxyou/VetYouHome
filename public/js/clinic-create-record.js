@@ -45,7 +45,6 @@ async function renderNewExamTable () {
           return item
         },
         updateItem: function (item) {
-          console.log('update item: ', item)
           if (!EMTContainer.allExamNames.includes(item.examName)) {
             alert('不存在的檢查項目！')
             const d = $.Deferred().reject()
@@ -54,7 +53,6 @@ async function renderNewExamTable () {
           return item
         },
         deleteItem: function (item) {
-          console.log('delete item: ', item)
         }
       }
     }
@@ -140,11 +138,9 @@ async function renderNewTreatmentTable () {
             const d = $.Deferred().reject()
             return d.promise()
           }
-          console.log('update item: ', item)
           return item
         },
         deleteItem: function (item) {
-          console.log('delete item: ', item)
         }
       }
     }
@@ -172,16 +168,13 @@ async function createRecord () {
     treatments: newTreatments,
     petId
   }
-  console.log(record)
   const response = await fetch('/api/1.0/clinic/records', {
     method: 'POST',
     headers,
     body: JSON.stringify(record)
   })
 
-  console.log(response)
   if (response.status !== 200) {
-    console.log(response)
     return alert('新增病歷失敗!')
   }
   alert('新增病歷成功!')

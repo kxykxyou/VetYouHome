@@ -58,7 +58,6 @@ async function renderPetInfo (petId) {
   const { data } = await (await fetch(`/api/1.0/clinic/pets/id/${petId}`, { headers })).json()
   petInfo = data
   const dayDiff = (Date.now() - (new Date(petInfo.birthday))) / (24 * 60 * 60 * 1000)
-  // console.log(dayDiff)
   const year = Math.floor(dayDiff / 365)
   const month = Math.floor((dayDiff % 365) / 30)
   const petInfoTag = $('#pet-info').removeAttr('hidden')
@@ -104,7 +103,6 @@ async function createInpatient () {
     cage,
     summary
   }
-  console.log($('#inpatient-target-cage option:selected').attr('key'))
   const response = await fetch('/api/1.0/clinic/inpatients', {
     method: 'POST',
     headers,
@@ -132,13 +130,11 @@ async function renderBothSingleRecord (recordId) {
   // fetch 單一病歷 record & render
   const { data } = await (await fetch(`/api/1.0/records/id/${recordId}`, { headers })).json()
   const record = data
-  console.log('rendered record: ', record)
   cacheRenderedRecords[record.id] = record
   const recordTemplate = $('#record-template').clone()
   recordTemplate.removeAttr('id')
   recordTemplate.removeAttr('hidden')
   const soapTextareaTags = recordTemplate.find('textarea')
-  console.log(soapTextareaTags)
 
   // 顯示SOAP內容以及讓textarea的rows數量與內容一致
   SOAPs.forEach(attr => {
@@ -168,7 +164,6 @@ async function singleRecordDisplayTurn (thisTag) {
 
 function displayTurn (thisTag) {
   // 把toggle中的內容打開
-  console.log($(thisTag).parent())
   const recordContentTag = $(thisTag).siblings('.display')
   recordContentTag.css('display') === 'none' ? recordContentTag.show() : recordContentTag.hide()
 }
@@ -195,7 +190,6 @@ async function updateRecord (thisTag) {
     body: JSON.stringify(body)
   })
   if (response.status !== 200) {
-    console.log((await response.json()))
     return alert('更新病歷失敗')
   }
   alert('更新病歷成功！')
@@ -205,14 +199,12 @@ async function updateRecord (thisTag) {
 async function deleteRecord (thisTag) {
   if (confirm('確定要刪除病歷嗎？') !== true) { return }
   const id = $(thisTag).parents('.record-container').attr('key')
-  // console.log(id)
   const response = await fetch('/api/1.0/clinic/records', {
     method: 'DELETE',
     headers,
     body: JSON.stringify({ id })
   })
   if (response.status !== 200) {
-    console.log(response)
     return alert('刪除病歷失敗!')
   }
   const recordId = $(thisTag).parents('.record-container').attr('key')
@@ -222,7 +214,6 @@ async function deleteRecord (thisTag) {
 
 async function renderExamTable (recordId) {
   const { data } = await (await fetch(`/api/1.0/clinic/recordexams/recordid/${recordId}`, { headers })).json()
-  console.log('data: ', data)
 
   $(`.record-container-${recordId}`).find('.exam-table').jsGrid(
     {
@@ -254,7 +245,6 @@ async function renderExamTable (recordId) {
             ...item,
             recordId
           }
-          console.log('insert body: ', body)
           return $.ajax({
             headers,
             type: 'POST',
@@ -268,7 +258,6 @@ async function renderExamTable (recordId) {
             const d = $.Deferred().reject()
             return d.promise()
           }
-          console.log('update item: ', item)
           return $.ajax({
             headers,
             type: 'PUT',
@@ -277,7 +266,6 @@ async function renderExamTable (recordId) {
           })
         },
         deleteItem: function (item) {
-          console.log('delete item: ', item)
           return $.ajax({
             headers,
             type: 'DELETE',
@@ -295,7 +283,6 @@ async function renderMedicationAndTable (recordId) {
   const medicationComplex = data
   const medicationContainer = $('#single-medication-container-template')
     .clone().removeAttr('id').removeAttr('hidden')
-  console.log('medicationComplex: ', medicationComplex)
   if (!medicationComplex) { return }
 
   medicationComplex.forEach(medication => {
@@ -348,7 +335,6 @@ async function renderMedicationAndTable (recordId) {
               const d = $.Deferred().reject()
               return d.promise()
             }
-            console.log('update item: ', item)
             return $.ajax({
               headers,
               type: 'PUT',
@@ -357,7 +343,6 @@ async function renderMedicationAndTable (recordId) {
             })
           },
           deleteItem: function (item) {
-            console.log('delete item: ', item)
             return $.ajax({
               headers,
               type: 'DELETE',
@@ -446,7 +431,6 @@ async function saveNewMedication (thisTag, newMedicationKey) {
     body: JSON.stringify(newMedication)
   })
   if (response.status !== 200) {
-    console.log(response)
     return alert('新增處方失敗！')
   }
   $(thisTag).parents('.all-medications-container').children('.medication-container').remove()
@@ -460,7 +444,6 @@ async function deleteMedication (thisTag) {
     return $(thisTag).parent().remove() // for 舊病歷中新建立的醫囑
   }
   const id = $(thisTag).parent().attr('key')
-  console.log(id)
   const response = await fetch('/api/1.0/clinic/recordmedications',
     {
       method: 'DELETE',
@@ -468,7 +451,6 @@ async function deleteMedication (thisTag) {
       body: JSON.stringify({ id })
     }
   )
-  console.log(response)
   if (response.status !== 200) {
     return alert('刪除處方失敗！')
   }
@@ -496,7 +478,6 @@ async function updateMedication (thisTag) {
       body: JSON.stringify(body)
     }
   )
-  console.log(response)
   if (response.status !== 200) {
     return alert('修改處方名稱/形式/備註失敗！')
   }
@@ -542,7 +523,6 @@ function insertMedicationTable (sortedMedications) {
             })
           },
           updateItem: function (item) {
-            console.log('update item: ', item)
             return $.ajax({
               headers,
               type: 'PUT',
@@ -551,7 +531,6 @@ function insertMedicationTable (sortedMedications) {
             })
           },
           deleteItem: function (item) {
-            console.log('delete item: ', item)
             return $.ajax({
               headers,
               type: 'DELETE',
@@ -598,7 +577,6 @@ async function renderTreatmentTable (recordId) {
             ...item,
             recordId
           }
-          console.log('insert body: ', body)
           return $.ajax({
             headers,
             type: 'POST',
@@ -612,7 +590,6 @@ async function renderTreatmentTable (recordId) {
             const d = $.Deferred().reject()
             return d.promise()
           }
-          console.log('update item: ', item)
           return $.ajax({
             headers,
             type: 'PUT',
@@ -621,7 +598,6 @@ async function renderTreatmentTable (recordId) {
           })
         },
         deleteItem: function (item) {
-          console.log('delete item: ', item)
           return $.ajax({
             headers,
             type: 'DELETE',
@@ -650,7 +626,6 @@ async function finishInquiry () {
     headers
   })
   if (response.status !== 200) {
-    console.log(response)
     return alert('操作失敗！')
   }
   alert('結束看診！')

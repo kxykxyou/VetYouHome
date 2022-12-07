@@ -140,7 +140,6 @@ async function searchUnarchiveRecords () {
   let response = await fetch('/api/1.0/records/search' + queryString, { headers })
   if (response.status !== 200) {
     response = await response.json()
-    console.log(response)
     return alert(response.error)
   }
   const { data } = await response.json()
