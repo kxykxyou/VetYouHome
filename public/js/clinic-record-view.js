@@ -651,7 +651,7 @@ async function renderTreatmentTable (recordId) {
 function makeSingleRecordHeaderHtml (record) {
   const headerTemplate = $('#record-header-template').clone().removeAttr('hidden').removeAttr('id')
   headerTemplate.attr('key', record.recordId).addClass(`record-container-${record.recordId}`)
-  const date = new Date(new Date(inpatientOrder.targetDate).getTime() - timezoneOffsetMilliseconds).toISOString().split('T')[0]
+  const date = new Date(new Date(record.recordCreatedAt).getTime() - timezoneOffsetMilliseconds).toISOString().split('T')[0]
   headerTemplate.find('.toggle-btn').find('.title').html(
     `${record.recordCode} | ${date} | 主治醫師：${record.vetFullname}`
   )
