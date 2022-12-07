@@ -9,7 +9,6 @@ async function getAllExamNames (req, res, next) {
     }
     if (examNames) {
       examNames = JSON.parse(examNames)
-      console.log('examNames from redis', examNames)
       return res.status(200).json({ data: examNames })
     }
   } catch (error) {
@@ -41,7 +40,6 @@ async function getAllMedicineNames (req, res, next) {
     }
     if (medicineNames) {
       medicineNames = JSON.parse(medicineNames)
-      console.log('medicineNames from redis', medicineNames)
       return res.status(200).json({ data: medicineNames })
     }
   } catch (error) {
@@ -73,7 +71,6 @@ async function getAllTreatmentNames (req, res, next) {
     }
     if (treatmentNames) {
       treatmentNames = JSON.parse(treatmentNames)
-      console.log('treatmentNames from redis', treatmentNames)
       return res.status(200).json({ data: treatmentNames })
     }
   } catch (error) {

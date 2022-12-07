@@ -29,7 +29,6 @@ async function signup (req, res, next) {
   }
 
   fullname = validator.escape(fullname)
-  console.log(req.body)
   const user = await usersModel.signup(
     fullname,
     // usersModel.USER_ROLE.USER,
@@ -59,7 +58,6 @@ async function signup (req, res, next) {
 
 async function signin (req, res, next) {
   const { cellphone, password } = req.body
-  console.log(req.body)
   if (!cellphone || !password) {
     return res.status(400).json({ error: 'cellphone or password is required' })
   }

@@ -48,7 +48,6 @@ async function deleteRecordExam (body) {
 }
 
 async function updateRecordExam (body) {
-  console.log('body: ', body)
   try {
     const [exam] = await db.execute('SELECT id FROM exam WHERE name = ?', [body.examName])
     const examId = exam[0].id
