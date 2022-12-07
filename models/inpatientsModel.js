@@ -125,7 +125,7 @@ async function searchInpatients (queryPairs) {
 
 async function discharge (id) {
   const dbConnection = await db.getConnection()
-  const date = (new Date()).toISOString().split('T')[0]
+  const date = (new Date()).toISOString().split('T')[0] // 取出UTC date
   await dbConnection.beginTransaction()
   let result
   try {
@@ -179,7 +179,7 @@ async function swapCage (cage1, cage2) {
 async function getAllInpatientOrdersByPetId (id) {
   const [data] = await db.execute(`
   SELECT 
-	  i.id as inpatientId,
+    i.id as inpatientId,
     i.code as inpatientCode,
     i.cage as cage,
     u.fullname as vetFullname,
@@ -432,7 +432,7 @@ async function updateInpatientOrderDetail (body) {
 }
 
 async function getTodayInpatientOrderComplexByInpatientId (inpatientId) {
-  const today = new Date((Date.now() - new Date().getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
+  const today = new Date().toISOString().split('T')[0]
 
   const [todayInpatientOrder] = await db.execute(`
   SELECT 
