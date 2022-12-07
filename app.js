@@ -1,10 +1,8 @@
 require('dotenv').config()
+const PORT = process.env.PORT || '3000'
 const express = require('express')
 const path = require('path')
 const utils = require('./utils/utils')
-// const cookieParser = require('cookie-parser')
-
-// const indexRouter = require('./routes/index')
 
 const app = express()
 
@@ -30,12 +28,28 @@ app.use('/api/' + process.env.API_VERSION, [
   require('./routes/emt')
 ])
 
-// Error handling
-app.use(function (err, req, res, next) {
-  console.log(err)
-  res.status(500).send({ message: 'Internal Server Error' })
+/*
+Error handling
+*/
+app.use(function (error, req, res, next) {
+  // TODO: 加上發生時間
+  console.log(error)
+  return res.status(500).json({ error: 'Internal Server Error' })
 })
 
-console.log('app listening on port 3000')
+/*
+Not found page
+*/
+// FIXME: 如何在有驗證的情況下導到404 page?
+app.use(function (req, res, next) {
+  return res.status(404).sendFile('./views/404.html')
+})
+
+app.listen(PORT, (error) => {
+  if (error) {
+    return console.log(error)
+  }
+  console.log('app listening on port 3000')
+})
 
 module.exports = app
