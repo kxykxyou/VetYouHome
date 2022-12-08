@@ -590,7 +590,7 @@
       <!-- record header; key: record.id -->
       <div id="record-header-template"
         key=""
-        class="record-container record-container-${record.recordId}"
+        class="record-container"
         hidden
         >
         <div class="row record-header mx-1">
@@ -610,9 +610,9 @@
       <!-- record template -->
       <div id="record-template" hidden>
         <div class="soap-container">
-          <button key="${data.id}" type="button" class="btn btn-danger" onclick="deleteRecord(this)">刪除病歷</button>
-          <button key="${data.id}" type="button" class="btn btn-warning edit-record" onclick="editRecord(this)">編輯病歷</button>
-          <button key="${data.id}" type="button" style="display: none" class="btn btn-success update-record" onclick="updateRecord(this)">儲存病歷</button>
+          <button key="" type="button" class="btn btn-danger" onclick="deleteRecord(this)">刪除病歷</button>
+          <button key="" type="button" class="btn btn-warning edit-record" onclick="editRecord(this)">編輯病歷</button>
+          <button key="" type="button" style="display: none" class="btn btn-success update-record" onclick="updateRecord(this)">儲存病歷</button>
           <div class="soap soap-s">
               <p class="fs-3 fw-bold mb-0 mt-2">Subjective 主觀描述</p>
               <textarea readonly class="form-control  soap-textarea subjective s-textarea"></textarea>
@@ -737,7 +737,7 @@
       <div
         id="inpatient-order-header-template"
         key=""
-        class="inpatientorder-container inpatientorder-container-${inpatientOrder.inpatientOrderId}"
+        class="inpatientorder-container"
         hidden
         >
         <div class="row inpatientorder-header mx-1">
