@@ -26,7 +26,6 @@ async function getClinicPetById (id) {
   JOIN owner as o on o.id = p.owner_id
   WHERE p.id = ?;
   `, [id])
-  // console.log(data)
   return data[0]
 }
 

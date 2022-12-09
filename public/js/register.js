@@ -5,24 +5,19 @@ initRegistersRender()
 async function initRegistersRender () {
   const { data } = await (await fetch('/api/1.0/registers/today/all', { headers })).json()
   registers = data
-  console.log('all today registers: ', data)
   // 按照預約時間的順序排序
   registers.sort((register1, register2) => {
     return register2.reserve_time - register1.reserve_time
   })
 
   const queuePets = registers.filter(register => register.petStatus === 1)
-  console.log('queuePets: ', queuePets)
 
   const calledPets = registers.filter(register => register.petStatus === 2)
-  console.log('calledPets: ', calledPets)
 
   // inquiryFinishedPets狀態 0(看完診)
   const inquiryFinishedPets = registers.filter(register => register.petStatus === 0)
-  console.log('inquiryFinishedPets: ', inquiryFinishedPets)
 
   const inpatientPets = registers.filter(register => register.petStatus === 3)
-  console.log('inpatientPets: ', inpatientPets)
 
   const registerCard = $('#register-card-template').clone().remove('id hidden')
 
@@ -44,8 +39,8 @@ async function initRegistersRender () {
     // 判斷是否預約時間是否超時，超時顯示紅色；反之則為藍色
     const now = Date.now()
     const reserveTime = new Date(pet.reserveTime).getTime()
-    const localReserveTime = new Date(new Date(pet.reserveTime).getTime() - timezoneOffsetMilliseconds)
-    queueCard.find('.reserve-time').html('預約時間: ' + localReserveTime.toISOString().split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
+    const localReserveTime = utcISOStringToLocalTimeString(pet.reserveTime, timezoneOffsetMilliseconds)
+    queueCard.find('.reserve-time').html('預約時間: ' + localReserveTime)
     if (reserveTime > now) {
       queueCard.find('.reserve-header').addClass('text-primary')
     } else {
@@ -62,7 +57,8 @@ async function initRegistersRender () {
   calledPets.forEach(pet => {
     const calledCard = calledCardTemplate.clone()
     calledCard.find('.register-card').attr('key', pet.registerId)
-    calledCard.find('.reserve-time').html('預約時間: ' + pet.reserveTime.split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
+    const localReserveTime = utcISOStringToLocalTimeString(pet.reserveTime, timezoneOffsetMilliseconds)
+    calledCard.find('.reserve-time').html('預約時間: ' + localReserveTime)
     calledCard.find('.register-subjective').html(pet.registerSubjective)
     calledCard.find('.pet-icon').attr('src', `/images/${pet.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
     calledCard.find('.clinic-link').attr('href', `/clinic.html#${pet.petId}`)
@@ -81,7 +77,8 @@ async function initRegistersRender () {
   inquiryFinishedPets.forEach(pet => {
     const finishedCard = finishedCardTemplate.clone()
     finishedCard.find('.register-card').attr('key', pet.registerId)
-    finishedCard.find('.reserve-time').html('預約時間: ' + pet.reserveTime.split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
+    const localReserveTime = utcISOStringToLocalTimeString(pet.reserveTime, timezoneOffsetMilliseconds)
+    finishedCard.find('.reserve-time').html('預約時間: ' + localReserveTime)
     finishedCard.find('.register-subjective').html(pet.registerSubjective)
     finishedCard.find('.pet-icon').attr('src', `/images/${pet.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
     finishedCard.find('.clinic-link').attr('href', `/clinic.html#${pet.petId}`)
@@ -101,7 +98,8 @@ async function initRegistersRender () {
   inpatientPets.forEach(pet => {
     const inpatientCard = inpatientCardTemplate.clone()
     inpatientCard.find('.register-card').attr('key', pet.registerId)
-    inpatientCard.find('.reserve-time').html('預約時間: ' + pet.reserveTime.split('T')[1].split('.')[0].split(':').slice(0, 2).join(':'))
+    const localReserveTime = utcISOStringToLocalTimeString(pet.reserveTime, timezoneOffsetMilliseconds)
+    inpatientCard.find('.reserve-time').html('預約時間: ' + localReserveTime)
     inpatientCard.find('.register-subjective').html(pet.registerSubjective)
     inpatientCard.find('.pet-icon').attr('src', `/images/${pet.petSpecies === 'c' ? 'cat' : 'dog'}.png`)
     inpatientCard.find('.clinic-link').attr('href', `/clinic.html#${pet.petId}`)
@@ -121,7 +119,6 @@ async function callRegisterPet (petId) {
   })
 
   if (response.status !== 200) {
-    console.log(response)
     return alert('伺服器發生錯誤')
   }
 
@@ -129,4 +126,9 @@ async function callRegisterPet (petId) {
 
   alert(`已叫號寵物: ${pet.petName}`)
   location.href = `/clinic.html#${petId}`
+}
+
+function utcISOStringToLocalTimeString (UtcISOString, timezoneOffsetMilliseconds) {
+  const localReserveTime = new Date(new Date(UtcISOString).getTime() - timezoneOffsetMilliseconds)
+  return localReserveTime.toISOString().split('T')[1].split('.')[0].split(':').slice(0, 2).join(':')
 }

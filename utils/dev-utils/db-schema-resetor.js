@@ -37,9 +37,9 @@ async function buildAllTables () {
     })
     await dbConnection.query('COMMIT')
     console.log(`build tables success: ${process.env.DB_NAME}`)
-  } catch (err) {
+  } catch (error) {
     await dbConnection.query('ROLLBACK')
-    console.log('error happened while build tables', err)
+    console.log('error happened while build tables', error)
   } finally {
     await dbConnection.release()
   }
@@ -55,9 +55,9 @@ async function dropAllTables () {
     })
     await dbConnection.query('COMMIT')
     console.log(`drop tables success: ${process.env.DB_NAME}`)
-  } catch (err) {
+  } catch (error) {
     await dbConnection.query('ROLLBACK')
-    console.log('error happened while drop all tables', err)
+    console.log('error happened while drop all tables', error)
   } finally {
     await dbConnection.release()
   }
@@ -77,8 +77,8 @@ async function buildFakeDataByLevel (data, level) {
       })
     })
     await dbConnection.query('COMMIT')
-  } catch (err) {
-    console.log('fail to inject data', err)
+  } catch (error) {
+    console.log('fail to inject data', error)
     await dbConnection.query('ROLLBACK')
   } finally {
     await dbConnection.release()

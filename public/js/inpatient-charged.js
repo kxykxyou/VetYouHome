@@ -24,7 +24,6 @@ const inpatientsContainer = {
 initInpatientsRender()
 async function initInpatientsRender () {
   await initRenderInpatients()
-  console.log('allChargedInpatients', allChargedInpatients)
   initRenderSwapCageModal()
 }
 
@@ -32,17 +31,11 @@ async function initRenderSwapCageModal () {
   const { data } = await (await fetch('/api/1.0/cages/all', { headers })).json()
   allCageStatus = data
   allCageStatus.sort((cage1, cage2) => cage1.cageName - cage2.cageName)
-  // console.log('allCageStatus', allCageStatus)
   let html = '<option selected="selected" key="">請選擇籠位</option>'
   allCageStatus.forEach(cage => {
-    // console.log(cage.name)
     if (!cage.petId) {
       html += `<option key="${cage.cageName}">${cage.cageName}</option>`
-      // console.log(cage.cageName)
     } else {
-      // const inpatient = allChargedInpatients.find(inpatient => inpatient.inpatientCage === cage.name)
-      // console.log(inpatient)
-
       html += `<option key="${cage.cageName}">${cage.cageName} / ${cage.petName}</option>`
     }
   })
@@ -52,7 +45,6 @@ async function initRenderSwapCageModal () {
 async function initRenderInpatients () {
   const { data } = await (await fetch('/api/1.0/inpatients/charged', { headers })).json()
   allChargedInpatients = data
-  console.log('charged inpatients: ', data)
   // 把 fetch的結果丟到inpatientsContainer中
   data.forEach(inpatient => {
     inpatientsContainer[inpatient.inpatientCage[0]].inpatients.push(inpatient)
@@ -70,7 +62,6 @@ async function initRenderInpatients () {
   cageBlocksHasInpatients
     .forEach(cageBlock => {
       const cageContainer = blockCageContainer.clone()
-      // .attr('id', `block-${cageBlock}-cages`)
       cageContainer.find('.cage-header').html(inpatientsContainer[cageBlock].name)
       cageContainer.find('.inpatients-display').attr('id', `inpatients-display-${cageBlock}`)
       inpatientsContainerTag.append(cageContainer)
@@ -81,7 +72,6 @@ async function initRenderInpatients () {
       inpatientsContainer[cageBlock].tag = $(`#inpatients-display-${cageBlock}`)
     })
 
-  console.log('inpatientsContainer: ', inpatientsContainer)
   // inpatients-display-${cage} 下新增各個病患卡片
   const inpatientCardTemplate = $('#inpatient-card-template').clone().removeAttr('id').removeAttr('hidden')
   inpatientCardTemplate.find('.charge-end-group').remove()
@@ -104,7 +94,6 @@ async function initRenderInpatients () {
           card.find('.btn-check-inpatient-order').attr('onclick', `modalUpdateCurrentInpatientOrder(${inpatient.inpatientId})`)
           card.find('.btn-swap-cage').attr('onclick', `modalUpdateCurrentCage(${inpatient.inpatientId})`)
           card.find('.btn-discharge').attr('onclick', `discharge(${inpatient.inpatientId})`)
-          // card.find('.cage').html(inpatient.inpatientCage)
 
           inpatientsContainer[cageBlock].tag.append(card)
         })
@@ -130,8 +119,6 @@ async function discharge (inpatientId) {
     alert(`籠位: ${inpatient.inpatientCage} ${inpatient.petName}\n辦理出院成功!`)
     location.reload()
   }
-
-  // console.log(inpatientId)
 }
 
 function modalUpdateCurrentCage (inpatientId) {
@@ -147,8 +134,6 @@ async function swapCage () {
   const currentCage = $('#current-cage').attr('key')
   const targetCage = $('#target-cage option:selected').attr('key')
   if (!targetCage) { alert('請選擇籠位') }
-  console.log('currentCage: ', currentCage)
-  console.log('targetCage: ', targetCage)
 
   // TODO: POST to swap cage API
   const body = {
@@ -171,11 +156,9 @@ async function swapCage () {
 async function modalUpdateCurrentInpatientOrder (inpatientId) {
   const { data } = await (await fetch(`/api/1.0/inpatients/id/${inpatientId}/inpatientorders/complex/today`, { headers })).json()
   const complexInpatientOrder = data
-  console.log('complexInpatientOrder: ', complexInpatientOrder)
 
   const inpatientInfo = allChargedInpatients.find(inpatient => inpatient.inpatientId === inpatientId)
   $('#inpatientorder-current-cage').html(`${inpatientInfo.inpatientCage} - ${inpatientInfo.petName}`)
-  // console.log(complexInpatientOrder)
   if (!Object.keys(complexInpatientOrder).length) {
     $('#inpatient-order-comment').empty()
     return $('#inpatientorder-table').html('尚未建立今日醫囑！')
@@ -194,20 +177,14 @@ async function modalUpdateCurrentInpatientOrder (inpatientId) {
     data: complexInpatientOrder.details,
 
     fields: [
-      // { name: 'inpatientOrderDetailId', type: 'number', visible: false, editing: false },
       { title: '優先級', name: 'priority', type: 'number', editing: true, validate: 'required', width: '10%', align: 'center' },
       { title: '內容', name: 'content', type: 'text', editing: true, validate: 'required', headercss: 'text-align: center' },
       { title: '頻率', name: 'frequency', type: 'text', editing: true, width: '10%', align: 'center' },
       { title: '預定時間', name: 'schedule', type: 'text', editing: true, width: '15%', align: 'center' },
       { title: '執行備註', name: 'comment', type: 'text', editing: true, width: '30%' }
-      // { type: 'control' }
     ]
   })
 }
-
-// function insertInpatientOrderTable (inpatientOrderId, details) {
-//   $(`.inpatientorder-table-${inpatientOrderId}`).jsGrid()
-// }
 
 function compareCage (cage1, cage2) {
   if (cage1 > cage2) { return 1 }

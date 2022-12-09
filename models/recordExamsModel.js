@@ -1,4 +1,5 @@
 const { db } = require('./mysql')
+const xss = require('xss')
 
 async function getRecordExamsByRecordId (id) {
   const [data] = await db.execute(`
@@ -15,14 +16,13 @@ async function getRecordExamsByRecordId (id) {
   JOIN exam as e on re.exam_id = e.id
   WHERE record_id = ?`
   , [id])
-  return { data }
+  return data
 }
 
 async function createRecordExam (body) {
   try {
     const [exam] = await db.execute('SELECT id FROM exam WHERE name = ?', [body.examName])
     const examId = exam[0].id
-    console.log('body: ', body)
     const [result] = await db.execute(`
     INSERT INTO record_exam 
     (record_id, exam_id, comment, file_path) 
@@ -31,24 +31,23 @@ async function createRecordExam (body) {
     , [body.recordId, examId, body.comment, ''])
 
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message, status_code: 500 }
   }
 }
 
 async function deleteRecordExam (body) {
   try {
     await db.execute('DELETE FROM record_exam WHERE id = ?', [body.recordExamId])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }
 
 async function updateRecordExam (body) {
-  console.log('body: ', body)
   try {
     const [exam] = await db.execute('SELECT id FROM exam WHERE name = ?', [body.examName])
     const examId = exam[0].id
@@ -62,12 +61,12 @@ async function updateRecordExam (body) {
       body.quantity !== undefined ? body.quantity : 1,
       body.discount !== undefined ? body.discount : 1,
       body.subtotal !== undefined ? body.subtotal : 0,
-      body.comment,
+      xss(body.comment),
       body.recordExamId
     ])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
   return {}
 }

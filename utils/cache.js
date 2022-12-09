@@ -1,6 +1,5 @@
 require('dotenv').config()
 const Redis = require('ioredis')
-// var retryStrategy = require("node-redis-retry-strategy");
 
 // const REDIS_USER = process.env.REDIS_USER
 const REDIS_REQUIREPASS = process.env.REDIS_REQUIREPASS
@@ -29,20 +28,20 @@ redisClient.on('ready', async () => {
     })}`
   )
 })
-redisClient.on('reconnecting', (err) => {
+redisClient.on('reconnecting', (error) => {
   console.log(
     `Redis Client Reconnect in TW timezone at : ${new Date().toLocaleString('zh-TW', {
       timeZone: 'Asia/Taipei'
     })}`
   )
-  console.log(err)
+  console.log(error)
 })
-redisClient.on('error', (err) => {
+redisClient.on('error', (error) => {
   console.log(
     `Redis Client Error in TW timezone at : ${new Date().toLocaleString('zh-TW', {
       timeZone: 'Asia/Taipei'
     })}\n`,
-    err.message
+    error.message
   )
 })
 
