@@ -1,6 +1,5 @@
 require('dotenv').config()
 const Redis = require('ioredis')
-// var retryStrategy = require("node-redis-retry-strategy");
 
 // const REDIS_USER = process.env.REDIS_USER
 const REDIS_REQUIREPASS = process.env.REDIS_REQUIREPASS
