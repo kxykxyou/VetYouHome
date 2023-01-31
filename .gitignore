@@ -6,7 +6,8 @@ AdminLTE-3.2.0
 .vscode
 .env
 node_modules
-.eslintrc.json
+bin/*
+emt-data
 utils/dev-utils/fake-data.json
 
 ### vscode
