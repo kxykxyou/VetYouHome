@@ -10,14 +10,12 @@ For the last 10 years, some animal hostpital still use old-fasion UI with low re
 In veterinary practice, vets should have a more convenient application to speed up their routine work.
 
 ## Table of Contents
-- [Pain Points And Solution](#pain-points)
+- [Pain Points And Solution](#pain-points-and-solution)
 - [How to use it](#how-to-use-it)
 - [Features And Demos](#features-and-demos)
-  - [Calling a patient from waiting](#Calling-a-patient-from-waiting)
-  - [Double views for inpecting records and orders](#Double-views-for-inpecting-records-and-orders)
-  - [Basic Record CRUD](#basic-record-crud)
-  - [Basic order CRUD](#basic-order-crud)
+  - [Calling patient and double views for inpecting records and orders](#calling-patient-and-double-views-for-inpecting-records-and-orders)
   - [Search hitorical records and orders](#search-hitorical-records-and-orders)
+  - [Generate record and autocomplete services name](#generate-record-and-autocomplete-services-name)
   - [Rapid add-in from historical orders](#rapid-add-in-from-historical-orders)
   - [Inpatient operations](#inpatient-operations)
 - [System Architecture And Tech Stack](#system-architecture-and-tech-stack)
@@ -25,12 +23,13 @@ In veterinary practice, vets should have a more convenient application to speed 
 - [Acknowledgement](#acknowledgement)
 
 ## Pain Points And Solution
+> All the pain points are proposed and discussed by clinical vets and the author through needs interview
 1. Vets are hard to trace a pet's hitorical records and their corresponding orders which are split saved in differenct databases(not related).
-    - *Store records and orders in related database and double views for inspecting hitorical records/orders.*
+    - ***Store records and orders in related database and double views for inspecting hitorical records/orders.***
 2. Vets make exam/medication/treatment reocrds with no name hint which means they have to remember what services the hospital supplies and even typo easily.
-    - *Text autocomplete from existing services.*
+    - ***Text autocomplete from existing services.***
 3. Vets input similar orders again and again.
-    - *Rapid add-in from historical orders.*
+    - ***Rapid add-in from historical orders.***
 
 ## How to use it
 - URL: https://vetyouhome.online
@@ -46,23 +45,23 @@ password: test
 
 ## Features And Demos
 
-### Calling a patient from waiting
-<img src="http://g.recordit.co/0WSzSL4yYJ.gif">
+### Calling patient and double views for inpecting records and orders
+<img src="http://g.recordit.co/ehmUlyj5Go.gif">
 
-### Double views for inpecting records and orders.
+### Search hitorical records and orders
+<img src="http://g.recordit.co/6eD1Gl4O62.gif">
 
-### Basic Record CRUD 
-
-### Basic Order CRUD
-
-### Search historical records and orders
+### Generate record and autocomplete services name
+<img src="http://g.recordit.co/BbCxf5cN5l.gif">
 
 ### Rapid add-in from historical orders
+<img src="http://g.recordit.co/7ZAQvu2h6B.gif">
 
 ### Inpatient operations
 - checking today's order
 - switch inpatient cages
 - discharge
+<img src="http://g.recordit.co/jG4ihUSmz3.gif">
 
 
 ## System Architecture and Tech Stack
