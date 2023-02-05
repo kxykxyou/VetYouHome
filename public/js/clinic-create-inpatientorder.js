@@ -8,14 +8,12 @@ async function initRenderCreateInpatientOrder () {
   const { data } = await (await fetch(`/api/1.0/clinic/inpatients/mostrecent/pet/id/${petId}`, { headers })).json()
   if (!Object.keys(data).length) {
     $('#create-new-inpatientorder').html('該寵物無住院紀錄')
-    console.log('該寵物無住院紀錄')
     return
   }
   if (data.charge_end) {
     $('#create-new-inpatientorder').html('該寵物目前非住院狀態')
     return
   }
-  console.log('該寵物最新住院資訊', data)
   $('#create-new-inpatientorder-cage').html(`籠位: ${data.cage}`)
   $('#create-new-inpatientorder-summary').html(`住院摘要: ${data.summary}`)
 
@@ -74,7 +72,6 @@ function renderNewInpatientOrderTable () {
             const d = $.Deferred().reject()
             return d.promise()
           }
-          console.log('update item: ', item)
           return item
         }
       }
@@ -87,7 +84,6 @@ async function importInpatientOrder () {
   if (!inpatientOrderId || inpatientOrderId === '') {
     return alert('請選擇要匯入的醫囑')
   }
-  // console.log(inpatientOrderId)
   const { data } = await (await fetch(`/api/1.0/inpatientorders/complex/id/${inpatientOrderId}`, { headers })).json()
   const inpatientOrderComplex = data
   inpatientOrderComplex.details.forEach(detail => {
@@ -106,7 +102,6 @@ async function importInpatientOrder () {
 async function createInpatientOrder () {
   newInpatientOrder.date = $('input[name="inpatientorder-date"]').val().replaceAll('/', '-')
   newInpatientOrder.comment = $('#new-inpatientorder-comment').val()
-  // console.log('newInpatientOrder: ', newInpatientOrder)
   const response = await fetch('/api/1.0/clinic/inpatientorders', {
     method: 'POST',
     headers,

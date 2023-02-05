@@ -7,11 +7,7 @@ async function getAllTodayRegisters (req, res, next) {
 }
 
 async function callRegisterPet (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const result = await petsModel.callRegisterPet(id)
+  const result = await petsModel.callRegisterPet(Number(req.params.id))
   if (result.status_code) {
     return res.status(result.status_code).json({ error: result.error })
   }
@@ -19,11 +15,7 @@ async function callRegisterPet (req, res, next) {
 }
 
 async function finishInquiryPet (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const result = await petsModel.finishInquiryPet(id)
+  const result = await petsModel.finishInquiryPet(Number(req.params.id))
   if (result.status_code) {
     return res.status(result.status_code).json({ error: result.error })
   }

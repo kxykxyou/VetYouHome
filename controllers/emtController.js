@@ -9,11 +9,10 @@ async function getAllExamNames (req, res, next) {
     }
     if (examNames) {
       examNames = JSON.parse(examNames)
-      console.log('examNames from redis', examNames)
       return res.status(200).json({ data: examNames })
     }
-  } catch (err) {
-    console.log('cache exam names error: ', err)
+  } catch (error) {
+    console.log('cache exam names error: ', error)
   }
 
   // if examNames not in redis or redis client is not ready
@@ -26,8 +25,8 @@ async function getAllExamNames (req, res, next) {
       redisClient.set('examNames', JSON.stringify(examNames))
       console.log('exam names are written into redis!')
     }
-  } catch (err) {
-    console.log('Cannot write exam names into redis!', err)
+  } catch (error) {
+    console.log('Cannot write exam names into redis!', error)
   }
 
   return res.status(200).json({ data: examNames })
@@ -41,11 +40,10 @@ async function getAllMedicineNames (req, res, next) {
     }
     if (medicineNames) {
       medicineNames = JSON.parse(medicineNames)
-      console.log('medicineNames from redis', medicineNames)
       return res.status(200).json({ data: medicineNames })
     }
-  } catch (err) {
-    console.log('cache medicine names error: ', err)
+  } catch (error) {
+    console.log('cache medicine names error: ', error)
   }
 
   // if examNames not in redis or redis client is not ready
@@ -58,8 +56,8 @@ async function getAllMedicineNames (req, res, next) {
       redisClient.set('medicineNames', JSON.stringify(medicineNames))
       console.log('medicine names are written into redis!')
     }
-  } catch (err) {
-    console.log('Cannot write medicine names into redis!', err)
+  } catch (error) {
+    console.log('Cannot write medicine names into redis!', error)
   }
 
   return res.status(200).json({ data: medicineNames })
@@ -73,11 +71,10 @@ async function getAllTreatmentNames (req, res, next) {
     }
     if (treatmentNames) {
       treatmentNames = JSON.parse(treatmentNames)
-      console.log('treatmentNames from redis', treatmentNames)
       return res.status(200).json({ data: treatmentNames })
     }
-  } catch (err) {
-    console.log('cache treatment names error: ', err)
+  } catch (error) {
+    console.log('cache treatment names error: ', error)
   }
 
   // if examNames not in redis or redis client is not ready
@@ -90,24 +87,12 @@ async function getAllTreatmentNames (req, res, next) {
       redisClient.set('treatmentNames', JSON.stringify(treatmentNames))
       console.log('treatment names are written into redis!')
     }
-  } catch (err) {
-    console.log('Cannot write treatment names into redis!', err)
+  } catch (error) {
+    console.log('Cannot write treatment names into redis!', error)
   }
 
   return res.status(200).json({ data: treatmentNames })
 }
-
-// async function getAllMedicineNames (req, res, next) {
-//   const data = await emtModel.getAllMedicineNames()
-//   const medicineNames = data.map(medicine => medicine.name)
-//   return res.status(200).json({ data: medicineNames })
-// }
-
-// async function getAllTreatmentNames (req, res, next) {
-//   const data = await emtModel.getAllTreatmentNames()
-//   const treatmentNames = data.map(treatment => treatment.name)
-//   return res.status(200).json({ data: treatmentNames })
-// }
 
 module.exports = {
   getAllExamNames,

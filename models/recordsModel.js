@@ -1,8 +1,6 @@
 const { db } = require('./mysql')
-const recordExamsModel = require('./recordExamsModel')
-const recordMedicationsModel = require('./recordMedicationsModel')
-const recordTreatmentsModel = require('./recordTreatmentsModel')
 const { randomCodeGenerator } = require('../utils/utils')
+const xss = require('xss')
 const recordQueryFields = [
   'vetId',
   'recordCode',
@@ -21,8 +19,7 @@ async function getRecordById (id) {
 }
 
 async function getAllRecordsByPetId (id) {
-  try {
-    const [data] = await db.execute(`
+  const [data] = await db.execute(`
   SELECT 
       u.fullname as vetFullname,
       r.id as recordId,
@@ -41,16 +38,11 @@ async function getAllRecordsByPetId (id) {
   JOIN user as u on r.vet_id = u.id
   WHERE p.id = ?
     `, [id])
-    return { data }
-  } catch (error) {
-    console.log(error)
-    return { status_code: 500, error }
-  }
+  return data
 }
 
 async function searchRecords (queryPairs) {
   let queryValues = []
-  //   console.log(queryValues)
   let sql = `
         SELECT *
         FROM
@@ -109,8 +101,6 @@ async function searchRecords (queryPairs) {
     sql = sql + 'WHERE ' + sqlConditions.join(' AND ')
   }
   sql += ' ORDER BY recordId DESC'
-  console.log('/records/search sqlConditions', sqlConditions)
-  console.log('/records/search queryValues: ', queryValues)
   const [data] = await db.execute(sql, queryValues)
   return data
 }
@@ -123,20 +113,21 @@ async function createRecord (vetId, body) {
     const [record] = await dbConnection.execute(`
       INSERT INTO record (code, vet_id, pet_id, subjective, objective, assessment, plan)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, ['REC' + '22' + randomCodeGenerator(5), vetId, petId, subjective, objective, assessment, plan])
-    console.log('record: ', record)
+      `, ['REC' +
+        new Date().getYear().toString().slice(1) + // 西元年末兩位, e.g. 2022年會得到22
+        randomCodeGenerator(5),
+    vetId, petId, xss(subjective), xss(objective), xss(assessment), xss(plan)])
     const recordId = record.insertId
     const examInsertPromises = exams.map(async (exam) => {
       const [examQuery] = await dbConnection.execute('SELECT id FROM exam WHERE name = ?', [exam.examName])
       const examId = examQuery[0].id
       await dbConnection.execute(`
       INSERT INTO record_exam 
-      (record_id, exam_id, comment, file_path) 
+      (record_id, exam_id, comment, file_path)
       VALUES 
       (?, ?, ?, ?)`
-      , [recordId, examId, exam.comment, ''])
+      , [recordId, examId, xss(exam.comment), ''])
     })
-    console.log('after exam')
     const treatmentInsertPromises = treatments.map(async (treatment) => {
       const [treatmentQuery] = await dbConnection.execute('SELECT id FROM treatment WHERE name = ?', [treatment.treatmentName])
       const treatmentId = treatmentQuery[0].id
@@ -145,9 +136,8 @@ async function createRecord (vetId, body) {
       (record_id, treatment_id, comment) 
       VALUES 
       (?, ?, ?)`
-      , [recordId, treatmentId, treatment.comment])
+      , [recordId, treatmentId, xss(treatment.comment)])
     })
-    console.log('after treatment')
 
     const medicationDetailInsertPromises = []
     Object.values(medications).forEach(async (medication) => {
@@ -156,12 +146,11 @@ async function createRecord (vetId, body) {
         (record_id, name, type, comment)
         VALUES
         (?, ?, ?, ?)`,
-      [recordId, medication.name, medication.type, medication.comment])
+      [recordId, medication.name, medication.type, xss(medication.comment)])
       const medicationId = medicationResult.insertId
       const insertMedicationDetailPromises = medication.details.map(async (detail) => {
         const [medicineQuery] = await dbConnection.execute('SELECT id FROM medicine WHERE name = ?', [detail.medicineName])
         const medicineId = medicineQuery[0].id
-        console.log(detail)
         await dbConnection.execute(`
           INSERT INTO medication_detail
           (record_medication_id, medicine_id, dose, frequency, day)
@@ -172,26 +161,22 @@ async function createRecord (vetId, body) {
       medicationDetailInsertPromises.push(...insertMedicationDetailPromises)
     })
 
-    console.log('prepared to promise.all')
     let insertionSuccess = true
     await Promise.all(examInsertPromises)
-      .then(res => console.log('examInsertPromises result', res))
       .catch((res) => { insertionSuccess = false })
     await Promise.all(treatmentInsertPromises)
-      .then(res => console.log('treatmentInsertPromises result', res))
       .catch((res) => { insertionSuccess = false })
     await Promise.all(medicationDetailInsertPromises)
-      .then(res => console.log('medicationDetailInsertPromises', res))
       .catch((res) => { insertionSuccess = false })
     if (insertionSuccess) {
       await dbConnection.commit()
     } else {
-      throw new Error('insertion failed')
+      throw new Error('Record insertion error')
     }
-  } catch (err) {
-    console.log('error happened while creating records', err)
+  } catch (error) {
+    console.log(error)
     await dbConnection.rollback()
-    return { error: err, status_code: 500 }
+    return { error, status_code: 500 }
   } finally {
     await dbConnection.release()
   }
@@ -201,9 +186,9 @@ async function createRecord (vetId, body) {
 async function deleteRecord (id) {
   try {
     await db.execute('DELETE FROM record WHERE id = ?', [id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }
@@ -213,10 +198,10 @@ async function updateRecord (body) {
     await db.execute(`
     UPDATE record SET 
     subjective = ?, objective = ?, assessment = ?, plan = ?
-    WHERE id = ?`, [body.subjective, body.objective, body.assessment, body.plan, body.id])
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+    WHERE id = ?`, [xss(body.subjective), xss(body.objective), xss(body.assessment), xss(body.plan), body.id])
+  } catch (error) {
+    console.log(error)
+    return { error: error.message, status_code: 500 }
   }
   return {}
 }

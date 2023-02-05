@@ -6,115 +6,85 @@ const petsModel = require('../models/petsModel')
 const inpatientsModel = require('../models/inpatientsModel')
 
 async function getAllRecordsByPetId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const result = await recordsModel.getAllRecordsByPetId(id)
-  if (result.status_code) {
-    console.log(result.error)
-    return res.status(result.status_code).json({ error: 'Internal Server Error' })
-  }
-  return res.status(200).json({ data: result.data })
+  const data = await recordsModel.getAllRecordsByPetId(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getRecordById (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const result = await recordsModel.getRecordById(id)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-  return res.status(200).json({ data: result.data })
+  const data = await recordsModel.getRecordById(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getRecordExamsByRecordId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const result = await recordExamsModel.getRecordExamsByRecordId(id)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-  return res.status(200).json({ data: result.data })
+  const data = await recordExamsModel.getRecordExamsByRecordId(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getRecordTreatmentsByRecordId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const result = await recordTreatmentsModel.getRecordTreatmentsByRecordId(id)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-  return res.status(200).json({ data: result.data })
+  const data = await recordTreatmentsModel.getRecordTreatmentsByRecordId(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getMedicationComplexByRecordId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
+  const data = await recordMedicationsModel.getMedicationComplexByRecordId(Number(req.params.id))
+  if (!data.length) {
+    return res.status(200).json({ data })
   }
-  const result = await recordMedicationsModel.getMedicationComplexByRecordId(id)
-  console.log('result: ', result)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-
-  return res.status(200).json({ data: result.data })
+  const medications = {}
+  data.forEach(row => { // row for every medication details
+    if (!medications[row.medicationId]) {
+      // 若該medication還沒被加入medications，則建立該medication object
+      const medication = {
+        id: row.medicationId,
+        name: row.medicationName,
+        type: row.medicationType,
+        comment: row.medicationComment,
+        details: []
+      }
+      medications[row.medicationId] = medication
+    }
+    const detail = {
+      medicationDetailId: row.medicationDetailId,
+      medicineId: row.medicineId,
+      medicineName: row.medicineName,
+      medicineUnitDose: row.medicineUnitDose,
+      medicineDoseUnit: row.medicineDoseUnit,
+      medicationDose: row.medicationDose,
+      frequency: row.frequency,
+      day: row.day,
+      price: row.price,
+      quantity: row.quantity,
+      discount: row.discount,
+      subtotal: row.subtotal
+    }
+    medications[row.medicationId].details.push(detail) // 將medication detail加入該medication的details中
+  })
+  return res.status(200).json({ data: Object.values(medications) })
 }
 
 async function getInpatientOrderById (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const result = await inpatientsModel.getInpatientOrderById(id)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-  return res.status(200).json({ data: result.data })
+  const data = await inpatientsModel.getInpatientOrderById(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getInpatientOrderDetailsByInpatientOrderId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const result = await inpatientsModel.getInpatientOrderDetailsByInpatientOrderId(id)
-  console.log('result: ', result)
-  if (result.error) {
-    console.log(result.error)
-    return res.status(500).json({ error: result.error })
-  }
-
-  return res.status(200).json({ data: result.data })
+  // data is an array of inpatient orders
+  const data = await inpatientsModel.getInpatientOrderDetailsByInpatientOrderId(Number(req.params.id))
+  return res.status(200).json({ data })
 }
 
 async function getSingleRecordComplexByRecordId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const data = await recordsModel.getRecordById(id)
-  if (!data) {
-    return res.status(400).json({ error: 'not invalid id' })
+  const data = await recordsModel.getRecordById(Number(req.params.id))
+  // data is an array
+  if (!data.length) {
+    return res.status(200).json({ data: {} })
   }
 
-  const exams = await recordExamsModel.getRecordExamsByRecordId(data.id)
-  const medications = await recordMedicationsModel.getMedicationComplexByRecordId(data.id)
-  const treatments = await recordTreatmentsModel.getRecordTreatmentsByRecordId(data.id)
+  const exams = await recordExamsModel.getRecordExamsByRecordId(data[0].id)
+  const medications = await recordMedicationsModel.getMedicationComplexByRecordId(data[0].id)
+  const treatments = await recordTreatmentsModel.getRecordTreatmentsByRecordId(data[0].id)
 
-  const complexData = data
+  const complexData = data[0]
   complexData.exams = exams
   complexData.medications = medications
   complexData.treatments = treatments
@@ -123,11 +93,8 @@ async function getSingleRecordComplexByRecordId (req, res, next) {
 }
 
 async function getClinicPetById (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const data = await petsModel.getClinicPetById(id)
+  const data = await petsModel.getClinicPetById(Number(req.params.id))
+  // data is an object
   if (!data) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -135,42 +102,28 @@ async function getClinicPetById (req, res, next) {
 }
 
 async function getAllInpatientOrdersByPetId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const data = await inpatientsModel.getAllInpatientOrdersByPetId(id)
-  // if (!data.length) {
-  //   return res.status(400).json({ message: 'not invalid id' })
-  // }
+  const data = await inpatientsModel.getAllInpatientOrdersByPetId(Number(req.params.id))
+  // data is an array
   return res.status(200).json({ data })
 }
 
 async function getSingleInpatientOrderComplexByInpatientOrderId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const data = await inpatientsModel.getInpatientAndOrderByInpatientOrderId(id)
+  const data = await inpatientsModel.getInpatientAndOrderByInpatientOrderId(Number(req.params.id))
+  // data is an object
   if (!data) {
     return res.status(400).json({ message: 'not invalid id' })
   }
-  console.log(data)
 
   const inpatientOrderDetails = await inpatientsModel.getInpatientOrderDetailsByInpatientOrderId(data.inpatientOrderId)
   const complexData = data
   complexData.details = inpatientOrderDetails
-  console.log(inpatientOrderDetails)
 
   return res.status(200).json({ data: complexData })
 }
 
 async function getMostRecentInpatientByPetId (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ error: 'not invalid id' })
-  }
-  const data = await inpatientsModel.getMostRecentInpatientByPetId(id)
+  const data = await inpatientsModel.getMostRecentInpatientByPetId(Number(req.params.id))
+  // data is an object
   if (!data) {
     return res.status(200).json({ data: {} })
   }
@@ -179,49 +132,33 @@ async function getMostRecentInpatientByPetId (req, res, next) {
 }
 
 async function createRecord (req, res, next) {
-  console.log('body:', req.body)
-  console.log('user:', req.user)
-  // return res.status(200).json({})
-  // const { subjective, objective, assessment, plan, exams, medications, treatments, petId } = req.body
   if (!req.body.petId) { return res.status(400).json({ error: 'no petId provided' }) }
-  try {
-    // check exam, medication, treatment format and set default value if undefined
-    // TODO: 可以載入emt data 由後端檢查是否存在已登陸的資料當中
-    // TODO: check exam
-
-    // TODO: check treatment
-
-    // check medication
-    Object.values(req.body.medications).forEach(medication => {
-      if (!medication.name || medication.name === '') {
-        return res.status(400).json({ error: `invalid medication name provided: ${medication.name}` })
-      }
-      medication.details.forEach(detail => {
-        if (!detail.medicineName) {
-          return res.status(400).json({ error: `invalid medicine name provided: ${detail.medicineName}` })
-        }
-        detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
-        detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
-        detail.day = detail.day !== undefined ? detail.day : 0
-        detail.quantity = detail.quantity !== undefined ? detail.quantity : 1
-        detail.discount = detail.discount !== undefined ? detail.discount : 1
-        detail.subtotal = detail.subtotal !== undefined ? detail.subtotal : 0
-      })
-    })
-    const result = await recordsModel.createRecord(req.user.id, req.body)
-    if (result.status_code) {
-      return res.status(result.status_code).json({ error: result.error })
+  // check medication set default if undefined
+  Object.values(req.body.medications).forEach(medication => {
+    if (!medication.name || medication.name === '') {
+      return res.status(400).json({ error: `invalid medication name provided: ${medication.name}` })
     }
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ error: err })
+    medication.details.forEach(detail => {
+      if (!detail.medicineName) {
+        return res.status(400).json({ error: `invalid medicine name provided: ${detail.medicineName}` })
+      }
+      detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
+      detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
+      detail.day = detail.day !== undefined ? detail.day : 0
+      detail.quantity = detail.quantity !== undefined ? detail.quantity : 1
+      detail.discount = detail.discount !== undefined ? detail.discount : 1
+      detail.subtotal = detail.subtotal !== undefined ? detail.subtotal : 0
+    })
+  })
+  const result = await recordsModel.createRecord(req.user.id, req.body)
+  if (result.status_code) {
+    return res.status(result.status_code).json({ error: result.error })
   }
   return res.status(200).json({ message: 'create record success' })
 }
 
 async function createRecordExam (req, res, next) {
   const { recordId, examName } = req.body
-  console.log(req.body)
   if (!recordId || !examName) { return res.status(400).json({ error: 'invalid record id or exam name provided' }) }
 
   const result = await recordExamsModel.createRecordExam(req.body)
@@ -234,8 +171,9 @@ async function createRecordExam (req, res, next) {
 
 async function createRecordMedication (req, res, next) {
   const { recordId } = req.body
-  console.log(req.body)
   if (!recordId) { return res.status(400).json({ error: 'invalid record id provided' }) }
+
+  // set default if field is undefined
   req.body.details.forEach(detail => {
     detail.medicationDose = detail.medicationDose !== undefined ? detail.medicationDose : 0
     detail.frequency = detail.frequency !== undefined ? detail.frequency : 0
@@ -253,7 +191,6 @@ async function createRecordMedication (req, res, next) {
 
 async function createMedicationDetail (req, res, next) {
   const { medicationId, medicineName } = req.body
-  console.log(req.body)
   if (!medicationId || !medicineName) { return res.status(400).json({ error: 'invalid medication id or medicine name provided' }) }
   const body = req.body
   body.medicationDose = body.medicationDose !== undefined ? body.medicationDose : 0
@@ -272,7 +209,6 @@ async function createMedicationDetail (req, res, next) {
 
 async function createRecordTreatment (req, res, next) {
   const { recordId, treatmentName } = req.body
-  console.log(req.body)
   if (!recordId || !treatmentName) { return res.status(400).json({ error: 'invalid record id or treatment name provided' }) }
   const result = await recordTreatmentsModel.createRecordTreatment(req.body)
   if (result.status_code) {
@@ -282,37 +218,32 @@ async function createRecordTreatment (req, res, next) {
 }
 
 async function createInpatientOrder (req, res, next) {
-  console.log('body:', req.body)
-  console.log('user:', req.user)
   const { id } = req.body
   if (!(id)) { return res.status(400).json({ error: 'no inpatient order id provided' }) }
   const result = await inpatientsModel.createInpatientOrder(req.user.id, req.body)
-  if (result.error) {
+  if (result.status_code) {
     console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+    return res.status(result.status_code).json({ error: 'Internal server error' })
   }
   return res.status(200).json({ message: 'Create record success' })
 }
 
 async function createInpatientOrderDetail (req, res, next) {
   const { inpatientOrderId } = req.body
-  console.log(req.body)
   if (!inpatientOrderId) { return res.status(400).json({ error: 'no inpatient id provided' }) }
   const result = await inpatientsModel.createInpatientOrderDetail(inpatientOrderId, req.body)
-  if (result.error) {
+  if (result.status_code) {
     console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+    return res.status(result.status_code).json({ error: 'Internal server error' })
   }
   return res.status(200).json({ ...req.body, id: result.id })
 }
 
 async function createInpatient (req, res, next) {
-  console.log('body', req.body)
-  console.log('user', req.user)
   const result = await inpatientsModel.createInpatient(req.user.id, req.body)
-  if (result.error) {
+  if (result.status_code) {
     console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+    return res.status(result.status_code).json({ error: 'Internal server error' })
   }
   return res.status(200).json({ message: 'Create inpatient success' })
 }
@@ -343,7 +274,6 @@ async function deleteInpatientOrder (req, res, next) {
 
 async function deleteRecordExam (req, res, next) {
   const id = Number(req.body.recordExamId)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -368,7 +298,6 @@ async function deleteRecordMedication (req, res, next) {
 
 async function deleteMedicationDetail (req, res, next) {
   const id = Number(req.body.medicationDetailId)
-  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -381,7 +310,6 @@ async function deleteMedicationDetail (req, res, next) {
 
 async function deleteRecordTreatment (req, res, next) {
   const id = Number(req.body.recordTreatmentId)
-  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -410,16 +338,15 @@ async function updateRecord (req, res, next) {
     return res.status(400).json({ error: 'not invalid id' })
   }
   const result = await recordsModel.updateRecord(req.body)
-  if (result.error) {
+  if (result.status_code) {
     console.log(result.error)
-    return res.status(500).json({ error: 'Internal server error' })
+    return res.status(result.status_code).json({ error: 'Internal server error' })
   }
   return res.status(200).json({ message: 'Delete record treatment success' })
 }
 
 async function updateRecordExam (req, res, next) {
   const id = Number(req.body.recordExamId)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -438,7 +365,6 @@ async function updateRecordExam (req, res, next) {
 
 async function updateRecordMedication (req, res, next) {
   const id = Number(req.body.id)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -451,7 +377,6 @@ async function updateRecordMedication (req, res, next) {
 
 async function updateMedicationDetail (req, res, next) {
   const id = Number(req.body.medicationDetailId)
-  console.log('body: ', req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -471,7 +396,6 @@ async function updateMedicationDetail (req, res, next) {
 
 async function updateRecordTreatment (req, res, next) {
   const id = Number(req.body.recordTreatmentId)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -489,7 +413,6 @@ async function updateRecordTreatment (req, res, next) {
 
 async function updateInpatientOrder (req, res, next) {
   const id = Number(req.body.id)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }
@@ -502,7 +425,6 @@ async function updateInpatientOrder (req, res, next) {
 
 async function updateInpatientOrderDetail (req, res, next) {
   const id = Number(req.body.id)
-  console.log(req.body)
   if (!(Number.isSafeInteger(id) && id > 0)) {
     return res.status(400).json({ error: 'not invalid id' })
   }

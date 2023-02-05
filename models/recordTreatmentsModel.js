@@ -1,4 +1,5 @@
 const { db } = require('./mysql')
+const xss = require('xss')
 
 async function getRecordTreatmentsByRecordId (id) {
   const [data] = await db.execute(`
@@ -14,7 +15,7 @@ async function getRecordTreatmentsByRecordId (id) {
   JOIN treatment as t on rt.treatment_id = t.id
   WHERE record_id = ?`
   , [id])
-  return { data }
+  return data
 }
 
 async function createRecordTreatment (body) {
@@ -29,19 +30,19 @@ async function createRecordTreatment (body) {
     (record_id, treatment_id, comment) 
     VALUES 
     (?, ?, ?)`
-    , [body.recordId, treatmentId, body.comment])
+    , [body.recordId, treatmentId, xss(body.comment)])
     return { id: result.insertId }
-  } catch (err) {
-    console.log(err)
-    return { error: err.message }
+  } catch (error) {
+    console.log(error)
+    return { error: error.message }
   }
 }
 
 async function deleteRecordTreatment (body) {
   try {
     await db.execute('DELETE FROM record_treatment WHERE id = ?', [body.recordTreatmentId])
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}
@@ -58,9 +59,9 @@ async function updateRecordTreatment (body) {
     UPDATE record_treatment SET 
     treatment_id = ?, quantity = ?, discount = ?, subtotal = ?, comment = ?
     WHERE id = ?`,
-    [treatmentId, body.quantity, body.discount, body.subtotal, body.comment, body.recordTreatmentId])
-  } catch (err) {
-    console.log(err)
+    [treatmentId, body.quantity, body.discount, body.subtotal, xss(body.comment), body.recordTreatmentId])
+  } catch (error) {
+    console.log(error)
     return { error: 'Internal Server Error', status_code: 500 }
   }
   return {}

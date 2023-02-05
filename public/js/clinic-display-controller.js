@@ -1,10 +1,10 @@
-// control to show which content for each side container
+/*
+control to show which content for each side container
+*/
 const sideContainerTagsMap = {
   left: [
     $('#left-records-container'),
     $('#left-inpatientorders-container')
-    // $('#left-create-record-container'),
-    // $('#left-create-inpatientorder-container')
   ],
   right: [
     $('#right-records-container'),

@@ -1,11 +1,7 @@
 const recordsModel = require('../models/recordsModel')
 
 async function getRecordById (req, res, next) {
-  const id = Number(req.params.id)
-  if (!(Number.isSafeInteger(id) && id > 0)) {
-    return res.status(400).json({ message: 'not invalid id' })
-  }
-  const data = await recordsModel.getRecordById(id)
+  const data = await recordsModel.getRecordById(Number(req.params.id))
   if (!data) {
     return res.status(400).json({ message: 'not invalid id' })
   }

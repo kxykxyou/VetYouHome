@@ -10,8 +10,8 @@ async function main () {
       await fakeDataGenerator.generateFakeData()
       await fakeDataInjector.injectFakeData()
       break
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log(error)
       console.log('inject fail, run again!')
       continue
     }
