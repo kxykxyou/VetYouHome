@@ -31,7 +31,7 @@ In veterinary practice, vets should have a more convenient application to speed 
 3. Vets input similar orders again and again.
     - ***Rapid add-in from historical orders.***
 
-## How to use it
+## How to Use It
 - URL: https://vetyouhome.online
 - Recommended screen size: greater than 24 inches
 - Recommended resolution: width > 1200px
