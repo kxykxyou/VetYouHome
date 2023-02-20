@@ -67,9 +67,9 @@ password: test
 ## System Architecture and Tech Stack
 <img width="1080" alt="Screen Shot 2023-01-31 at 5 30 33 PM" src="https://user-images.githubusercontent.com/80204522/215721800-979310db-0c79-43e4-b78c-0dd95413356c.png">
 
-- Backend: Node.js, Express, MySQL, Redis, Crontab
+- Backend: Node.js, Express, Nginx, pm2
 - Frontend: HTML, Bootstrap, JQuery, JsGrid
-- Could Services(AWS): EC2, RDS, ElastiCache
+- Could Services(AWS): EC2(Linux), RDS, ElastiCache
 - Database: MySQL, Redis
 - Version Control: Git/GitHub
 - Scheduler: Crontab
