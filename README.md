@@ -70,6 +70,9 @@ password: test
 - Backend: Node.js, Express, MySQL, Redis, Crontab
 - Frontend: HTML, Bootstrap, JQuery, JsGrid
 - Could Services(AWS): EC2, RDS, ElastiCache
+- Database: MySQL, Redis
+- Version Control: Git/GitHub
+- Scheduler: Crontab
 
 ## Table Schema
 <img width="1206" alt="Screen Shot 2023-01-31 at 3 26 12 PM" src="https://user-images.githubusercontent.com/80204522/215693906-2f174654-8114-4a7f-ab45-db0938a6d6bd.png">
