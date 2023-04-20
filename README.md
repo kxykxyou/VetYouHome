@@ -3,11 +3,31 @@ https://vetyouhome.online
 
 A health care system web app which focuses on improving pet record and order work experience for vets and animal hospital.
 
-
-
 The main idea of this project is from clinical vets needs.
 For the last 10 years, some animal hostpital still use old-fasion UI with low resolution application and bad UX for pet record/order work. That system was not well designed for modern/digital workflow which causes low work efficiency for clinical vets.
 In veterinary practice, vets should have a more convenient application to speed up their routine work.
+
+## Quick launch at local via docker compose
+### Pre-requisites
+- `docker` & `docker-compose`
+1. Clone repo
+```
+git clone https://github.com/kxykxyou/vetyouhome
+```
+
+2. Pull docker images and launch by docker-compose
+```
+cd vetyouhome
+/bin/bash launch.sh  # including pulling and docker-compose up
+```
+
+3. Try with browswer
+Type `localhost:3000` to access the login page, try an exist account with below
+```
+account: 0900000000
+password: test
+```
+
 
 ## Table of Contents
 - [Pain Points And Solution](#pain-points-and-solution)
