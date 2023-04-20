@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+    app:
+        image: kxykxyou/vetyouhome:vyhapp
+        container_name: vyhapp
+        ports:
+            - "3000:3000"
+        depends_on:
+            - mysql
+            - redis
+        command: /bin/bash -c "node app.js"
+    mysql:
+        image: mysql
+        container_name: vyhdb
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_DATABASE: 'vyh'
+        volumes:
+            - ./vyh.sql:/docker-entrypoint-initdb.d/vyh.sql
+    redis:
+        image: redis
+        container_name: vyhredis
+        ports:
+            - "6379:6379"
